@@ -44,25 +44,24 @@ void	ft_free_lst(t_struct *lst)
 	return ;
 }
 
-void	initialize_lst(t_struct **tab, int fd1, int fd2, char **ag)
+void	initialize_lst(t_struct **tab, int fd1, int fd2, char **cmds)
 {
 	t_struct	*copy;
 	int			i;
+	int			j;
 
-	if (ft_strncmp(ag[1], "here_doc", 9) == 0)
-		i = 3;
-	else
-		i = 2;
-	while (ag[i + 1])
+	i = 0;
+	j = 0;
+	while (cmds[i])
 	{
 		copy = (t_struct *) malloc(sizeof(t_struct));
-		copy->cmd = ft_split(ag[i], ' ');
+		copy->cmd = ft_split((cmds[i]), ' ');
 		copy->next = NULL;
 		sc_lstadd_back(tab, copy);
 		i++;
 		copy = copy->next;
 	}
-	(*tab)->fds[0] = fd1;// these two lines need changes: multiple infile/outfile
+	(*tab)->fds[0] = fd1;
 	sc_lstlast(*tab)->fds[1] = fd2;
 	return ;
 }

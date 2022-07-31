@@ -12,7 +12,7 @@
 
 #include "pipex.h"
 
-void	pipex(t_struct **tab, char **parsed_path, char **envp)
+void	execute(t_struct **tab, char **parsed_path, char **envp)
 {
 	int			pipefds[2];
 	t_struct	*copy;
@@ -120,25 +120,21 @@ int	file_access_check(char *file1, int fd1, char *file2, int fd2)
 {
 	if (fd1 < 0)
 	{
-		if (ft_strncmp(file1, "", 1) == 0)
-			printf("no such file or directory: %s\n", file1);
-		else if (access(file1, F_OK) == -1)
+		if (access(file1, F_OK) == -1)
 			printf("no such file or directory: %s\n", file1);
 		else if (access(file1, R_OK) == -1 || access(file1, W_OK) == -1)
 			printf("permission denied: %s\n", file1);
 		else
 			printf("no such file or directory: %s\n", file1);
-		if (ft_strncmp(file2, "", 1) == 0)
-			return (printf("no such file or directory:\n"), -1);
-		if (access(file2, R_OK) == -1 || access(file2, W_OK) == -1)
+		if (access(file2, F_OK) == -1)
+			printf("no such file or directory: %s\n", file2);
+		else if (access(file2, R_OK) == -1 || access(file2, W_OK) == -1)
 			return (printf("permission denied: %s\n", file2), -1);
 		return (-1);
 	}
-	if (ft_strncmp(file2, "", 1) == 0)
-		return (printf("no such file or directory:\n"), -1);
+	if (access(file2, F_OK) == -1 || fd2 < 0)
+			printf("no such file or directory: %s\n", file2);
 	if (access(file2, R_OK) == -1 || access(file2, W_OK) == -1)
 		return (printf("permission denied: %s\n", file2), -1);
-	if (fd2 < 0)
-		return (printf("no such file or directory:\n"), -1);
 	return (0);
 }

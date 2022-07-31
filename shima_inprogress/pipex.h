@@ -46,16 +46,24 @@ int			sc_lstsize(t_struct *lst);
 
 char		**ft_free(char **dst, int i);
 
-void		pipex(t_struct **tab, char **parsed_path, char **envp);
+
+int			pipex(int ac, char **ag, char **envp);
+
+
+void		execute(t_struct **tab, char **parsed_path, char **envp);
 void		execute_function(t_struct *head, char **parsed_path, char **envp);
+
 char		**find_paths(char *find, char **str);
 int			access_check(char **cmd, char **parsed_path);
 int			all_access_check(t_struct **tab, char **parsed_path);
-void		initialize_lst(t_struct **tab, int fd1, int fd2, char **ag);
+int			file_access_check(char *file1, int fd1, char *file2, int fd2);
+
+void		initialize_lst(t_struct **tab, int fd1, int fd2, char ***cmds);
+
+
 char		**glob_free(char **dst);
 void		ft_free_lst(t_struct *lst);
 int			write_to_file(int fd1, char *stop, char	*file_name);
-int			file_access_check(char *file1, int fd1, char *file2, int fd2);
 int			set_files(int ac, char **ag, int *fds);
 
 #endif
