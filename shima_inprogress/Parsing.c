@@ -90,8 +90,6 @@ int	search_set(char **tab, int *i, int *j, int *k, char delim, char ***dest)
 		(*dest)[*k] = ft_strdup_range(tab[*i], start, *j);
 		(*k)++;
 	}
-	else
-		(*j)++;
 	return(0);
 }
 
@@ -101,25 +99,26 @@ int parse_string(char *str, char ***dest, char delim)
 	int j;
 	int k;
 	char **tab;
-	int tab_size;
+	int size;
 
 	k = 0;
 	i = 0;
 	j = 0;
 	tab = ft_split(str, ' ');
-	tab_size = count(str, delim);
-	if (tab_size == 0)
+	size = count(str, delim);
+	printf("tab size is %d\n", size);
+	if (size == 0)
 		return (0);
-	*dest = (char **)malloc(sizeof(char *) * tab_size + 1);
+	*dest = (char **)malloc(sizeof(char *) * (size + 2));
 	while(tab[i])
 	{
 		j = 0;
-		while(tab[i][j])
+		while(tab[i] && tab[i][j])
 			search_set(tab, &i, &j, &k, delim, dest);
 		i++;
 	}
-	// (*dest)[k] = '\0';
 	glob_free(tab);
+	(*dest)[k] = '\0';
 	return (0);
 }
 //between the first infile and the first cmd it could be nothing (whichever comes first)
@@ -130,12 +129,11 @@ int parsing_before_pipex(char **str, char ***infiles, char **outfile, char ***pi
 	int i;
 	int start;
 	int j;
+	char *sub_str;
 
 	i = 0;
 	start = 0;
 	j = 0;
-	parse_string(*str, infiles, '<');
-	// parse_string(*str, pipex_cmds, '|');
 	while((*str)[i])
 	{
 		if ((*str)[i] == '>')
@@ -147,13 +145,18 @@ int parsing_before_pipex(char **str, char ***infiles, char **outfile, char ***pi
 			j = i;
 			while((*str)[i] != ' ')
 				i++;
-			*outfile = malloc(sizeof(char) * (i - j + 1) + 1);
 			*outfile = ft_strdup_range(*str, j, i);
+			break ;
 		}
 		i++;
 	}
+	sub_str = ft_substr(*str, 0, i);
+	printf("the sub str is %s\n", sub_str);
+	parse_string(sub_str, infiles, '<');
+	parse_string(sub_str, pipex_cmds, '|');
 	// we need to change the str[start] from '>' to '<' for the next round
 	(*str)[start] = '<';
+	free(sub_str);
 	return (start);
 }
 
@@ -166,6 +169,7 @@ int main(int ac, char **av)
 	int  i;
 	int j;
 	int k;
+	char *str;
 
 	k = 0;
 	i = 0;
@@ -173,29 +177,33 @@ int main(int ac, char **av)
 	infiles = NULL;
 	outfile = NULL;
 	pipex_cmds = NULL;
-	// while(str[i])
-	// {
-	// 	i = i + parsing(&str[i], &infiles, &outfile, &pipex_cmds);
-	// 	while(infile[j])
-	// 	{
-	// 		exit_code = pipex(infile[j], &outfile, &pipex_cmds);
-	// 		j++;
-	// 	}
-	parsing_before_pipex(&av[1], &infiles, &outfile, &pipex_cmds);
-	// printf("-------the final list of inflies----------\n");
-	// while (infiles[k])
-	// {
-	// 	printf("%s\n", infiles[k]);
-	// 	(k)++;
-	// }
-	// printf("the outfile is %s\n", outfile);
-	// printf("-------the final list of CMDS----------\n");
-	// k = 0;
-	// while (pipex_cmds[k])
-	// {
-	// 	printf("%s\n", pipex_cmds[k]);
-	// 	(k)++;
-	// }
+	str = av[1];
+	while(str[i])
+	{
+		i = i + parsing_before_pipex(&str[i], &infiles, &outfile, &pipex_cmds);
+		printf("-------the list of inflies----------\n");
+		while (infiles[k])
+		{
+			printf("%s\n", infiles[k]);
+			(k)++;
+		}
+		printf("the outfile is: %s\n", outfile);
+		printf("-------the final list of CMDS----------\n");
+		k = 0;
+		while (pipex_cmds[k])
+		{
+			printf("%s\n", pipex_cmds[k]);
+			(k)++;
+		}
+		// printf("the string for next round is :%s\n", *str);
+		printf("-----------------------------------------\n");
+		// while(infile[j])
+		// {
+		// 	exit_code = pipex(infile[j], &outfile, &pipex_cmds);
+		// 	j++;
+		// }
+	}
+	// parsing_before_pipex(&av[1], &infiles, &outfile, &pipex_cmds);
 	glob_free(infiles);
 	free(outfile);
 	glob_free(pipex_cmds);

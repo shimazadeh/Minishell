@@ -20,7 +20,7 @@
 # include <sys/wait.h>
 # include <stddef.h>
 # include <stdlib.h>
-# include "get_next_line.h"
+// # include "get_next_line.h"
 # include "Libft/libft.h"
 
 typedef struct s_main{
