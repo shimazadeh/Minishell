@@ -48,10 +48,10 @@ void	initialize_lst(t_struct **tab, int fd1, int fd2, char **cmds)
 {
 	t_struct	*copy;
 	int			i;
-	int			j;
+	// int			j;
 
 	i = 0;
-	j = 0;
+	// j = 0;
 	while (cmds[i])
 	{
 		copy = (t_struct *) malloc(sizeof(t_struct));

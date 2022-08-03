@@ -20,7 +20,7 @@
 # include <sys/wait.h>
 # include <stddef.h>
 # include <stdlib.h>
-// # include "get_next_line.h"
+# include "get_next_line.h"
 # include "Libft/libft.h"
 
 typedef struct s_main{
@@ -47,7 +47,7 @@ int			sc_lstsize(t_struct *lst);
 char		**ft_free(char **dst, int i);
 
 
-int			pipex(int ac, char **ag, char **envp);
+int 		pipex(char *infile, char *outfile, char ***pipex_cmds, char **envp);
 
 
 void		execute(t_struct **tab, char **parsed_path, char **envp);
@@ -58,12 +58,12 @@ int			access_check(char **cmd, char **parsed_path);
 int			all_access_check(t_struct **tab, char **parsed_path);
 int			file_access_check(char *file1, int fd1, char *file2, int fd2);
 
-void		initialize_lst(t_struct **tab, int fd1, int fd2, char ***cmds);
+void	initialize_lst(t_struct **tab, int fd1, int fd2, char **cmds);
 
 
 char		**glob_free(char **dst);
 void		ft_free_lst(t_struct *lst);
 int			write_to_file(int fd1, char *stop, char	*file_name);
-int			set_files(int ac, char **ag, int *fds);
+int 		set_files(char *infile, char *outfile, int *fds);
 
 #endif

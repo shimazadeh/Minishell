@@ -29,7 +29,7 @@ int set_files(char *infile, char *outfile, int *fds)
 	return (0);
 }
 
-int pipex(char *infile, char **outfile, char ***pipex_cmds)
+int pipex(char *infile, char *outfile, char ***pipex_cmds, char **envp)
 {
 	int			fds[2];
 	char		**parsed_path;
@@ -37,14 +37,14 @@ int pipex(char *infile, char **outfile, char ***pipex_cmds)
 
 	elements = NULL;
 	if (set_files(infile, outfile, fds) == -1)
-		return (-1);
+		return (-1);//return value should match the exit code of shell in these scenario
 
 	if (file_access_check(infile, fds[0], outfile, fds[1]) == -1)
-		return (-1);
+		return (-1); //same as above
 
 	parsed_path = find_paths("PATH=", envp);
 
-	initialize_lst(&elements, fds[0], fds[1], *pipex_cmds);
+	initialize_lst(&elements, fds[0], fds[1], pipex_cmds);
 
 	if (all_access_check(&elements, parsed_path) == 1)
 	{
