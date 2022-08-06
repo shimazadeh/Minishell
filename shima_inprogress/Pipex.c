@@ -34,8 +34,11 @@ int pipex(char *infile, char *outfile, char ***pipex_cmds, char **envp)
 	int			fds[2];
 	char		**parsed_path;
 	t_struct	*elements;
+	int			exit_code;
 
 	elements = NULL;
+	if (outfile == NULL && *pipex_cmds == NULL)
+		return (0);
 	if (set_files(infile, outfile, fds) == -1)
 		return (-1);//return value should match the exit code of shell in these scenario
 
@@ -44,15 +47,16 @@ int pipex(char *infile, char *outfile, char ***pipex_cmds, char **envp)
 
 	parsed_path = find_paths("PATH=", envp);
 
-	initialize_lst(&elements, fds[0], fds[1], pipex_cmds);
+	initialize_lst(&elements, fds[0], fds[1], *pipex_cmds);
 
 	if (all_access_check(&elements, parsed_path) == 1)
 	{
 		return (ft_free_lst(elements), glob_free(parsed_path), -1);
 	}
-
 	execute(&elements, parsed_path, envp);
-	return (ft_free_lst(elements), glob_free(parsed_path), 0);
+	exit_code = sc_lstlast(elements)->wstatus;
+	printf("the exit code is %d\n", exit_code);
+	return (ft_free_lst(elements), glob_free(parsed_path), exit_code);
 }
 
 //parsing: < infile cmd1 | cmd2 | cmd3 >outfile

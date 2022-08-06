@@ -148,7 +148,7 @@ int parsing_before_pipex(char **str, int i, char ***infiles, char **outfile, cha
 				while((*str)[i] == ' ')
 					i++;
 				j = i;
-				while((*str)[i] != ' ')
+				while((*str)[i] != ' ' || (*str)[i] != '>' || (*str)[i] != '|' || (*str)[i] != '<')
 					i++;
 				*outfile = ft_strdup_range(*str, j, i);
 				break ;
@@ -177,24 +177,25 @@ int parsing_before_pipex(char **str, int i, char ***infiles, char **outfile, cha
 int main(int ac, char **av, char **envp)
 {
 	(void)ac;
+	(void)envp;
 	char **infiles;
 	char *outfile;
 	char **pipex_cmds;
 	int  i;
-	int j;
+	// int j;
 	int k;
 	char *str;
-	int exit_code;
+	// int exit_code;
 
-	k = 0;
 	i = 0;
-	j = 0;
 	str = av[1];
 	while(str[i])
 	{
 		infiles = NULL;
 		outfile = NULL;
 		pipex_cmds = NULL;
+		// j = 0;
+		k = 0;
 		i = parsing_before_pipex(&str, i, &infiles, &outfile, &pipex_cmds);
 		printf("-------the list of inflies----------\n");
 		while (infiles && infiles[k])
@@ -211,18 +212,19 @@ int main(int ac, char **av, char **envp)
 			(k)++;
 		}
 		printf("------------------------------------------------------------------------------------------\n");
-		k = 0;
-		while(infiles[j])
-		{
-			exit_code = pipex(infiles[j], outfile, &pipex_cmds, envp);
-			j++;
-		}
+		// while(infiles[j])
+		// {
+		// 	printf("execution for infile: %s\n", infiles[j]);
+		// 	exit_code = pipex(infiles[j], outfile, &pipex_cmds, envp);
+		// 	j++;
+		// }
 	}
 	// parsing_before_pipex(&av[1], &infiles, &outfile, &pipex_cmds);
 	glob_free(infiles);
 	free(outfile);
 	glob_free(pipex_cmds);
-	return (exit_code);
+	return (0);
+	// return (exit_code);
 }
 
 
