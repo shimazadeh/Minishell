@@ -22,7 +22,7 @@ int set_files(char *infile, char *outfile, int *fds)
 	// else if (!ft_strncmp(infile, "here_doc", 9) == 0)
 	// {
 		fds[0] = open(infile, O_RDONLY);
-		fds[1] = open(outfile, O_CREAT | O_RDWR | O_APPEND, 0644);
+		fds[1] = open(outfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
 	// }
 	// else
 	// 	return (-1);

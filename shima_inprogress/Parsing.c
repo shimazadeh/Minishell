@@ -15,22 +15,6 @@
 #include "stddef.h"
 #include "stdlib.h"
 
-// char	**glob_free(char **dst)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (dst && dst[i])
-// 		i++;
-// 	while (i > 0)
-// 	{
-// 		i--;
-// 		free((void *)dst[i]);
-// 	}
-// 	free (dst);
-// 	return (NULL);
-// }
-
 char *ft_strdup_range(char *str, int start, int end)
 {
 	char *dst;
@@ -93,7 +77,7 @@ int	search_set(char **tab, int *i, int *j, int *k, char delim, char ***dest)
 	return(0);
 }
 
-int parse_string(char *str, char ***dest, char delim)
+int parse_infiles(char *str, char ***dest, char delim)
 {
 	int i;
 	int j;
@@ -120,57 +104,120 @@ int parse_string(char *str, char ***dest, char delim)
 	(*dest)[k] = '\0';
 	return (1);
 }
+
+int check_for_first_cmd(char *str, char ***pipex_cmds, char *infiles, int *k)
+{
+	int i;
+	int j;
+	int start;
+
+	i = 0;
+	j = 0;
+	start = 0;
+	while(str[i])
+	{
+		if (str[i] == infiles[j])
+		{
+			while (str[i] == infiles[j])
+			{
+				i++;
+				j++;
+			}
+			if (!infiles[j]) //we found the first infile
+			{
+				while (str[i] == ' ')
+					i++;
+				if (str[i] == '<' || str[i] == '>' || str[i] == '|') //there is no need
+					return (0);
+				else //next word is the cmd
+				{
+					start = i;
+					i++;
+					while(str[i] != ' ' && str[i] != '<' && str[i] != '>')
+						i++;
+					(*pipex_cmds)[0] = ft_strdup_range(str, start, i);
+					(*k)++;
+				}
+			}
+			else
+				j = 0;
+		}
+		i++;
+	}
+	return (0);
+}
+
+int parse_cmds(char *str, char ***dest, char delim, char ***infiles)
+{
+	int i;
+	int j;
+	int k;
+	char **tab;
+	int size;
+
+	k = 0;
+	i = 0;
+	j = 0;
+	tab = ft_split(str, ' ');
+	size = count(str, delim);
+	if (size == 0)
+		return (0);
+	*dest = (char **)malloc(sizeof(char *) * (size + 2));
+	while(*infiles && (*infiles)[j])
+	{
+		check_for_first_cmd(str, dest, (*infiles)[j], &k);
+		j++;
+	}
+	j = 0;
+	while(tab[i])
+	{
+		j = 0;
+		while(tab[i] && tab[i][j])
+			search_set(tab, &i, &j, &k, delim, dest);
+		i++;
+	}
+	glob_free(tab);
+	(*dest)[k] = '\0';
+	return (1);
+}
 //between the first infile and the first cmd it could be nothing (whichever comes first)
 //the rest of the time cmds are bounds by |
 
 int parsing_before_pipex(char **str, int i, char ***infiles, char **outfile, char ***pipex_cmds)
 {
-	// int i;
-	int start;
 	int j;
 	int k;
 	char *sub_str;
 
-	// i = 0;
-	// start = 0;
 	k = i;
 	j = 0;
-	start = i;
-	// printf("the value of i to start with %d\n", i);
-	if (*(str)[i])
+	if ((*str)[i])
 	{
 		while((*str)[i])
 		{
 			if ((*str)[i] == '>')
 			{
-				start = i;
 				i++;
 				while((*str)[i] == ' ')
 					i++;
 				j = i;
-				while((*str)[i] != ' ' || (*str)[i] != '>' || (*str)[i] != '|' || (*str)[i] != '<')
+				while((*str)[i] != ' ' && (*str)[i] != '|' && (*str)[i] != '<' && (*str)[i] != '>')
 					i++;
 				*outfile = ft_strdup_range(*str, j, i);
 				break ;
 			}
 			i++;
 		}
-		// printf("k is %d , j is %d, i is %d, next start is %d\n", k, j, i, start);
 		sub_str = ft_substr(*str, k, i);
 		printf("the sub str is %s\n", sub_str);
-		// printf("next start is %d\n", start);
 		if (sub_str)
 		{
-			if (parse_string(sub_str, infiles, '<') == 0 || parse_string(sub_str, pipex_cmds, '|')== 0)
-				return (i);
-			else
-				(*str)[start] = '<';
+			parse_infiles(sub_str, infiles, '<');
+			parse_cmds(sub_str, pipex_cmds, '|', infiles);
 		}
-		// we need to change the str[start] from '>' to '<' for the next round
-		// printf("i is %d, str is %c\n", start, (*str)[start]);
 		free(sub_str);
 	}
-	return (start);
+	return (i);
 }
 
 
@@ -197,14 +244,14 @@ int main(int ac, char **av, char **envp)
 		// j = 0;
 		k = 0;
 		i = parsing_before_pipex(&str, i, &infiles, &outfile, &pipex_cmds);
-		printf("-------the list of inflies----------\n");
+		printf("the list of inflies----------\n");
 		while (infiles && infiles[k])
 		{
 			printf("%s\n", infiles[k]);
 			(k)++;
 		}
-		printf("-------the outfile is-----------\n %s\n", outfile);
-		printf("-------the final list of CMDS----------\n");
+		printf("the outfile is-----------\n %s\n", outfile);
+		printf("the final list of CMDS----------\n");
 		k = 0;
 		while (pipex_cmds && pipex_cmds[k])
 		{
