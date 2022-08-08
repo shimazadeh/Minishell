@@ -23,15 +23,12 @@
 # include "get_next_line.h"
 # include "Libft/libft.h"
 
-typedef struct s_main{
-	int					**infile_fds;
-	int					**outfile_fds;
-	struct s_struct		*head;
-}				t_main;
-
 typedef struct s_struct
 {
+	char				*str;
+	char				**infiles;
 	char				**cmd;
+	char				**outfiles;
 	int					fds[2];
 	int					wstatus;
 	pid_t				child;
@@ -47,23 +44,27 @@ int			sc_lstsize(t_struct *lst);
 char		**ft_free(char **dst, int i);
 
 
-int 		pipex(char *infile, char *outfile, char ***pipex_cmds, char **envp);
+void		initialize_lst(t_struct **tab, char *str);
+
+char 	*ft_strdup_range(char *str, int start, int end);
+int 	parse(char *str, char ***dest, char delim);
+int parse_cmds(char *str, char ***cmds, t_struct *head);
 
 
-void		execute(t_struct **tab, char **parsed_path, char **envp);
+void		execute(t_struct **elements, char **parsed_path, char **envp);
 void		execute_function(t_struct *head, char **parsed_path, char **envp);
+char		*file_access_check(char **files, int flag);
 
 char		**find_paths(char *find, char **str);
 int			access_check(char **cmd, char **parsed_path);
 int			all_access_check(t_struct **tab, char **parsed_path);
-int			file_access_check(char *file1, int fd1, char *file2, int fd2);
 
-void	initialize_lst(t_struct **tab, int fd1, int fd2, char **cmds);
+char	**parsing(char *find, char **str);
+
 
 
 char		**glob_free(char **dst);
 void		ft_free_lst(t_struct *lst);
 int			write_to_file(int fd1, char *stop, char	*file_name);
-int 		set_files(char *infile, char *outfile, int *fds);
 
 #endif

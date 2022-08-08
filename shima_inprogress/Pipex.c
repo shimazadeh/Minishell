@@ -12,49 +12,45 @@
 
 #include "pipex.h"
 
-int set_files(char *infile, char *outfile, int *fds)
+void	initialize_lst(t_struct **elements, char *str)
 {
-	// if (ft_strncmp(infile, "here_doc", 9) == 0)
-	// {
-	// 	fds[0] = write_to_file(0, ft_strjoin(ag[2], "\n"), ag[1]);
-	// 	fds[1] = open(ag[ac - 1], O_CREAT | O_RDWR | O_APPEND, 0644);
-	// }
-	// else if (!ft_strncmp(infile, "here_doc", 9) == 0)
-	// {
-		fds[0] = open(infile, O_RDONLY);
-		fds[1] = open(outfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
-	// }
-	// else
-	// 	return (-1);
-	return (0);
+	t_struct	*copy;
+	int			i;
+	char		**tab;
+
+	i = 0;
+	tab = ft_split(str, '|');
+	while (tab[i])
+	{
+		copy = malloc(sizeof(t_struct));
+		copy->str = ft_strdup(tab[i]);
+		copy->cmd = NULL;
+		copy->infiles = NULL;
+		copy->outfiles = NULL;
+		copy->next = NULL;
+		sc_lstadd_back(elements, copy);
+		i++;
+		copy = copy->next;
+	}
+	glob_free(tab);
+	return ;
 }
 
-int pipex(char *infile, char *outfile, char ***pipex_cmds, char **envp)
+int main(int ac, char **argv, char **envp)
 {
-	int			fds[2];
 	char		**parsed_path;
 	t_struct	*elements;
 	int			exit_code;
+	char		*str;
+	(void)ac;
+	(void)argv;
 
+	str = argv[1];//gets the entire string from Adri's algo
 	elements = NULL;
-	if (outfile == NULL && *pipex_cmds == NULL)
-		return (0);
-	if (set_files(infile, outfile, fds) == -1)
-		return (-1);//return value should match the exit code of shell in these scenario
-
-	if (file_access_check(infile, fds[0], outfile, fds[1]) == -1)
-		return (-1); //same as above
-
-	parsed_path = find_paths("PATH=", envp);
-
-	initialize_lst(&elements, fds[0], fds[1], *pipex_cmds);
-
-	if (all_access_check(&elements, parsed_path) == 1)
-	{
-		return (ft_free_lst(elements), glob_free(parsed_path), -1);
-	}
+	parsed_path = parsing("PATH=", envp);
+	initialize_lst(&elements, str);
 	execute(&elements, parsed_path, envp);
-	exit_code = sc_lstlast(elements)->wstatus;
+	exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
 	printf("the exit code is %d\n", exit_code);
 	return (ft_free_lst(elements), glob_free(parsed_path), exit_code);
 }

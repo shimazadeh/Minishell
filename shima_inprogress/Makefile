@@ -22,7 +22,7 @@ OBJS = $(SRCS:%.c=%.o)
 
 OBJS_BONUS = $(SRCS_BONUS:%.c=%.o)
 
-FLAGS = -Wall -Wextra -Werror -g3
+FLAGS = -g3
 
 all: $(NAME)
 

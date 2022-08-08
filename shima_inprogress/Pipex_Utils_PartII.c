@@ -37,6 +37,9 @@ void	ft_free_lst(t_struct *lst)
 	while (lst)
 	{
 		glob_free(lst->cmd);
+		glob_free(lst->infiles);
+		glob_free(lst->outfiles);
+		free(lst->str);
 		tmp = lst;
 		lst = lst->next;
 		free(tmp);
@@ -44,27 +47,6 @@ void	ft_free_lst(t_struct *lst)
 	return ;
 }
 
-void	initialize_lst(t_struct **tab, int fd1, int fd2, char **cmds)
-{
-	t_struct	*copy;
-	int			i;
-	// int			j;
-
-	i = 0;
-	// j = 0;
-	while (cmds[i])
-	{
-		copy = (t_struct *) malloc(sizeof(t_struct));
-		copy->cmd = ft_split((cmds[i]), ' ');
-		copy->next = NULL;
-		sc_lstadd_back(tab, copy);
-		i++;
-		copy = copy->next;
-	}
-	(*tab)->fds[0] = fd1;
-	sc_lstlast(*tab)->fds[1] = fd2;
-	return ;
-}
 
 int	write_to_file(int fd1, char *stop, char	*file_name)
 {

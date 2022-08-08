@@ -23,6 +23,7 @@ void	sc_lstadd_back(t_struct **lst, t_struct *new)
 		*lst = new;
 		return ;
 	}
+//	printf("the str is %s\n", (*lst)->str);
 	repl = sc_lstlast(*lst);
 	repl->next = new;
 }
