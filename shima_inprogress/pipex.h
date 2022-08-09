@@ -51,7 +51,7 @@ int 	parse(char *str, char ***dest, char delim);
 int parse_cmds(char *str, char ***cmds, t_struct *head);
 
 
-void		execute(t_struct **elements, char **parsed_path, char **envp);
+void	execute(t_struct **elements, char **parsed_path, char **envp, char *str);
 void		execute_function(t_struct *head, char **parsed_path, char **envp);
 char		*file_access_check(char **files, int flag);
 
@@ -61,10 +61,13 @@ int			all_access_check(t_struct **tab, char **parsed_path);
 
 char	**parsing(char *find, char **str);
 
+char **check_for_here_doc(char *str, int **loc);
+int number_of_here_doc(char *str);
+int	write_to_file(int fd1, char *stop, char	*file_name);
+
 
 
 char		**glob_free(char **dst);
 void		ft_free_lst(t_struct *lst);
-int			write_to_file(int fd1, char *stop, char	*file_name);
 
 #endif

@@ -12,20 +12,96 @@
 
 #include "pipex.h"
 
-void	execute(t_struct **elements, char **parsed_path, char **envp)
+// void	default_name_generator(int size, char ***file_names)
+// {
+// 	int	i;
+// 	char *str;
+// 	char *tmp1;
+// 	char *tmp2;
+
+// 	i = 0;
+// 	while (i < size)
+// 	{
+// 		tmp1 = ft_strjoin("here_doc_", itoa(i));
+// 		tmp2 = ft_strjoin(tmp1, " ");
+// 		free(str);
+// 		str = tmp2;
+// 		free(tmp1);
+// 		i++;
+// 	}
+// 	*file_name = ft_split(str, " ");
+// }
+
+void	fancy_name_generator(int size, char ***file_names)
+{
+	int	i;
+	int	fd;
+	char	*buf;
+
+	*file_names = malloc(sizeof(char *) * (size + 1));
+	fd = open("/dev/urandom", O_RDONLY);
+	i = 0;
+	while (i < size)
+	{
+		buf = get_next_line(fd);
+		*file_names[i] = ft_strjoin(".", ft_strdup_range(buf, 0,  8));
+		free(buf);
+		i++;
+	}
+}
+
+void	handle_here_doc(char *str, t_struct **elements)
+{
+	int i;
+	int j;
+	int *fds;
+	char **file_names;
+	int	 *loc;
+	char **stop;
+	int size;
+	t_struct *copy;
+
+	stop = check_for_here_doc(str, &loc);
+	size = number_of_here_doc(str);
+	fds = malloc(sizeof(int) * size);
+	fancy_name_generator(size, &file_names);
+	i = 0;
+	while(stop[i])
+	{
+		write_to_file(fds[i], stop[i], file_names[i]);
+		i++;
+	}
+	copy = *elements;
+	i = 0;
+	j = 0;
+	while(copy)
+	{
+		if (loc[j] = i)
+		{
+			while (loc[j + 1 ] == i)
+				j++;
+			copy->fds[0] = fds[j];
+		}
+		copy = copy->next;
+		i++;
+	}
+}
+
+void	execute(t_struct **elements, char **parsed_path, char **envp, char *str)
 {
 	int			pipefds[2];
 	t_struct	*copy;
 
+	handle_here_doc(str, elements);
 	copy = *elements;
-	//dprintf(2, "str is %s\n\n", (*elements)->next->str);
 	while (copy)
 	{
 		if (copy->next)
 		{
 			pipe(pipefds);
 			copy->fds[1] = pipefds[1];
-			copy->next->fds[0] = pipefds[0];
+			if (!copy->next->fds[0])
+				copy->next->fds[0] = pipefds[0];
 		}
 		copy->child = fork();
 		execute_function(copy, parsed_path, envp);
@@ -54,14 +130,14 @@ void	execute_function(t_struct *head, char **parsed_path, char **envp)
 
 	size = 0;
 	exit_code = 0;
-	// dprintf(2, "fd 0 is %d, fd 1 is %d\n", head->fds[0], head->fds[1]);
 	if (head->child < 0)
 		return (perror("Fork:"));
 	else if (!(head->child))
 	{
-		if (parse(head->str, &(head->infiles), '<') == 1)
+		if (parse(head->str, &(head->infiles), '<') == 1 && head->infiles[0][0])
 		{
 			last_infile = file_access_check(head->infiles, 0); //checks the access of all infiles, returns NULL on failure
+			printf("the infile is %s\n", last_infile);
 			if (!last_infile) // while on infile + perror if pb
 				exit_code = 1;
 			else
@@ -100,7 +176,6 @@ void	execute_function(t_struct *head, char **parsed_path, char **envp)
 			// 	blablabla
 			// else
 			// {
-				dprintf(2, "Im inside %s\n", parsed_path[0]);
 				while (*parsed_path && *(head->cmd))
 				{
 					size = ft_strlen(*parsed_path);
@@ -108,7 +183,6 @@ void	execute_function(t_struct *head, char **parsed_path, char **envp)
 						path_iteri = ft_strjoin(*parsed_path, *(head->cmd));
 					else
 						path_iteri = ft_strdup(*(head->cmd));
-					// dprintf(2, "path iteri is %s\n", path_iteri);
 					execve(path_iteri, head->cmd, envp);
 					free(path_iteri);
 					(parsed_path)++;
@@ -136,7 +210,6 @@ int parse_cmds(char *str, char ***cmds, t_struct *head)
 		flag = 1;
 		while(str[i])
 		{
-			//dprintf(2, "bonjour \n");
 			if (str[i] == '<')//the next word is infile
 				flag = 1;
 			else
@@ -157,12 +230,11 @@ int parse_cmds(char *str, char ***cmds, t_struct *head)
 			if (flag == 0 && str[i] != '<')//we found the cmd
 			{
 				j = i;
-				while(str[i])
+				while(str[i] && str[i] != '<' && str[i] != '>')
 					i++;
 				command = ft_strdup_range(str, j, i);
-				dprintf(2, "%s\n", command);
+				// dprintf(2, "%s\n", command);
 				*cmds = ft_split(command, ' ');
-				//dprintf(2, "cmd is %s\n", cmds[0]);
 				return (1);
 			}
 		}
@@ -174,9 +246,8 @@ int parse_cmds(char *str, char ***cmds, t_struct *head)
 		while (str[i] && str[i] != '<' && str[i] != '>') // LOGIC !!!!
 			i++;
 		command = ft_strdup_range(str, j, i);
-		dprintf(2, "%s\n", command);
+		// dprintf(2, "%s\n", command);
 		*cmds = ft_split(command, ' ');
-	//	dprintf(2, "LOL cmd is %s\n", cmds[0]);
 	}
 	return (1);
 }
@@ -264,6 +335,7 @@ char	*file_access_check(char **files, int flag) //0 for infiles, 1 for outfiles 
 	i = 0;
 	while(files[i])
 	{
+		printf("file is %s\n", files[i]);
 		if (flag == 0)
 			fd = open(files[i], O_RDONLY);
 		else if (flag == 1)

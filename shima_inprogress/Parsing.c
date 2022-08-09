@@ -64,7 +64,7 @@ int	search_set(char **tab, int *i, int *j, int *k, char delim, char ***dest)
 		(*dest)[*k] = ft_strdup_range(tab[*i], start, *j);
 		(*k)++;
 	}
-	if (tab[*i][*j] && tab[*i][*j] == delim  && !tab[*i][*j + 1])// next tab has the name of the file
+	if (tab[*i][*j] && tab[*i][*j] == delim && !tab[*i][*j + 1])// next tab has the name of the file
 	{
 		start = 0;
 		(*i)++;
