@@ -55,11 +55,11 @@ int	write_to_file(int fd1, char *stop, char	*file_name)
 	fd1 = open(file_name, O_CREAT | O_RDWR, 0777);
 	if (fd1 < 0)
 		return (printf("error with creating here_doc\n"), -1);
-	write(1, "pipe heredoc> ", 15);
+	write(1, "> ", 2);
 	gnl = get_next_line(0);
 	while (ft_strncmp(gnl, stop, ft_strlen(stop) + 1) != 0)
 	{
-		write(1, "pipe heredoc> ", 15);
+		write(1, "> ", 2);
 		if (write(fd1, gnl, ft_strlen(gnl)) < 0)
 		{
 			perror("write:");
@@ -71,7 +71,7 @@ int	write_to_file(int fd1, char *stop, char	*file_name)
 	free(gnl);
 	free(stop);
 	close(fd1);
-	fd1 = open(file_name, O_RDONLY, 0777);
+	// fd1 = open(file_name, O_RDONLY, 0777);
 	return (fd1);
 }
 
@@ -97,5 +97,8 @@ int	access_check(char **cmd, char **parsed_path)
 		}
 		i++;
 	}
+	write(2, "command not found ", 18); //replace these with Adrien's dprintf
+	write(2, cmd[0], ft_strlen(cmd[0]));
+	write(2, "\n", 1);
 	return (1);
 }

@@ -11,9 +11,6 @@
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include "stdio.h"
-#include "stddef.h"
-#include "stdlib.h"
 
 char *ft_strdup_range(char *str, int start, int end)
 {
@@ -34,78 +31,168 @@ char *ft_strdup_range(char *str, int start, int end)
 	return (dst);
 }
 
-int count(char *str, char c)
+int number_of_delim(char *str, char delim, int flag)//if flag == 1 it also counts >> as one
 {
 	int i;
+	int count;
 
+	count = 0;
 	i = 0;
-	while (*str)
+	while(str[i])
 	{
-		if (*str == c)
+		if (flag == 0 && str[i] == delim && str[i + 1] != delim)
+			count++;
+		else if (flag == 0 && str[i] == delim && str[i + 1] == delim)//skip cuz we aint care
 			i++;
-		str++;
+		else if (flag == 1 && str[i] == delim && str[i + 1] == delim)
+		{
+			count++;
+			i++;
+		}
+		else if (flag == 1 && str[i] == delim && str[i + 1] != delim)
+			count++;
+		i++;
+	}
+	return (count);
+}
+
+int save_the_next_word(char **str, int i, char **dest, int to_clean)
+{
+	int start;
+
+	while((*str)[i] && (*str)[i] == ' ')
+		i++;
+	start = i;
+	while((*str)[i] && (*str)[i] != ' ' && (*str)[i] != '<' && (*str)[i] != '>')
+		i++;
+	*dest = ft_strdup_range(*str, start, i);
+	start--;
+	while(to_clean < i)
+	{
+		(*str)[to_clean] = ' ';
+		to_clean++;
 	}
 	return (i);
 }
 
-int	search_set(char **tab, int *i, int *j, int *k, char delim, char ***dest)
+int parse(char *str, t_struct *node)
 {
-	int start;
+	t_struct	*copy;
+	int			infile_size;
+	int			outfile_size;
+	int			i;
+	int			k_i;
+	int			k_o;
 
-	start = 0;
-	while(tab[*i][*j] && tab[*i][*j] != delim)
-		(*j)++;
-	while (tab[*i][*j] && tab[*i][*j] == delim && tab[*i][*j + 1])//whatever comes after is an infile until the end of the word or whitespace or '<' or'>'
+	copy = node;
+	i = 0;
+	k_i = 0;
+	k_o = 0;
+	infile_size = number_of_delim(str, '<', 0);
+	outfile_size = number_of_delim(str, '>', 1);
+	if(infile_size)
+		copy->infiles = (char **) malloc(sizeof(char *) * (infile_size + 1));
+	if(outfile_size)
+		copy->outfiles = (char **) malloc(sizeof(char *) * (outfile_size + 1));
+	// printf("the str is %s\n", copy->str);
+	while(str[i])
 	{
-		(*j)++;
-		start = *j;
-		while(tab[*i][*j] && tab[*i][*j] != delim && tab[*i][*j] != '|' && tab[*i][*j] != '>')
-			(*j)++;
-		(*dest)[*k] = ft_strdup_range(tab[*i], start, *j);
-		(*k)++;
+		if (str[i] == '<' && str[i + 1] != '<')//we reached the infile
+		{
+			i = save_the_next_word(&str, i + 1, &copy->infiles[k_i], i);
+			k_i++;
+
+		}
+		else if (str[i] == '<' && str[i + 1] == '<')//we reached the heredoc replace by space and skip
+		{
+			str[i] = ' ';
+			str[i + 1] = ' ';
+			i = i + 2;
+			while(str[i] == ' ')
+				i++;
+			while(str[i] != ' ' && str[i] != '<' && str[i] != '>' && str[i] != '|')
+			{
+				str[i] = ' ';
+				i++;
+			}
+		}
+		else if (str[i] == '>' && str[i + 1] != '>')//we reached the >outfile
+		{
+			i = save_the_next_word(&str, i + 1, &copy->outfiles[k_o], i);
+			k_o++;
+		}
+		else if (str[i] == '>' && str[i + 1] == '>')//we reached the >>outfile
+		{
+			i = save_the_next_word(&str, i + 2, &copy->outfiles[k_o], i);
+			k_o++;
+		}
+		else
+			i++;
 	}
-	if (tab[*i][*j] && tab[*i][*j] == delim && !tab[*i][*j + 1])// next tab has the name of the file
-	{
-		start = 0;
-		(*i)++;
-		*j = 0;
-		while(tab[*i][*j] && tab[*i][*j] != delim && tab[*i][*j] != '|' && tab[*i][*j] != '>')
-			(*j)++;
-		(*dest)[*k] = ft_strdup_range(tab[*i], start, *j);
-		(*k)++;
-	}
-	return(0);
+	// copy->infiles[k_i] = "\0";
+	// copy->outfiles[k_o] = "\0";
+	copy->cmd = ft_split(str, ' ');//whatever is left in the string is cmd
+	// printf("the cmd is %s\n", copy->cmd[0]);
+	// printf("the str after is %s\n", str);
+	//expand on variables when you encounter $, maybe before spliting
+	return (0);
 }
 
-int parse(char *str, char ***dest, char delim)
+int set_infiles_outfiles_cmds(t_struct **elements)
 {
 	int i;
-	int j;
-	int k;
-	char **tab;
-	int size;
+	t_struct *copy;
 
-	k = 0;
 	i = 0;
-	j = 0;
-	tab = ft_split(str, ' ');
-	size = count(str, delim);
-	if (size == 0)
-		return (0);
-	*dest = (char **)malloc(sizeof(char *) * (size + 2));
-	while(tab[i])
+	copy = *elements;
+	while(copy)
 	{
-		j = 0;
-		while(tab[i] && tab[i][j])
-			search_set(tab, &i, &j, &k, delim, dest);
-		i++;
+		parse(copy->str, copy);
+		copy = copy->next;
 	}
-	glob_free(tab);
-	(*dest)[k] = '\0';
-	return (1);
+	return (0);
 }
 
 
+// int expand_variable(char *str)
+// {
+// 	int i;
+// 	int start;
+// 	char *variable;
+// 	char *replacement;
+
+// 	i = 0;
+// 	while(str[i])
+// 	{
+// 		if (str[i] == '$')//whatever comes after is a variable
+// 		{
+// 			i++;
+// 			start = i;
+// 			while(str[i] && str[i] != ' ')
+// 				i++;
+// 			variable = ft_strdup_range(str, start, i);
+// 			replacement = getenv(variable);
+// 			if (!replacement)//replace by space
+// 			{
+// 				while(start < i)
+// 				{
+// 					str[star] = ' ';
+// 					start++;
+// 				}
+// 			}
+// 			else //replace by the variable from start- 1  to i
+// 			{
+
+// 			}
+// 		}
+
+// 	}
+// }
+
+// int replace(char *str)
+// {
+
+// }
 	/*
 	a. if the first char is "<"
 		1. anything with < is an infile

@@ -30,6 +30,7 @@ typedef struct s_struct
 	char				**cmd;
 	char				**outfiles;
 	int					fds[2];
+	int					tag;//tells you if the last infile is here_doc (1) or actual file (0)
 	int					wstatus;
 	pid_t				child;
 	struct s_struct		*next;
@@ -46,24 +47,27 @@ char		**ft_free(char **dst, int i);
 
 void		initialize_lst(t_struct **tab, char *str);
 
-char 	*ft_strdup_range(char *str, int start, int end);
-int 	parse(char *str, char ***dest, char delim);
-int parse_cmds(char *str, char ***cmds, t_struct *head);
+char 		*ft_strdup_range(char *str, int start, int end);
+int 		parse(char *str, t_struct *node);
+int 		set_infiles_outfiles_cmds(t_struct **elements);
+int 		find_last_infile_type(char *str);
 
 
-void	execute(t_struct **elements, char **parsed_path, char **envp, char *str);
+
+void		execute(t_struct **elements, char **parsed_path, char **envp, char *str);
 void		execute_function(t_struct *head, char **parsed_path, char **envp);
 char		*file_access_check(char **files, int flag);
 
 char		**find_paths(char *find, char **str);
 int			access_check(char **cmd, char **parsed_path);
 int			all_access_check(t_struct **tab, char **parsed_path);
+char		**parsing(char *find, char **str);
 
-char	**parsing(char *find, char **str);
-
-char **check_for_here_doc(char *str, int **loc);
-int number_of_here_doc(char *str);
-int	write_to_file(int fd1, char *stop, char	*file_name);
+char 		**check_for_here_doc(char *str, int **loc);
+int 		number_of_here_doc(char *str);
+int			write_to_file(int fd1, char *stop, char	*file_name);
+void		handle_here_doc(char *str, t_struct **elements);
+void		fancy_name_generator(int size, char ***file_names);
 
 
 
