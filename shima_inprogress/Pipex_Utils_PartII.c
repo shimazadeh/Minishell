@@ -17,14 +17,17 @@ char	**glob_free(char **dst)
 	int	i;
 
 	i = 0;
+	if (!dst)
+		return (NULL);
 	while (dst && dst[i])
 		i++;
+	// dprintf(2, "the size is %d for %s\n", i, *dst);
 	while (i > 0)
 	{
 		i--;
-		free((void *)dst[i]);
+		free(dst[i]);
 	}
-	free (dst);
+	free(dst);
 	return (NULL);
 }
 
@@ -83,7 +86,8 @@ int	access_check(char **cmd, char **parsed_path)
 	i = 0;
 	while (parsed_path[i])
 	{
-		if (ft_strncmp(parsed_path[i], cmd[0], ft_strlen(parsed_path[i])) == 0)
+		// dprintf(2, "parsed path is %s, cmd is %s\n", parsed_path[i], cmd[0]);
+		if (cmd[0] && ft_strncmp(parsed_path[i], cmd[0], ft_strlen(parsed_path[i])) == 0)
 		{
 			if (access(cmd[0], F_OK) == 0 && access(cmd[0], X_OK) == 0)
 				return (0);

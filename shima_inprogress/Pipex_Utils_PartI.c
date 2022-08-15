@@ -22,6 +22,7 @@ void	execute(t_struct **elements, char **parsed_path, char **envp, char *str)
 	copy = *elements;
 	while (copy)
 	{
+		// printf("the str is %s\n", copy->str);
 		if (copy->next)
 		{
 			pipe(pipefds);
@@ -29,13 +30,10 @@ void	execute(t_struct **elements, char **parsed_path, char **envp, char *str)
 			if (!copy->next->fds[0])
 				copy->next->fds[0] = pipefds[0];
 		}
-		// dprintf(2, "the tag is %d\n", copy->tag);
 		copy->child = fork();
 		execute_function(copy, parsed_path, envp);
-		if (copy->next)
-			close(copy->fds[1]);
-		if (!(copy == *elements))
-			close(copy->fds[0]);
+		close(copy->fds[1]);
+		close(copy->fds[0]);
 		copy = copy->next;
 	}
 	copy = *elements;
@@ -61,11 +59,11 @@ void	execute_function(t_struct *head, char **parsed_path, char **envp)
 		return (perror("Fork:"));
 	else if (!(head->child))
 	{
-		dprintf(2, "the infile is %s\n", head->infiles[0]);
-		if (head->infiles[0] && head->tag == 0)
+		// dprintf(2, "the infile is %s\n", head->infiles[0]);
+		if (head->infiles && head->tag == 0)
 		{
 			last_infile = file_access_check(head->infiles, 0); //checks the access of all infiles, returns NULL on failure
-			dprintf(2, "the last infile is %s\n", last_infile);
+			// dprintf(2, "the last infile is %s\n", last_infile);
 			if (!last_infile) // while on infile + perror if pb
 				exit_code = 1;
 			else
@@ -77,14 +75,14 @@ void	execute_function(t_struct *head, char **parsed_path, char **envp)
 		}
 		else
 		{
-			dprintf(2, "inside the else if of infiles\n");
+			// dprintf(2, "inside the else if of infiles\n");
 			if (dup2(head->fds[0], STDIN_FILENO) < 0)
 				perror("dup2 stdin:");
 		}
-		if (exit_code != 1 && head->outfiles[0])
+		if (exit_code != 1 && head->outfiles)
 		{
 			last_outfile = file_access_check(head->outfiles, 1); //checks the access of all infiles, returns NULL on failure
-			dprintf(2, "the last outfile is %s\n", last_outfile);
+			// dprintf(2, "the last outfile is %s\n", last_outfile);
 			if (!last_outfile)
 				exit_code = 1;
 			else
@@ -96,12 +94,12 @@ void	execute_function(t_struct *head, char **parsed_path, char **envp)
 		}
 		else if (exit_code != 1)
 		{
-			dprintf(2, "Im inside the else if of outfile\n");
+			// dprintf(2, "Im inside the else if of outfile\n");
 			if (dup2(head->fds[1], STDOUT_FILENO) < 0)
 				perror("dup2 stdout:");
 		}
-		dprintf(2, "the cmd is %s\n", head->cmd[0]);
-		if (exit_code != 1 && head->cmd[0])
+		// dprintf(2, "the cmd is %s\n", head->cmd[0]);
+		if (exit_code != 1 && head->cmd)
 		{
 			// exit_code = buildin_dispatch(head->cmd, envp_head);
 			// if (exit_code == 127)
@@ -164,7 +162,7 @@ char	**parsing(char *find, char **str)
 			tab_temp = ft_split(temp, ':');
 			while (tab_temp && tab_temp[k])
 				paths[j++] = ft_strjoin(tab_temp[k++], "/");
-			ft_free(tab_temp, k);
+			glob_free(tab_temp);
 			free(temp);
 		}
 		str++;

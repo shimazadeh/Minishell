@@ -47,17 +47,23 @@ void	fancy_name_generator(int size, char ***file_names)
 	int	i;
 	int	fd;
 	char	*buf;
+	char	*tmp;
 
+	if (size == 0)
+		return ;
 	*file_names = malloc(sizeof(char *) * (size + 1));
 	fd = open("/dev/urandom", O_RDONLY);
 	i = 0;
 	while (i < size)
 	{
 		buf = get_next_line(fd);
-		*file_names[i] = ft_strjoin(".", ft_strdup_range(buf, 0,  8));
+		tmp = ft_strdup_range(buf, 0 , 8);
+		*file_names[i] = ft_strjoin(".", tmp);
+		free(tmp);
 		free(buf);
 		i++;
 	}
+	// close(fd);
 }
 
 int number_of_here_doc(char *str)
@@ -84,6 +90,7 @@ char **check_for_here_doc(char *str, int **loc)
 	char **stop;
 	int size;
 	int k;
+	char *tmp;
 
 	i = 0;
 	loc_pipe = 0;
@@ -92,7 +99,7 @@ char **check_for_here_doc(char *str, int **loc)
 	if (size == 0)
 		return (0);
 	stop = malloc(sizeof(char *) * (size + 1));
-	*loc = malloc(sizeof(int *) * size);
+	*loc = malloc(sizeof(int) * (size));
 	while(str[i])
 	{
 		if (str[i] == '<' && str[i + 1] == '<')
@@ -104,7 +111,9 @@ char **check_for_here_doc(char *str, int **loc)
 			i++;
 			while (str[i] && str[i] != ' ')
 				i++;
-			stop[k] = ft_strjoin(ft_strdup_range(str, start, i), "\n");
+			tmp = ft_strdup_range(str, start, i);
+			stop[k] = ft_strjoin(tmp, "\n");
+			free(tmp);
 			*loc[k] = loc_pipe;
 			k++;
 		}
@@ -112,6 +121,8 @@ char **check_for_here_doc(char *str, int **loc)
 			loc_pipe++;
 		i++;
 	}
+	stop[k] = "\0";
+	// *loc[k] = 0;
 	return (stop);
 }
 
@@ -135,6 +146,7 @@ void	handle_here_doc(char *str, t_struct **elements)
 	i = 0;
 	while(stop[i])
 	{
+		// dprintf(2, "stop[i] is %s\n", stop[i]);
 		write_to_file(fds[i], stop[i], file_names[i]);
 		i++;
 	}
@@ -145,8 +157,9 @@ void	handle_here_doc(char *str, t_struct **elements)
 	{
 		if (loc[j] == i && find_last_infile_type(copy->str) == 1)//if the last infile in the string is here_doc then set the fd
 		{
-			while (loc[j + 1] && loc[j + 1] == i)
+			while (j < size - 1)
 				j++;
+			dprintf(2, "j is %d\n", j);
 			copy->fds[0] = open(file_names[j], O_RDONLY, 0777);
 			// copy->fds[0] = fds[j];
 			copy->tag = 1;//indicates that the last infile is a heredoc type
@@ -154,4 +167,8 @@ void	handle_here_doc(char *str, t_struct **elements)
 		copy = copy->next;
 		i++;
 	}
+	glob_free(stop);
+	glob_free(file_names);
+	free(fds);
+	free(loc);
 }

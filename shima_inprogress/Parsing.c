@@ -97,7 +97,7 @@ int parse(char *str, t_struct *node)
 	// printf("the str is %s\n", copy->str);
 	while(str[i])
 	{
-		if (str[i] == '<' && str[i + 1] != '<')//we reached the infile
+		if (infile_size > 0 && str[i] == '<' && str[i + 1] != '<')//we reached the infile
 		{
 			i = save_the_next_word(&str, i + 1, &copy->infiles[k_i], i);
 			k_i++;
@@ -129,8 +129,10 @@ int parse(char *str, t_struct *node)
 		else
 			i++;
 	}
-	// copy->infiles[k_i] = "\0";
-	// copy->outfiles[k_o] = "\0";
+	if (infile_size)
+		copy->infiles[k_i] = '\0';
+	if (outfile_size)
+		copy->outfiles[k_o] = '\0';
 	copy->cmd = ft_split(str, ' ');//whatever is left in the string is cmd
 	// printf("the cmd is %s\n", copy->cmd[0]);
 	// printf("the str after is %s\n", str);

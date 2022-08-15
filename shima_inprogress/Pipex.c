@@ -28,6 +28,8 @@ void	initialize_lst(t_struct **elements, char *str)
 		copy->tag = 0;
 		copy->infiles = NULL;
 		copy->outfiles = NULL;
+		copy->fds[0] = 0;
+		copy->fds[1] = 0;
 		copy->next = NULL;
 		sc_lstadd_back(elements, copy);
 		i++;
@@ -56,7 +58,9 @@ int main(int ac, char **argv, char **envp)
 	execute(&elements, parsed_path, envp, str);
 	exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
 	// printf("the exit code is %d\n", exit_code);
-	return (ft_free_lst(elements), glob_free(parsed_path), exit_code);
+	ft_free_lst(elements);
+	glob_free(parsed_path);
+	return (exit_code);
 }
 /*
 1. here doc
