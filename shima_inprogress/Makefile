@@ -18,7 +18,7 @@ SRCS = pipex.h here_doc.c Parsing.c Pipex.c Pipex_Utils_PartI.c Pipex_Utils_Part
 
 OBJS = $(SRCS:%.c=%.o)
 
-FLAGS = -g3
+FLAGS = -Wall -Wextra -Wextra -g3
 
 all: $(NAME)
 

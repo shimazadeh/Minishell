@@ -26,6 +26,7 @@
 typedef struct s_struct
 {
 	char				*str;
+	char				*str_mask;
 	char				**infiles;
 	char				**cmd;
 	char				**outfiles;
@@ -66,8 +67,9 @@ char		**parsing(char *find, char **str);
 char 		**check_for_here_doc(char *str, int **loc);
 int 		number_of_here_doc(char *str);
 int			write_to_file(int fd1, char *stop, char	*file_name);
-void		handle_here_doc(char *str, t_struct **elements);
-void		fancy_name_generator(int size, char ***file_names);
+char		**handle_here_doc(char *str, t_struct **elements);
+char		**fancy_name_generator(int size);
+void		ft_unlink(char **file_names);
 
 
 

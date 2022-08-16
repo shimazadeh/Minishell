@@ -94,7 +94,6 @@ int parse(char *str, t_struct *node)
 		copy->infiles = (char **) malloc(sizeof(char *) * (infile_size + 1));
 	if(outfile_size)
 		copy->outfiles = (char **) malloc(sizeof(char *) * (outfile_size + 1));
-	// printf("the str is %s\n", copy->str);
 	while(str[i])
 	{
 		if (infile_size > 0 && str[i] == '<' && str[i + 1] != '<')//we reached the infile
@@ -134,18 +133,13 @@ int parse(char *str, t_struct *node)
 	if (outfile_size)
 		copy->outfiles[k_o] = '\0';
 	copy->cmd = ft_split(str, ' ');//whatever is left in the string is cmd
-	// printf("the cmd is %s\n", copy->cmd[0]);
-	// printf("the str after is %s\n", str);
-	//expand on variables when you encounter $, maybe before spliting
 	return (0);
 }
 
 int set_infiles_outfiles_cmds(t_struct **elements)
 {
-	int i;
 	t_struct *copy;
 
-	i = 0;
 	copy = *elements;
 	while(copy)
 	{
@@ -154,7 +148,6 @@ int set_infiles_outfiles_cmds(t_struct **elements)
 	}
 	return (0);
 }
-
 
 // int expand_variable(char *str)
 // {

@@ -55,11 +55,12 @@ int main(int ac, char **argv, char **envp)
 	elements = NULL;
 	parsed_path = parsing("PATH=", envp);
 	initialize_lst(&elements, str);
-	execute(&elements, parsed_path, envp, str);
-	exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
-	// printf("the exit code is %d\n", exit_code);
+	variable_expansion(&str, envp);
+	// execute(&elements, parsed_path, envp, str);
+	// exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
 	ft_free_lst(elements);
 	glob_free(parsed_path);
+	printf("the new str is %s\n", str);
 	return (exit_code);
 }
 /*

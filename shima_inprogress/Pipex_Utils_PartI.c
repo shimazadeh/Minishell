@@ -16,8 +16,9 @@ void	execute(t_struct **elements, char **parsed_path, char **envp, char *str)
 {
 	int			pipefds[2];
 	t_struct	*copy;
+	char		**file_names;
 
-	handle_here_doc(str, elements);
+	file_names = handle_here_doc(str, elements);
 	set_infiles_outfiles_cmds(elements);
 	copy = *elements;
 	while (copy)
@@ -42,6 +43,7 @@ void	execute(t_struct **elements, char **parsed_path, char **envp, char *str)
 		waitpid(copy->child, &(copy->wstatus), 0);
 		copy = copy->next;
 	}
+	ft_unlink(file_names);
 	return ;
 }
 

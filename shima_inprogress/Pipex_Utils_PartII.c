@@ -72,7 +72,7 @@ int	write_to_file(int fd1, char *stop, char	*file_name)
 		gnl = get_next_line(0);
 	}
 	free(gnl);
-	free(stop);
+	// free(stop);
 	close(fd1);
 	// fd1 = open(file_name, O_RDONLY, 0777);
 	return (fd1);
