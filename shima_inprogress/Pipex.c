@@ -19,7 +19,7 @@ void	initialize_lst(t_struct **elements, char *str)
 	char		**tab;
 
 	i = 0;
-	tab = ft_split(str, '|');
+	tab = ft_split_custom(str, '|');
 	while (tab[i])
 	{
 		copy = malloc(sizeof(t_struct));
@@ -38,10 +38,7 @@ void	initialize_lst(t_struct **elements, char *str)
 	glob_free(tab);
 	return ;
 }
-
-
 // int	shimalgo(char *str, t_list **envp_head, int	last_exit_code);
-
 int main(int ac, char **argv, char **envp)
 {
 	char		**parsed_path;
@@ -55,17 +52,16 @@ int main(int ac, char **argv, char **envp)
 	elements = NULL;
 	parsed_path = parsing("PATH=", envp);
 	initialize_lst(&elements, str);
-	variable_expansion(&str, envp);
-	// execute(&elements, parsed_path, envp, str);
-	// exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
+	// variable_expansion(&str, envp);
+	execute(&elements, parsed_path, envp, str);
+	exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
 	ft_free_lst(elements);
 	glob_free(parsed_path);
-	printf("the new str is %s\n", str);
 	return (exit_code);
 }
 /*
 1. here doc
 2. variable expansion
 3. look for build in functions
-4.
+4. double quotes
 */

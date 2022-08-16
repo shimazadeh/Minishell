@@ -26,7 +26,6 @@
 typedef struct s_struct
 {
 	char				*str;
-	char				*str_mask;
 	char				**infiles;
 	char				**cmd;
 	char				**outfiles;
@@ -52,7 +51,9 @@ char 		*ft_strdup_range(char *str, int start, int end);
 int 		parse(char *str, t_struct *node);
 int 		set_infiles_outfiles_cmds(t_struct **elements);
 int 		find_last_infile_type(char *str);
+int			remove_double_quotes(char **str);
 
+char		**ft_split_custom(const char *str, char c);
 
 
 void		execute(t_struct **elements, char **parsed_path, char **envp, char *str);
