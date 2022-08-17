@@ -72,7 +72,6 @@ t_list **sep_head)
 	char	*submod;
 	char	*sep;
 	char	*str;
-	char	*tmp_str;
 	t_list	*tmp_node;
 
 	i = 0;
@@ -130,6 +129,8 @@ t_list **sep_head)
 	}
 }
 
+t_list	*alloc_lst = NULL;
+
 int main(int ac, char **av, char **envp)
 {
 	(void)av;
@@ -138,7 +139,6 @@ int main(int ac, char **av, char **envp)
 	char	*input;
 	int		last_exit_code;
 
-	alloc_lst = NULL;
 	if (ac != 1)
 	{
 		ft_dprintf(2, "Error\nInvalid number of argument!\n");
@@ -147,17 +147,18 @@ int main(int ac, char **av, char **envp)
 	envp_head = NULL;
 	tab_to_list(envp, &envp_head);
 	prompt = NULL;
-	get_prompt(&prompt, &envp_head);
-	input = readline(prompt);
+	input = NULL;
 	last_exit_code = 0;
-	last_exit_code = algorithm(ft_strndup(input, ft_strlen(input)), &envp_head, last_exit_code);
-	add_history(input);
-	while (input)
+	while (1)
 	{
 		get_prompt(&prompt, &envp_head);
 		input = readline(prompt);
-		add_history(input);
-		last_exit_code = algorithm(ft_strndup(input, ft_strlen(input)), &envp_head, last_exit_code);
+		if (input)
+		{
+			add_history(input);
+			last_exit_code = algorithm(ft_strndup(input, ft_strlen(input)), &envp_head, last_exit_code);
+		}
+		free(input);
 	}
 	rl_clear_history();
 	ft_free(prompt);

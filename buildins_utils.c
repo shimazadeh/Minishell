@@ -15,7 +15,6 @@
 t_list	*old_var(char *var, t_list **envp_head)
 {
 	t_list	*old;
-	char	*var_name;
 	int		i;
 
 	if (!var || !envp_head)
@@ -93,7 +92,7 @@ int	ft_list_remove_node(t_list **lst_head, t_list *node)
 	{
 		if (current == node)
 		{
-			if (current = *lst_head)
+			if (current == *lst_head)
 				*lst_head = current;
 			prev->next = current->next;
 			ft_free(current->content);
@@ -156,9 +155,10 @@ void	find_env_var(char *var_name, t_list **envp_head, char **var_exp)
 		if (!ft_strncmp(var_name, (char *)node->content, ft_strlen(var_name)))
 		{
 			*var_exp = ft_strchr(node->content, '=');
-			*var_exp++;
+			*var_exp = *var_exp + 1;
 				return ;
 		}
+		node = node->next;
 	}
 	*var_exp = NULL;
 }

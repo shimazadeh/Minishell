@@ -10,27 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "minishell.h"
 
-char	**glob_free(char **dst)
-{
-	int	i;
-
-	i = 0;
-	if (!dst)
-		return (NULL);
-	while (dst && dst[i])
-		i++;
-	while (i > 0)
-	{
-		i--;
-		free(dst[i]);
-	}
-	free(dst);
-	return (NULL);
-}
-
-void	ft_free_lst(t_struct *lst)
+void	ft_free_sc(t_struct *lst)
 {
 	t_struct	*tmp;
 
@@ -38,13 +20,13 @@ void	ft_free_lst(t_struct *lst)
 		return ;
 	while (lst)
 	{
-		glob_free(lst->cmd);
-		glob_free(lst->infiles);
-		glob_free(lst->outfiles);
-		free(lst->str);
+		ft_free_tab(lst->cmd);
+		ft_free_tab(lst->infiles);
+		ft_free_tab(lst->outfiles);
+		ft_free(lst->str);
 		tmp = lst;
 		lst = lst->next;
-		free(tmp);
+		ft_free(tmp);
 	}
 	return ;
 }
@@ -67,10 +49,10 @@ int	write_to_file(int fd1, char *stop, char	*file_name)
 			perror("write:");
 			return (-1);
 		}
-		free(gnl);
+		ft_free(gnl);
 		gnl = get_next_line(0);
 	}
-	free(gnl);
+	ft_free(gnl);
 	close(fd1);
 	return (fd1);
 }
@@ -92,8 +74,8 @@ int	access_check(char **cmd, char **parsed_path)
 		{
 			path_iteri = ft_strjoin(parsed_path[i], cmd[0]);
 			if (access(path_iteri, F_OK) == 0 && access(path_iteri, X_OK) == 0)
-				return (free(path_iteri), 0);
-			free(path_iteri);
+				return (ft_free(path_iteri), 0);
+			ft_free(path_iteri);
 		}
 		i++;
 	}

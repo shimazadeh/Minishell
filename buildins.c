@@ -20,7 +20,7 @@ int	pwd(void)
 	if (pwd)
 	{
 		ft_dprintf(1, "%s", pwd);
-		free(pwd);
+		ft_free(pwd);
 		return (EXIT_SUCCESS);
 	}
 	return (EXIT_FAILURE);
@@ -46,7 +46,6 @@ int	export(char **vars, t_list **envp_head)
 	t_list	*new;
 	t_list	*old;
 	int		i;
-	char	*eq_char_add;
 	int		ret;
 
 	if (!envp_head || !vars)
@@ -125,8 +124,6 @@ int	unset(char **vars, t_list **envp_head)
 
 int	echo(char **av)
 {
-	int	i;
-
 	if (!av)
 		ft_exit(EXIT_FAILURE, NULL);
 	if (ft_strncmp(av[0], "-n", 3))
@@ -241,7 +238,7 @@ int	cd(char *dir, t_list **envp_head)
 		}
 		else if (i != 0 && !ft_strncmp(&curpath[i], "//", 2))
 		{
-			mask[i] == 1;
+			mask[i] = 1;
 			while (curpath[i] == '/')
 				i++;
 		}
@@ -283,24 +280,22 @@ int	cd(char *dir, t_list **envp_head)
 
 int	buildins_dispatch(char **av, t_list **envp_head)
 {
-	int	i;
-
+	// dprintf(2, "av[0] = '%s'\n", av[0]);
 	if (!av || !av[0])
 		ft_exit(EXIT_FAILURE, NULL);
-	i = 0;
-	if (ft_strncmp(av[0], "echo", 5))
+	if (!ft_strncmp(av[0], "echo", 5))
 		return (echo(&av[1]));
-	if (ft_strncmp(av[0], "cd", 3) && av[1] && !av[2])
+	if (!ft_strncmp(av[0], "cd", 3) && av[1] && !av[2])
 		return (cd(av[0], envp_head));
-	if (ft_strncmp(av[0], "pwd", 4))
+	if (!ft_strncmp(av[0], "pwd", 4))
 		return (pwd());
-	if (ft_strncmp(av[0], "export", 7))
+	if (!ft_strncmp(av[0], "export", 7))
 		return (export(&av[1], envp_head));
-	if (ft_strncmp(av[0], "unset", 6))
+	if (!ft_strncmp(av[0], "unset", 6))
 		return (unset(&av[1], envp_head));
-	if (ft_strncmp(av[0], "env", 4) && !av[1])
+	if (!ft_strncmp(av[0], "env", 4) && !av[1])
 		return (env(envp_head));
-	if (ft_strncmp(av[0], "exit", 5))
+	if (!ft_strncmp(av[0], "exit", 5))
 		ft_exit(EXIT_SUCCESS, NULL);
 	return (127);
 }

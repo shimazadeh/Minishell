@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "minishell.h"
 
 char	*look_up(char *to_find, t_list **envp)
 {
@@ -32,7 +32,7 @@ char	*look_up(char *to_find, t_list **envp)
 	return (NULL);
 }
 
-int	variable_expansion(char **str, t_list **envp_head)
+int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 {
 	int i;
 	int j;
@@ -40,10 +40,12 @@ int	variable_expansion(char **str, t_list **envp_head)
 	char *tmp;
 	char *tmp2;
 	char *find;
+	char *str;
 
 	i = 0;
 	j = 0;
 	k = 0;
+	str = *str_add;
 	while(str[i])
 	{
 		if (str[i] && str[i] == '\"')
@@ -70,23 +72,29 @@ int	variable_expansion(char **str, t_list **envp_head)
 		{
 			i++;
 			j = i;
-			while(str[i] != ' ')
-				i++;
-			tmp = ft_strdup_range(str, j, i);
-			tmp2 = ft_strjoin(tmp, "=");
-			find = look_up(tmp2, envp_head)
-			free(tmp);
-			free(tmp2);
-
+			if (str[i] && str[i] == '?')
+				find = ft_itoa(last_exit_code);
+			else if (str[i])
+			{
+				while(str[i] != ' ')
+					i++;
+				tmp = ft_strdup_range(str, j, i);
+				tmp2 = ft_strjoin(tmp, "=");
+				find = look_up(tmp2, envp_head);
+				ft_free(tmp);
+				ft_free(tmp2);
+			}
 			tmp = ft_strdup_range(str, 0, j);
 			tmp2 = ft_strjoin(tmp, find);
-			free(tmp);
+			ft_free(tmp);
 			tmp = ft_strdup_range(str, i, ft_strlen(str));
-			new_str2 = ft_strjoin(tmp, tmp2);
-			*str = new_str2;
-				//need to replace the str
+			ft_free(str);
+			str = ft_strjoin(tmp, tmp2);
 			i = 0;
 		}
-		i++;
+		else
+			i++;
 	}
+	*str_add = str;
+	return (0);
 }

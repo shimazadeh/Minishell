@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "minishell.h"
 
 char *ft_strdup_range(char *str, int start, int end)
 {
@@ -20,7 +20,7 @@ char *ft_strdup_range(char *str, int start, int end)
 
 	k = 0;
 	i = start;
-	dst = malloc(sizeof(char) *ft_strlen(str) + 1);
+	dst = ft_alloc(sizeof(char) *ft_strlen(str) + 1);
 	while (str[i] && i < end)
 	{
 		dst[k] = str[i];
@@ -91,9 +91,9 @@ int parse(char *str, t_struct *node)
 	infile_size = number_of_delim(str, '<', 0);
 	outfile_size = number_of_delim(str, '>', 1);
 	if(infile_size)
-		copy->infiles = (char **) malloc(sizeof(char *) * (infile_size + 1));
+		copy->infiles = (char **) ft_alloc(sizeof(char *) * (infile_size + 1));
 	if(outfile_size)
-		copy->outfiles = (char **) malloc(sizeof(char *) * (outfile_size + 1));
+		copy->outfiles = (char **) ft_alloc(sizeof(char *) * (outfile_size + 1));
 	while(str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')

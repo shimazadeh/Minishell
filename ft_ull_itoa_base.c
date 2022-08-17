@@ -27,10 +27,9 @@ int	ft_ull_nb_len(unsigned long long int nb, int base_len)
 	return (i);
 }
 
-char	*ft_ull_nbr_to_string(int nb, char *str, int nb_len, char *base)
+char	*ft_ull_nbr_to_string(unsigned long long int nb, char *str, int nb_len, char *base)
 {
 	int						base_len;
-	unsigned long long int	nb1;
 
 	base_len = ft_strlen(base);
 	while (nb_len > 0)
@@ -50,7 +49,7 @@ char	*ft_ull_itoa_base(unsigned long long nb, char *base)
 
 	base_len = ft_strlen(base);
 	nb_len = ft_ull_nb_len(nb, base_len);
-	str = (char *)malloc(sizeof(char) * (nb_len + 1));
+	str = (char *)ft_alloc(sizeof(char) * (nb_len + 1));
 	if (!str)
 		return (NULL);
 	if (nb == 0)

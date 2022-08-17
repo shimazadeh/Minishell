@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	ft_dprint(va_list arg, char c, char **to_print_add)
+void	ft_dprint(va_list arg, char c, char **to_print_add)
 {
 	char					char_var[1];
 	char					*str_var;
@@ -34,7 +34,7 @@ int	ft_dprint(va_list arg, char c, char **to_print_add)
 		char_tmp = to_print;
 		char_var[0] = (char)va_arg(arg, int);
 		to_print = ft_strjoin(char_tmp, char_var);
-		free(char_tmp);
+		ft_free(char_tmp);
 	}
 	else if (c == 's')
 	{
@@ -49,12 +49,12 @@ int	ft_dprint(va_list arg, char c, char **to_print_add)
 	{
 		char_tmp = to_print;
 		to_print = ft_strjoin(char_tmp, "0x");
-		free(char_tmp);
+		ft_free(char_tmp);
 		ulli_var = (unsigned long long int)va_arg(arg, void *);
 		str_var = ft_ull_itoa_base(ulli_var, "0123456789abcdef");
 		char_tmp = to_print;
 		to_print = ft_strjoin(char_tmp, str_var);
-		free(char_tmp);
+		ft_free(char_tmp);
 	}
 	else if (c == 'd' || c == 'i')
 	{
@@ -64,7 +64,7 @@ int	ft_dprint(va_list arg, char c, char **to_print_add)
 	//	printf("------------------>>>>>>>>> %s\n", str_var);
 		char_tmp = to_print;
 		to_print = ft_strjoin(char_tmp, str_var);
-		free(char_tmp);
+		ft_free(char_tmp);
 	}
 	else if (c == 'u')
 	{
@@ -72,7 +72,7 @@ int	ft_dprint(va_list arg, char c, char **to_print_add)
 		str_var = ft_ll_itoa_base(ulli_var, "0123456789");
 		char_tmp = to_print;
 		to_print = ft_strjoin(char_tmp, str_var);
-		free(char_tmp);
+		ft_free(char_tmp);
 	}
 	else if (c == 'x')
 	{
@@ -80,7 +80,7 @@ int	ft_dprint(va_list arg, char c, char **to_print_add)
 		str_var = ft_ll_itoa_base(ulli_var, "0123456789abcdef");
 		char_tmp = to_print;
 		to_print = ft_strjoin(char_tmp, str_var);
-		free(char_tmp);
+		ft_free(char_tmp);
 	}
 	else if (c == 'X')
 	{
@@ -88,13 +88,13 @@ int	ft_dprint(va_list arg, char c, char **to_print_add)
 		str_var = ft_ll_itoa_base(ulli_var, "0123456789ABCDEF");
 		char_tmp = to_print;
 		to_print = ft_strjoin(char_tmp, str_var);
-		free(char_tmp);
+		ft_free(char_tmp);
 	}
 	else
 	{
 		char_tmp = to_print;
 		to_print = ft_strjoin(char_tmp, "%");
-		free(char_tmp);
+		ft_free(char_tmp);
 	}
 	*to_print_add = to_print;
 }
@@ -127,7 +127,7 @@ int	ft_dprintf(int fd, const char *str, ...)
 		//		printf("TMP = '%s' ", tmp);
 		//	printf("C_ADD '%s'\n",char_add);
 			to_print = ft_strjoin(tmp, char_add);
-			free(tmp);
+			ft_free(tmp);
 			i++;
 		}
 	}

@@ -1,28 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strncmp.c                                       :+:      :+:    :+:   */
+/*   ft_strdup.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
+/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/24 12:12:12 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/11 18:29:51 by aguillar         ###   ########.fr       */
+/*   Created: 2022/02/28 04:26:14 by shabibol          #+#    #+#             */
+/*   Updated: 2022/03/04 21:27:29 by shabibol         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	ft_strncmp(const char *s1, const char *s2, int n)
+char	*ft_strdup(const char	*src)
 {
-	int	i;
+	int		size;
+	char	*s2;
+	int		i;
 
 	i = 0;
-	if (!s1)
-		return (0);
-	if (n == 0)
-		return (0);
-	while ((unsigned char)s1[i] == (unsigned char)s2[i] && (unsigned char)s1[i]
-		&& (i < n - 1 || n == -1))
+	size = 0;
+	while (src[size] != '\0')
+		size++;
+	s2 = malloc(sizeof(char) * (size + 1));
+	if (s2 == NULL)
+		return (NULL);
+	while (src[i] != '\0')
+	{
+		s2[i] = src[i];
 		i++;
-	return ((unsigned char)s1[i] - (unsigned char)s2[i]);
+	}
+	s2[i] = '\0';
+	return (s2);
 }

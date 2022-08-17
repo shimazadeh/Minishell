@@ -61,7 +61,7 @@ char	*ft_ll_itoa_base(long long int nb, char *base)
 
 	base_len = ft_strlen(base);
 	nb_len = ft_ll_nb_len(nb, base_len);
-	str = malloc(sizeof(char) * (nb_len + 1));
+	str = ft_alloc(sizeof(char) * (nb_len + 1));
 	if (!str)
 		return (NULL);
 	if (nb == 0)

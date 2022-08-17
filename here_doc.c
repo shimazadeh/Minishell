@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "minishell.h"
 
 int find_last_infile_type(char *str)//returns 0 if the last infile is an actual file, 1 if here_doc
 {
@@ -44,9 +44,9 @@ int find_last_infile_type(char *str)//returns 0 if the last infile is an actual 
 // 	{
 // 		tmp1 = ft_strjoin("here_doc_", itoa(i));
 // 		tmp2 = ft_strjoin(tmp1, " ");
-// 		free(str);
+// 		ft_free(str);
 // 		str = tmp2;
-// 		free(tmp1);
+// 		ft_free(tmp1);
 // 		i++;
 // 	}
 // 	*file_name = ft_split(str, " ");
@@ -62,7 +62,7 @@ char	**fancy_name_generator(int size)
 
 	if (size == 0)
 		return (NULL);
-	file_names = malloc(sizeof(char *) * (size + 1));
+	file_names = ft_alloc(sizeof(char *) * (size + 1));
 	fd = open("/dev/urandom", O_RDONLY);
 	i = 0;
 	// dprintf(2, "size is %d\n", size);
@@ -71,8 +71,8 @@ char	**fancy_name_generator(int size)
 		buf = get_next_line(fd);
 		tmp = ft_strdup_range(buf, 0 , 8);
 		file_names[i] = ft_strjoin(".", tmp);
-		free(tmp);
-		free(buf);
+		ft_free(tmp);
+		ft_free(buf);
 		i++;
 	}
 	file_names[size] = NULL;
@@ -113,8 +113,8 @@ char **check_for_here_doc(char *str, int **loc_add)
 	size = number_of_here_doc(str);
 	if (size == 0)
 		return (0);
-	stop = malloc(sizeof(char *) * (size + 1));
-	loc = malloc(sizeof(int) * (size));
+	stop = ft_alloc(sizeof(char *) * (size + 1));
+	loc = ft_alloc(sizeof(int) * (size));
 	while(str[i])
 	{
 		if (k < size && str[i] == '<' && str[i + 1] == '<')
@@ -128,7 +128,7 @@ char **check_for_here_doc(char *str, int **loc_add)
 				i++;
 			tmp = ft_strdup_range(str, start, i);
 			stop[k] = ft_strjoin(tmp, "\n");
-			free(tmp);
+			ft_free(tmp);
 			loc[k] = loc_pipe;
 			k++;
 		}
@@ -157,7 +157,7 @@ char	**handle_here_doc(char *str, t_struct **elements)
 	stop = check_for_here_doc(str, &loc);
 	if (size == 0)
 		return (NULL);
-	fds = malloc(sizeof(int) * size);
+	fds = ft_alloc(sizeof(int) * size);
 	file_names = fancy_name_generator(size);
 	i = 0;
 	while(stop[i])
@@ -166,7 +166,7 @@ char	**handle_here_doc(char *str, t_struct **elements)
 		write_to_file(fds[i], stop[i], file_names[i]);
 		i++;
 	}
-	free(stop[i]);
+	ft_free(stop[i]);
 	copy = *elements;
 	i = 0;
 	j = 0;
@@ -184,10 +184,10 @@ char	**handle_here_doc(char *str, t_struct **elements)
 		copy = copy->next;
 		i++;
 	}
-	glob_free(stop);
-	// glob_free(file_names);
-	free(fds);
-	free(loc);
+	ft_free_tab(stop);
+	// ft_free_tab(file_names);
+	ft_free(fds);
+	ft_free(loc);
 	return(file_names);
 }
 
@@ -196,11 +196,13 @@ void	ft_unlink(char **file_names)
 	int i;
 
 	i = 0;
+	if (!file_names || !*file_names)
+		return ;
 	while(file_names && file_names[i])
 	{
 		unlink(file_names[i]);
 		i++;
 	}
-	glob_free(file_names);
+	ft_free_tab(file_names);
 	return ;
 }

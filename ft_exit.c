@@ -17,6 +17,6 @@ void	ft_exit(int exit_code, char *error_msg)
 	if (error_msg)
 		ft_dprintf(2, "%s", error_msg);
 	if (alloc_lst)
-		ft_free_list_regular(*alloc_lst);
+		ft_free_list_regular(alloc_lst);
 	exit(exit_code);
 }

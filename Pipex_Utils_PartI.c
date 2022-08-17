@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "minishell.h"
 
-void	execute(t_struct **elements, char **parsed_path, char **envp, char *str)
+void	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str)
 {
 	int			pipefds[2];
 	t_struct	*copy;
@@ -46,16 +46,50 @@ void	execute(t_struct **elements, char **parsed_path, char **envp, char *str)
 	return ;
 }
 
-void	execute_function(t_struct *head, char **parsed_path, char **envp)
+void	envp_lst_to_tab(char ***envp_add, t_list **envp_head)
+{
+	char	**envp;
+	int		size;
+	int		i;
+	t_list	*node;
+
+	if (!envp_head || !envp_add)
+		ft_exit(EXIT_FAILURE, NULL);
+	node = *envp_head;
+	size = ft_lstsize(node);
+	envp = ft_alloc(sizeof(char *) * (size + 1));
+	i = 0;
+	while (i < size)
+	{
+		envp[i] = ft_strdup((char *)node->content);
+		if (!envp[i])
+			ft_exit(errno, NULL);
+		node = node->next;
+		i++;
+	}
+	envp[i] = NULL;
+	*envp_add = envp;
+}
+
+void	execute_function(t_struct *head, char **parsed_path, t_list **envp_head)
 {
 	char	*path_iteri;
 	int		size;
 	char	*last_infile;
 	char	*last_outfile;
 	int		exit_code;
+	char	**envp;
+	// int		i = 0;
 
 	size = 0;
 	exit_code = 0;
+	envp = NULL;
+	envp_lst_to_tab(&envp, envp_head);
+	// while(envp[i])
+	// {
+	// 	dprintf(2, "%s\n", envp[i]);
+	// 	i++;
+	// }
 	if (head->child < 0)
 		return (perror("Fork:"));
 	else if (!(head->child))
@@ -96,9 +130,9 @@ void	execute_function(t_struct *head, char **parsed_path, char **envp)
 		}
 		if (exit_code != 1 && head->cmd)
 		{
-			// exit_code = buildin_dispatch(head->cmd, envp_head);
-			// if (exit_code == 127)
-			// {
+			exit_code = buildins_dispatch(head->cmd, envp_head);
+			if (exit_code == 127)
+			{
 				if (access_check(head->cmd, parsed_path) == 0)
 				{
 					while (*parsed_path && head->cmd[0])
@@ -109,12 +143,12 @@ void	execute_function(t_struct *head, char **parsed_path, char **envp)
 						else
 							path_iteri = ft_strdup(*(head->cmd));
 						execve(path_iteri, head->cmd, envp);///I need envp for execve
-						free(path_iteri);
+						ft_free(path_iteri);
 						(parsed_path)++;
 					}
 					exit_code = 127;
 				}
-			// }
+			}
 		}
 		exit(exit_code);
 	}
@@ -138,7 +172,7 @@ int	all_access_check(t_struct **tab, char **parsed_path)
 	return (close((*tab)->fds[0]), close(sc_lstlast(*tab)->fds[1]), 1);
 }
 
-char	**parsing(char *find, char **str)
+char	**parsing(char *find, t_list **envp_head)
 {
 	char	**paths;
 	char	*temp;
@@ -147,50 +181,31 @@ char	**parsing(char *find, char **str)
 	int		k;
 
 	j = 0;
-	paths = (char **)malloc (sizeof(char *) * (ft_strlen(*str) + 1));
-	while (*str)
+	k = 0;
+	temp = NULL;
+	paths = NULL;
+	find_env_var(find, envp_head, &temp);
+	if (temp)
 	{
-		k = 0;
-		temp = ft_strtrim(ft_strnstr(*str, find, ft_strlen(*str)), find);
-		if (temp)
+		tab_temp = ft_split(temp, ':');
+		while (tab_temp[j])
+			j++;
+		paths = ft_alloc(sizeof(char *) * (j + 1));
+		j = 0;
+		while (tab_temp[k])
 		{
-			tab_temp = ft_split(temp, ':');
-			while (tab_temp && tab_temp[k])
-				paths[j++] = ft_strjoin(tab_temp[k++], "/");
-			glob_free(tab_temp);
-			free(temp);
+			if (tab_temp[k][ft_strlen(tab_temp[k]) - 1] != '/')
+				paths[j] = ft_strjoin(tab_temp[k], "/");
+			else
+				paths[j] = ft_strdup(tab_temp[k]);
+			// printf("%s\n", paths[j]);
+			ft_free(tab_temp[k]);
+			k++;
+			j++;
 		}
-		str++;
+		ft_free(temp);
 	}
-	paths[j] = '\0';
-	return (paths);
-}
-
-char	**find_paths(char *find, char **str)
-{
-	char	**paths;
-	char	*temp;
-	char	**tab_temp;
-	int		j;
-	int		k;
-
-	j = 0;
-	paths = (char **)malloc (sizeof(char *) * (ft_strlen(*str) + 1));
-	while (*str)
-	{
-		k = 0;
-		temp = ft_strtrim(ft_strnstr(*str, find, ft_strlen(*str)), find);
-		if (temp)
-		{
-			tab_temp = ft_split(temp, ':');
-			while (tab_temp && tab_temp[k])
-				paths[j++] = ft_strjoin(tab_temp[k++], "/");
-			ft_free(tab_temp, k);
-			free(temp);
-		}
-		str++;
-	}
-	paths[j] = '\0';
+	paths[j] = NULL;
 	return (paths);
 }
 

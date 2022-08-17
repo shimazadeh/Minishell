@@ -14,7 +14,6 @@
 
 char	*get_user(t_list **envp_head)
 {
-	int		i;
 	char	*user;
 	t_list	*node;
 
@@ -25,7 +24,7 @@ char	*get_user(t_list **envp_head)
 		node = node->next;
 	if (node)
 	{
-		user = ft_strndup((char *)(&node->content)[5], ft_strlen((char *)(&node->content)[5]));
+		user = ft_strndup(node->content + (sizeof(char) * 5), ft_strlen(node->content + (sizeof(char) * 5)));
 		if (!user)
 			ft_exit(EXIT_FAILURE, NULL);
 	}
@@ -45,7 +44,7 @@ char	*get_pwd(t_list **envp_head, char *user)
 		node = node->next;
 	if (node)
 	{
-		usr_in_pwd = ft_strstr((char *)(&node->content)[4], user);
+		usr_in_pwd = ft_strstr((node->content + (sizeof(char) * 4)), user);
 		if (usr_in_pwd)
 		{
 			pwd = ft_strndup(&usr_in_pwd[ft_strlen(user) - 1], ft_strlen(&usr_in_pwd[ft_strlen(user) - 1]));
@@ -55,7 +54,7 @@ char	*get_pwd(t_list **envp_head, char *user)
 		}
 		else
 		{
-			pwd = ft_strndup((char *)(&node->content)[4], ft_strlen((char *)(&node->content)[4]));
+			pwd = ft_strndup((node->content + (sizeof(char) * 4)), ft_strlen(node->content + (sizeof(char) * 4)));
 			if (!pwd)
 				ft_exit(EXIT_FAILURE, NULL);
 		}

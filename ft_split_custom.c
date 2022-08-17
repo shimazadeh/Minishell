@@ -10,21 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
-
-int	go_to_closing_char(char *str)
-{
-	char	c;
-	int		i;
-
-	c = *str;
-	i = 1;
-	while (str[i] && str[i] != c)
-		i++;
-	if (str[i])
-		return (i);
-	return (0);
-}
+#include "minishell.h"
 
 static int	ft_wc_custom(char *str, char c)
 {
@@ -76,19 +62,6 @@ static int	ft_wl_custom(char *str, char c)
 	return (wl);
 }
 
-void	ft_free_tab(char **tab)
-{
-	int	i;
-
-	i = 0;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
-}
-
 static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c)
 {
 	int	i;
@@ -102,7 +75,7 @@ static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c)
 	while (i < wc)
 	{
 		j = 0;
-		tab[i] = malloc(sizeof(char) * (ft_wl_custom((char *)&str[k], c) + 1));
+		tab[i] = ft_alloc(sizeof(char) * (ft_wl_custom((char *)&str[k], c) + 1));
 		if (!tab[i])
 		{
 			ft_free_tab(tab);
@@ -138,7 +111,7 @@ char	**ft_split_custom(const char *str, char c)
 	if (!str)
 		return (0);
 	wc = ft_wc_custom((char *)str, c);
-	tab = malloc(sizeof(char *) * (wc + 1));
+	tab = ft_alloc(sizeof(char *) * (wc + 1));
 	if (!tab)
 		return (0);
 	if (!ft_fill_tab_custom(tab, wc, str, c))
