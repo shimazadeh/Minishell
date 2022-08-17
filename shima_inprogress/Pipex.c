@@ -38,19 +38,15 @@ void	initialize_lst(t_struct **elements, char *str)
 	glob_free(tab);
 	return ;
 }
-// int	shimalgo(char *str, t_list **envp_head, int	last_exit_code);
-int main(int ac, char **argv, char **envp)
+
+int	pipex(char *str, t_list **envp_head, int last_exit_code);
 {
 	char		**parsed_path;
 	t_struct	*elements;
 	int			exit_code;
-	char		*str;
-	(void)ac;
-	(void)argv;
 
-	str = argv[1];//gets the entire string from Adri's algo
 	elements = NULL;
-	parsed_path = parsing("PATH=", envp);
+	parsed_path = parsing("PATH=", envp);//this will change
 	initialize_lst(&elements, str);
 	// variable_expansion(&str, envp);
 	execute(&elements, parsed_path, envp, str);
@@ -59,9 +55,25 @@ int main(int ac, char **argv, char **envp)
 	glob_free(parsed_path);
 	return (exit_code);
 }
-/*
-1. here doc
-2. variable expansion
-3. look for build in functions
-4. double quotes
-*/
+
+
+// int main(int ac, char **argv, char **envp)
+// {
+// 	char		**parsed_path;
+// 	t_struct	*elements;
+// 	int			exit_code;
+// 	char		*str;
+// 	(void)ac;
+// 	(void)argv;
+
+// 	str = argv[1];//gets the entire string from Adri's algo
+// 	elements = NULL;
+// 	parsed_path = parsing("PATH=", envp);//this will change
+// 	initialize_lst(&elements, str);
+// 	// variable_expansion(&str, envp);
+// 	execute(&elements, parsed_path, envp, str);
+// 	exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
+// 	ft_free_lst(elements);
+// 	glob_free(parsed_path);
+// 	return (exit_code);
+// }

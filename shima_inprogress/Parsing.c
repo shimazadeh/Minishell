@@ -96,15 +96,15 @@ int parse(char *str, t_struct *node)
 		copy->outfiles = (char **) malloc(sizeof(char *) * (outfile_size + 1));
 	while(str[i])
 	{
-		if (str[i] == "\"" || str[i] == "\'")
+		if (str[i] == '\"' || str[i] == '\'')
 			i = i + go_to_closing_char(&str[i]) + 1;
-		if (infile_size > 0 && str[i] == '<' && str[i + 1] != '<')//we reached the infile
+		if (str[i] && infile_size > 0 && str[i] == '<' && str[i + 1] != '<')//we reached the infile
 		{
 			i = save_the_next_word(&str, i + 1, &copy->infiles[k_i], i);
 			k_i++;
 
 		}
-		else if (str[i] == '<' && str[i + 1] == '<')//we reached the heredoc replace by space and skip
+		else if (str[i] && str[i] == '<' && str[i + 1] == '<')//we reached the heredoc replace by space and skip
 		{
 			str[i] = ' ';
 			str[i + 1] = ' ';
@@ -117,12 +117,12 @@ int parse(char *str, t_struct *node)
 				i++;
 			}
 		}
-		else if (str[i] == '>' && str[i + 1] != '>')//we reached the >outfile
+		else if (str[i] && str[i] == '>' && str[i + 1] != '>')//we reached the >outfile
 		{
 			i = save_the_next_word(&str, i + 1, &copy->outfiles[k_o], i);
 			k_o++;
 		}
-		else if (str[i] == '>' && str[i + 1] == '>')//we reached the >>outfile
+		else if (str[i] && str[i] == '>' && str[i + 1] == '>')//we reached the >>outfile
 		{
 			i = save_the_next_word(&str, i + 2, &copy->outfiles[k_o], i);
 			k_o++;
@@ -135,7 +135,7 @@ int parse(char *str, t_struct *node)
 	if (outfile_size)
 		copy->outfiles[k_o] = '\0';
 	copy->cmd = ft_split_custom(str, ' ');//whatever is left in the string is cmd
-	remove_double_quotes(&copy->cmd);
+	remove_double_quotes(copy->cmd);
 	return (0);
 }
 
@@ -155,14 +155,23 @@ int set_infiles_outfiles_cmds(t_struct **elements)
 int	remove_double_quotes(char **str)
 {
 	int i;
+	int j;
 
 	i = 0;
 	while(str[i])
 	{
+		j = 0;
 		while(str[i][j])
 		{
 			if (str[i][j] == '\'' || str[i][j] == '\"')
-				str[i][j] = '';
+			{
+				while (str[i][j])
+				{
+					str[i][j] = str[i][j + 1];
+					j++;
+				}
+				j = 0;
+			}
 			j++;
 		}
 		i++;

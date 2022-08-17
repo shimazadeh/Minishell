@@ -108,7 +108,7 @@ void	execute_function(t_struct *head, char **parsed_path, char **envp)
 							path_iteri = ft_strjoin(*parsed_path, *(head->cmd));
 						else
 							path_iteri = ft_strdup(*(head->cmd));
-						execve(path_iteri, head->cmd, envp);
+						execve(path_iteri, head->cmd, envp);///I need envp for execve
 						free(path_iteri);
 						(parsed_path)++;
 					}

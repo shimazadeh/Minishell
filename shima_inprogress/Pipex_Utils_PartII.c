@@ -21,7 +21,6 @@ char	**glob_free(char **dst)
 		return (NULL);
 	while (dst && dst[i])
 		i++;
-	// dprintf(2, "the size is %d for %s\n", i, *dst);
 	while (i > 0)
 	{
 		i--;
@@ -60,7 +59,7 @@ int	write_to_file(int fd1, char *stop, char	*file_name)
 		return (printf("error with creating here_doc\n"), -1);
 	write(1, "> ", 2);
 	gnl = get_next_line(0);
-	while (ft_strncmp(gnl, stop, ft_strlen(stop) + 1) != 0)
+	while (gnl && ft_strncmp(gnl, stop, ft_strlen(stop) + 1) != 0)
 	{
 		write(1, "> ", 2);
 		if (write(fd1, gnl, ft_strlen(gnl)) < 0)
@@ -72,9 +71,7 @@ int	write_to_file(int fd1, char *stop, char	*file_name)
 		gnl = get_next_line(0);
 	}
 	free(gnl);
-	// free(stop);
 	close(fd1);
-	// fd1 = open(file_name, O_RDONLY, 0777);
 	return (fd1);
 }
 
@@ -86,7 +83,6 @@ int	access_check(char **cmd, char **parsed_path)
 	i = 0;
 	while (parsed_path[i])
 	{
-		// dprintf(2, "parsed path is %s, cmd is %s\n", parsed_path[i], cmd[0]);
 		if (cmd[0] && ft_strncmp(parsed_path[i], cmd[0], ft_strlen(parsed_path[i])) == 0)
 		{
 			if (access(cmd[0], F_OK) == 0 && access(cmd[0], X_OK) == 0)

@@ -121,8 +121,7 @@ static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c)
 					gtcc--;
 				}
 			}
-			// else
-				tab[i][j++] = str[k++];
+			tab[i][j++] = str[k++];
 		}
 		tab[i][j] = '\0';
 		i++;
@@ -148,17 +147,17 @@ char	**ft_split_custom(const char *str, char c)
 }
 
 
-int	main(int ac, char **av)
-{
-	char **tab;
-	int		i;
+// int	main(int ac, char **av)
+// {
+// 	char **tab;
+// 	int		i;
 
-	i = 0;
-	tab = ft_split_custom("cat \"<infile1 | ls |cat \"|cat|ls >outfile", '|');
-	while(tab[i])
-	{
-		printf(">>>%s<<<\n", tab[i]);
-		i++;
-	}
-	return (0);
-}
+// 	i = 0;
+// 	tab = ft_split_custom("cat \"<infile1 \"| ls |\"cat |cat|ls >outfile", '|');
+// 	while(tab[i])
+// 	{
+// 		printf(">>>%s<<<\n", tab[i]);
+// 		i++;
+// 	}
+// 	return (0);
+// }

@@ -1,4 +1,14 @@
-
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2022/08/17 16:54:40 by shabibol          #+#    #+#             */
+/*   Updated: 2022/08/17 16:54:42 by shabibol         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "pipex.h"
 
@@ -55,7 +65,7 @@ char	**fancy_name_generator(int size)
 	file_names = malloc(sizeof(char *) * (size + 1));
 	fd = open("/dev/urandom", O_RDONLY);
 	i = 0;
-	dprintf(2, "size is %d\n", size);
+	// dprintf(2, "size is %d\n", size);
 	while (i < size)
 	{
 		buf = get_next_line(fd);
@@ -152,7 +162,7 @@ char	**handle_here_doc(char *str, t_struct **elements)
 	i = 0;
 	while(stop[i])
 	{
-		dprintf(2, "stop[i] is %s, filename is %s\n", stop[i], file_names[i]);
+		// dprintf(2, "stop[i] is %s, filename is %s\n", stop[i], file_names[i]);
 		write_to_file(fds[i], stop[i], file_names[i]);
 		i++;
 	}
@@ -166,7 +176,7 @@ char	**handle_here_doc(char *str, t_struct **elements)
 		{
 			while (j < size - 1)
 				j++;
-			dprintf(2, "j is %d\n", j);
+			// dprintf(2, "j is %d\n", j);
 			copy->fds[0] = open(file_names[j], O_RDONLY, 0777);
 			// copy->fds[0] = fds[j];
 			copy->tag = 1;//indicates that the last infile is a heredoc type
