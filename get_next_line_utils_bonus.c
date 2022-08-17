@@ -6,11 +6,11 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 18:06:55 by aguillar          #+#    #+#             */
-/*   Updated: 2022/06/08 16:14:08 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/08 17:27:16 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "minishell.h"
 
 size_t	ft_strlen(const char *s)
 {
@@ -50,7 +50,7 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	i = 0;
 	j = 0;
 	len = ft_strlen(s1) + ft_strlen(s2);
-	str = (char *)malloc(sizeof(char) * (len + 1));
+	str = (char *)ft_alloc(sizeof(char) * (len + 1));
 	if (!str)
 		return (0);
 	while (s1 && s1[i])

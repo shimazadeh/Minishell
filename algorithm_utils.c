@@ -1,34 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strndup.c                                       :+:      :+:    :+:   */
+/*   algorithm_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/24 14:44:39 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/08 17:27:16 by aguillar         ###   ########.fr       */
+/*   Created: 2022/08/10 19:02:30 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/11 18:54:22 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_strndup(char *s1, int j)
+void	tab_to_list(char **tab, t_list **lst_head)
 {
 	int		i;
-	char	*dup;
+	t_list	*new;
+	char	*str;
 
 	i = 0;
-	while ((char)s1[i] && (j - i))
-		i++;
-	dup = ft_alloc(sizeof(char) * (i + 1));
-	if (!dup)
-		return (0);
-	i = 0;
-	while ((char)s1[i] && (j - i))
+	if (!lst_head)
+		ft_exit(EXIT_FAILURE, NULL);
+	if (!tab || !tab[0])
+		return ;
+	while (tab[i])
 	{
-		dup[i] = (char)s1[i];
+		str = ft_strndup(tab[i], ft_strlen(tab[i]));
+		if (!str)
+			ft_exit(EXIT_FAILURE, NULL);
+		new = ft_lstnew(str);
+		if (!new)
+			ft_exit(EXIT_FAILURE, NULL);
+		ft_lstadd_back(lst_head, new);
 		i++;
 	}
-	dup[i] = '\0';
-	return (dup);
 }

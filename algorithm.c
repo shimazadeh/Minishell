@@ -6,13 +6,13 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 14:27:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/07/24 21:25:24 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/16 20:15:21 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	rm_outer_par(char **str_add)
+void	rm_outer_par(char **str_add)
 {
 	int		i;
 	int		j;
@@ -41,40 +41,39 @@ int	rm_outer_par(char **str_add)
 		}
 	}
 	if (i >= j)
-		return (1);
+		return ;
 	tmp = ft_strndup(&str[i], ft_strlen(&str[i]));
 	if (!tmp)
-		return (0);
+		ft_exit(EXIT_FAILURE, NULL);
 	*str_add = tmp;
-	free(str);
-	return (1);
+	ft_free(str);
 }
 
-void	go_to_closing_char(char **str_add)
+int	go_to_closing_char(char *str)
 {
 	char	c;
 	int		i;
-	char	*str;
 
-	str = *str_add;
 	c = *str;
 	i = 0;
 	while (str[i] && str[i] != c)
 		i++;
 	if (str[i])
-		*str_add = &str[i];
+		return (i);
+	return (0);
 }
 
-int	split_submod_and_sep(char **str_add, t_list **submod_head,
+void	split_submod_and_sep(char **str_add, t_list **submod_head,
 t_list **sep_head)
 {
-	int	count;
-	int	i;
-	int j;
-	char *submod;
-	char *sep;
-	char *str;
-	char *tmp;
+	int		count;
+	int		i;
+	int		j;
+	char	*submod;
+	char	*sep;
+	char	*str;
+	char	*tmp_str;
+	t_list	*tmp_node;
 
 	i = 0;
 	j = 0;
@@ -86,10 +85,7 @@ t_list **sep_head)
 	while (str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
-		{
-			tmp = &str[i];
-			go_to_closing_char(&tmp);
-		}
+			i += go_to_closing_char(&str[i]);
 		else if (str[i] == '(')
 			count++;
 		else if (str[i] == ')')
@@ -97,79 +93,99 @@ t_list **sep_head)
 		if (count == 0 && (ft_strncmp(&str[i], " || ", 4) == 0 || ft_strncmp(&str[i], " && ", 4) == 0))
 		{
 			submod = ft_strndup(&str[j], i - j);
+			if (!submod)
+				ft_exit(EXIT_FAILURE, NULL);
 			if (ft_strncmp(&str[i], " || ", 4) == 0)
+			{
 				sep = ft_strndup("2", 1);
+				if (!sep)
+					ft_exit(EXIT_FAILURE, NULL);
+			}
 			else if (ft_strncmp(&str[i], " && ", 4) == 0)
+			{
 				sep = ft_strndup("1", 1);
-			ft_lstadd_back(submod_head, ft_lstnew(submod));
-			ft_lstadd_back(sep_head, ft_lstnew(sep));
+				if (!sep)
+					ft_exit(EXIT_FAILURE, NULL);
+			}
+			tmp_node = ft_lstnew(submod);
+			if (!tmp_node)
+				ft_exit(EXIT_FAILURE, NULL);
+			ft_lstadd_back(submod_head, tmp_node);
+			tmp_node = ft_lstnew(sep);
+			if (!tmp_node)
+				ft_exit(EXIT_FAILURE, NULL);
+			ft_lstadd_back(sep_head, tmp_node);
 			i += 3;
 			j = i + 1;
 		}
-		else if (count == 0 && !str[i + 1]&& submod)
+		else if (count == 0 && !str[i + 1] && submod)
 		{
 			submod = ft_strndup(&str[j], i + 1 - j);
-			ft_lstadd_back(submod_head, ft_lstnew(submod));
+			if (!submod)
+				ft_exit(EXIT_FAILURE, NULL);
+			tmp_node =  ft_lstnew(submod);
+			ft_lstadd_back(submod_head, tmp_node);
 		}
 		i++;
 	}
-	return (1);
 }
 
 int main(int ac, char **av, char **envp)
 {
 	(void)av;
-	char	*input;
+	t_list	*envp_head;
 	char	*prompt;
-	int		exit_code;
+	char	*input;
+	int		last_exit_code;
 
+	alloc_lst = NULL;
 	if (ac != 1)
 	{
-		ft_putstr_fd("Error\nInvalid number of argument!\n", 2);
+		ft_dprintf(2, "Error\nInvalid number of argument!\n");
 		return (1);
 	}
-	exit_code = 0;
-	prompt = get_prompt(envp);
+	envp_head = NULL;
+	tab_to_list(envp, &envp_head);
+	prompt = NULL;
+	get_prompt(&prompt, &envp_head);
 	input = readline(prompt);
-	exit_code = algorithm(ft_strndup(input, ft_strlen(input)), envp, exit_code);
-	if (exit_code == -1)
-		exit(EXIT_FAILURE);
+	last_exit_code = 0;
+	last_exit_code = algorithm(ft_strndup(input, ft_strlen(input)), &envp_head, last_exit_code);
 	add_history(input);
 	while (input)
 	{
+		get_prompt(&prompt, &envp_head);
 		input = readline(prompt);
-		exit_code = algorithm(ft_strndup(input, ft_strlen(input)), envp, last_exc);
-		if (exit_code == -1)
-		exit(EXIT_FAILURE);
+		add_history(input);
+		last_exit_code = algorithm(ft_strndup(input, ft_strlen(input)), &envp_head, last_exit_code);
 	}
 	rl_clear_history();
-	free(prompt);
-	exit(EXIT_SUCCESS);
+	ft_free(prompt);
+	ft_free_list(envp_head);
+	ft_exit(EXIT_SUCCESS, NULL);
 }
 
-int	algorithm(char *str, char **envp, int exit_code)
+int	algorithm(char *str, t_list **envp_head, int last_exit_code)
 {
- 	t_list	*submod;
- 	t_list	*sep;
-	int		ret;
  	t_list	*submod_head;
  	t_list	*sep_head;
-	int		boolean;
-	char	**pipex_av;
-	int		pipex_ac;
 	int 	i;
 	int 	j;
 	int		pipex_ret;
+	char	*tmp_str;
+	t_list	*submod;
+ 	t_list	*sep;
+	int		ret;
 
-	i = 0;
-	j = 0;
-	pipex_ac = 0;
-	pipex_av = NULL;
-	pipex_ret = 0;
+	if (!str)
+		ft_exit(EXIT_FAILURE, NULL);
 	submod_head = NULL;
 	sep_head = NULL;
-	if (!split_submod_and_sep(&str, &submod_head, &sep_head))
-		return (-1);
+	split_submod_and_sep(&str, &submod_head, &sep_head);
+	i = 0;
+	j = 0;
+	pipex_ret = 0;
+	tmp_str = NULL;
 	if (!sep_head)
 	{
 		while (str[i] == ' ' || str[i] == '(')
@@ -179,8 +195,13 @@ int	algorithm(char *str, char **envp, int exit_code)
 			j--;
 		if (str[j])
 			str[j] = '\0';
-		pipex_ret = pipex(&str[i], envp, exit_code);
-		free(str);
+		tmp_str = str;
+		str = ft_strndup(&str[i], ft_strlen(&str[i]));
+		if (!str)
+			ft_exit(EXIT_FAILURE, NULL);
+		ft_free(tmp_str);
+		pipex_ret = pipex(str, envp_head, last_exit_code);
+		ft_free(str);
 		return (pipex_ret);
 	}
 	submod = submod_head;
@@ -188,43 +209,26 @@ int	algorithm(char *str, char **envp, int exit_code)
 	ret = 0;
 	while (sep)
 	{
-		ret = algorithm(ft_strndup(submod->content, ft_strlen(submod->content)), envp, exit_code);
-		if (ret == -1)
-		{
-			free(str);
-			ft_free_list(submod_head);
-			ft_free_list(sep_head);
-			return (-1);
-		}
-		else if (ret == 1)
-			boolean = 1;
-		else if (ret == 0)
-			boolean = 0;
+		ret = algorithm(ft_strndup((char *)submod->content, ft_strlen((char *)submod->content)), envp_head, last_exit_code);
 		if (submod_head != submod)
 			sep = sep->next;
 		submod = submod->next;
-		if (sep && sep->content[0] == '1')
+		if (sep && *((char *)(sep->content)) == '1' && !ret)
 		{
-			if (!boolean)
-			{
-				while (sep && sep->content[0] == '1')
-				{
-					submod = submod->next;
-					sep = sep->next;
-				}
-			}
-		}
-		else if (sep && sep->content[0] == '2')
-		{
-			if (boolean == 1)
+			while (sep && *((char *)(sep->content)) == '1')
 			{
 				submod = submod->next;
 				sep = sep->next;
 			}
 		}
+		else if (sep && *((char *)(sep->content)) == '2' && ret)
+		{
+			submod = submod->next;
+			sep = sep->next;
+		}
 	}
 	ft_free_list(submod_head);
 	ft_free_list(sep_head);
-	free(str);
-	return (boolean);
+	ft_free(str);
+	return (ret);
 }

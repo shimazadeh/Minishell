@@ -6,20 +6,18 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 17:55:05 by aguillar          #+#    #+#             */
-/*   Updated: 2022/07/13 16:50:47 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/10 21:12:07 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "minishell.h"
 
 void	ft_putstr_fd(char *str, int fd)
 {
 	int	i;
 
-	i = 0;
-	while (str && str[i])
-	{
-		write(fd, &str[i], 1);
-		i++;
-	}
+	if (!str)
+		return ;
+	i = ft_strlen(str);
+	write(fd, str, i);
 }

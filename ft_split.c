@@ -6,11 +6,11 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 16:48:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/05/16 16:00:28 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/08 17:29:14 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "minishell.h"
 
 static int	ft_wc(char *str, char c)
 {
@@ -50,17 +50,17 @@ static int	ft_wl(char *str, char c)
 	return (wl);
 }
 
-static void	ft_free_tab(char **tab)
+void	ft_free_tab(char **tab)
 {
 	int	i;
 
 	i = 0;
 	while (tab[i])
 	{
-		free(tab[i]);
+		ft_free(tab[i]);
 		i++;
 	}
-	free(tab);
+	ft_free(tab);
 }
 
 static int	ft_fill_tab(char **tab, int wc, const char *str, char c)
@@ -74,7 +74,7 @@ static int	ft_fill_tab(char **tab, int wc, const char *str, char c)
 	while (i < wc)
 	{
 		j = 0;
-		tab[i] = malloc(sizeof(char) * (ft_wl((char *)&str[k], c) + 1));
+		tab[i] = ft_alloc(sizeof(char) * (ft_wl((char *)&str[k], c) + 1));
 		if (!tab[i])
 		{
 			ft_free_tab(tab);
@@ -99,7 +99,7 @@ char	**ft_split(const char *str, char c)
 	if (!str)
 		return (0);
 	wc = ft_wc((char *)str, c);
-	tab = (char **)malloc(sizeof(char *) * (wc + 1));
+	tab = (char **)ft_alloc(sizeof(char *) * (wc + 1));
 	if (!tab)
 		return (0);
 	if (!ft_fill_tab(tab, wc, str, c))

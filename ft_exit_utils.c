@@ -1,34 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strndup.c                                       :+:      :+:    :+:   */
+/*   ft_exit_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/24 14:44:39 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/08 17:27:16 by aguillar         ###   ########.fr       */
+/*   Created: 2022/08/10 19:04:38 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/10 19:04:48 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_strndup(char *s1, int j)
+void	ft_free_list_regular(t_list *list)
 {
-	int		i;
-	char	*dup;
+	t_list	*tmp;
 
-	i = 0;
-	while ((char)s1[i] && (j - i))
-		i++;
-	dup = ft_alloc(sizeof(char) * (i + 1));
-	if (!dup)
-		return (0);
-	i = 0;
-	while ((char)s1[i] && (j - i))
+	while (list)
 	{
-		dup[i] = (char)s1[i];
-		i++;
+		tmp = list->next;
+		free(list->content);
+		free(list);
+		list = tmp;
 	}
-	dup[i] = '\0';
-	return (dup);
 }

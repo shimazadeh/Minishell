@@ -1,34 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strndup.c                                       :+:      :+:    :+:   */
+/*   ft_lstsize.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/24 14:44:39 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/08 17:27:16 by aguillar         ###   ########.fr       */
+/*   Created: 2021/11/26 10:42:44 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/11 18:10:16 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_strndup(char *s1, int j)
+int	ft_lstsize(t_list *lst)
 {
-	int		i;
-	char	*dup;
+	int	i;
 
 	i = 0;
-	while ((char)s1[i] && (j - i))
-		i++;
-	dup = ft_alloc(sizeof(char) * (i + 1));
-	if (!dup)
-		return (0);
-	i = 0;
-	while ((char)s1[i] && (j - i))
+	while (lst)
 	{
-		dup[i] = (char)s1[i];
+		lst = lst->next;
 		i++;
 	}
-	dup[i] = '\0';
-	return (dup);
+	return (i);
 }

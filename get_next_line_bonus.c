@@ -6,11 +6,11 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 14:13:12 by aguillar          #+#    #+#             */
-/*   Updated: 2022/06/08 16:14:01 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/08 17:33:43 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "minishell.h"
 
 char	*ft_free_list(t_list *list)
 {
@@ -19,11 +19,11 @@ char	*ft_free_list(t_list *list)
 	while (list)
 	{
 		tmp = list->next;
-		free(list->content);
-		free(list);
+		ft_free(list->content);
+		ft_free(list);
 		list = tmp;
 	}
-	return (0);
+	return (NULL);
 }
 
 char	*ft_join_contents(t_list *first)
@@ -37,7 +37,7 @@ char	*ft_join_contents(t_list *first)
 	while (current)
 	{
 		tmp = ft_strjoin(str, current->content);
-		free(str);
+		ft_free(str);
 		if (!tmp)
 			return (ft_free_list(first));
 		str = tmp;
@@ -46,7 +46,7 @@ char	*ft_join_contents(t_list *first)
 	ft_free_list(first);
 	if (!str[0])
 	{
-		free(str);
+		ft_free(str);
 		return (0);
 	}
 	return (str);
@@ -56,7 +56,7 @@ t_list	*ft_expand_list(t_list *first, t_list *last, char *str, int size)
 {
 	t_list	*new;
 
-	new = malloc(sizeof(t_list));
+	new = ft_alloc(sizeof(t_list));
 	if (!new)
 		return ((t_list *)ft_free_list(first));
 	if (!size)
@@ -67,7 +67,7 @@ t_list	*ft_expand_list(t_list *first, t_list *last, char *str, int size)
 	}
 	else
 	{
-		new->content = malloc(sizeof(char) * (size + 1));
+		new->content = ft_alloc(sizeof(char) * (size + 1));
 		if (!new->content)
 			return ((t_list *)ft_free_list(first));
 	}
@@ -90,7 +90,7 @@ char	*get_next_line_2(int fd, char **tab, t_list *first, t_list *last)
 		if (!last)
 			return (0);
 		i = read(fd, last->content, (int)BUFFER_SIZE);
-		last->content[i] = 0;
+		((char *)(last->content))[i] = 0;
 		j = ft_strchr(last->content, 10);
 	}
 	if (j && *(j + 1))
@@ -116,7 +116,7 @@ char	*get_next_line(int fd)
 	first = 0;
 	last = 0;
 	last = ft_expand_list(first, last, tab[fd], 0);
-	free(tab[fd]);
+	ft_free(tab[fd]);
 	tab[fd] = 0;
 	if (!last)
 		return (0);
