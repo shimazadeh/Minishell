@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 12:33:23 by shabibol          #+#    #+#             */
-/*   Updated: 2022/07/28 12:33:25 by shabibol         ###   ########.fr       */
+/*   Updated: 2022/08/18 22:24:35 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@ char *ft_strdup_range(char *str, int start, int end)
 	int i;
 	int k;
 
+	if (end < start)
+		return (str);
 	k = 0;
 	i = start;
 	dst = ft_alloc(sizeof(char) *ft_strlen(str) + 1);
@@ -97,7 +99,7 @@ int parse(char *str, t_struct *node)
 	while(str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
-			i = i + go_to_closing_char(&str[i]) + 1;
+			i = i + go_to_closing_char(&str[i], 0) + 1;
 		if (str[i] && infile_size > 0 && str[i] == '<' && str[i + 1] != '<')//we reached the infile
 		{
 			i = save_the_next_word(&str, i + 1, &copy->infiles[k_i], i);

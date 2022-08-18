@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/24 16:06:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/10 20:34:45 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/18 15:03:38 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ char	**set_prompt_elems(t_list **envp_head)
 void	get_prompt(char **prompt_add, t_list **envp_head)
 {
 	char	**prompt_elems;
+	char	*prompt;
 	char	*tmp;
 	int		i;
 
@@ -128,16 +129,18 @@ void	get_prompt(char **prompt_add, t_list **envp_head)
 			ft_exit(EXIT_FAILURE, NULL);
 		return ;
 	}
+	prompt = NULL;
 	tmp = NULL;
 	i = 0;
 	while (prompt_elems[i])
 	{
-		tmp = *prompt_add;
-		*prompt_add = ft_strjoin(*prompt_add, prompt_elems[i]);
-		if (!*prompt_add)
+		tmp = prompt;
+		prompt = ft_strjoin(tmp, prompt_elems[i]);
+		if (!prompt)
 			ft_exit(EXIT_FAILURE, NULL);
 		ft_free(tmp);
 		i++;
 	}
+	*prompt_add = prompt;
 	free_tab_n(prompt_elems, 6);
 }

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: shabibol <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/07/02 17:41:06 by shabibol          #+#    #+#              #
-#    Updated: 2022/08/03 13:12:37 by shabibol         ###   ########.fr        #
+#    Updated: 2022/08/18 15:35:56 by aguillar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ SRCS = algorithm.c algorithm_utils.c alloc_free.c alloc_free_utils.c buildins.c 
 
 OBJS = $(SRCS:%.c=%.o)
 
-FLAGS = -Wall -Wextra -Wextra -g3
+FLAGS = -Wall -Wextra -g3
 
 all: $(NAME)
 

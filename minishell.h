@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/16 20:16:17 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/18 21:52:38 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,11 +56,12 @@ typedef struct s_struct
 int		pipex(char *str, t_list **envp_head, int last_exit_code);
 
 void	rm_outer_par(char **str_add);
-int		go_to_closing_char(char *str);
+int		go_to_closing_char(char *str, char c);
 void	split_submod_and_sep(char **str_add, t_list **submod_head, t_list **sep_head);
 int		algorithm(char *str, t_list **envp_head, int last_exit_code);
 
 void	tab_to_list(char **tab, t_list **lst_head);
+int		even_par_nbr(char *str);
 
 void	*ft_alloc(int size);
 int		ft_free(void *to_free);
@@ -158,8 +159,8 @@ int			remove_double_quotes(char **str);
 char		**ft_split_custom(const char *str, char c);
 
 //execution
-void		execute(t_struct **elements, char **parsed_path, t_list **envp, char *str);
-void 		execute_function(t_struct *head, char **parsed_path, t_list **envp_head);
+int			execute(t_struct **elements, char **parsed_path, t_list **envp, char *str);
+int			execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size);
 char		*file_access_check(char **files, int flag);
 void		envp_lst_to_tab(char ***envp_add, t_list **envp_head);
 
@@ -178,5 +179,7 @@ void		ft_unlink(char **file_names);
 
 //custoom free functions
 void		ft_free_sc(t_struct *lst);
+
+void	display(t_list *list);
 
 #endif

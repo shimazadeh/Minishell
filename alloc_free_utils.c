@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/26 10:26:09 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/10 19:04:27 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/18 13:25:34 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,10 +18,10 @@ t_list	*ft_lstnew_regular(void *content)
 
 	if (!content)
 		return (NULL);
-	new = (t_list *)malloc(sizeof(t_list));
+	new = malloc(sizeof(t_list));
 	if (!new)
-		return (0);
+		return (NULL);
 	new->content = content;
-	new->next = 0;
+	new->next = NULL;
 	return (new);
 }

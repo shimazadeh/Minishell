@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:53:45 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/11 18:48:26 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/18 14:32:45 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,11 @@ int	ft_free(void *to_free)
 		if (current->content == to_free)
 		{
 			if (current == alloc_lst)
-				alloc_lst = current;
+				alloc_lst = current->next;
 			prev->next = current->next;
 			free(current->content);
 			free(current);
+			current = prev->next;
 			return (1);
 		}
 		current = current->next;

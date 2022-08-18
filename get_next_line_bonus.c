@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 14:13:12 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/08 17:33:43 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/18 13:58:55 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ char	*ft_free_list(t_list *list)
 	while (list)
 	{
 		tmp = list->next;
+		// dprintf(2, "%s\n", (char *)list->content);
 		ft_free(list->content);
 		ft_free(list);
 		list = tmp;

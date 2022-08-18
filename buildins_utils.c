@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 20:50:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/12 04:25:22 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/18 23:42:34 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,10 +44,10 @@ void	print_sorted_list(t_list **envp_head)
 		return ;
 	node = *envp_head;
 	size = ft_lstsize(node);
-	tab = ft_alloc(sizeof(char) * size);
+	tab = ft_alloc(sizeof(char) * (size + 1));
 	if (!tab)
 		ft_exit(EXIT_FAILURE, NULL);
-	ft_bzero(tab, sizeof(char) * size);
+	ft_bzero(tab, sizeof(char) * (size + 1));
 	while (print_lowest_ascii(node, tab));
 
 }
@@ -56,26 +56,34 @@ int	print_lowest_ascii(t_list *node, char *tab)
 {
 	int		i;
 	char	*lowest_ascii;
-	int		ret;
+	int		lowest_ascii_mask;
 
 	if (!node || !tab)
 		ft_exit(EXIT_FAILURE, NULL);
-	lowest_ascii = (char *)node->content;
-	ret = 0;
 	i = 0;
+	while (tab[i] == '1')
+	{
+		i++;
+		node = node->next;
+	}
+	if (!node)
+		return (0);
+	lowest_ascii = (char *)node->content;
+	lowest_ascii_mask = i;
 	while (node)
 	{
-		if (!tab[i] && ft_strncmp(lowest_ascii, (char *)node->content, -1) < 0)
+		if (!tab[i] && ft_strncmp(lowest_ascii, (char *)node->content, -1) >= 0)
 		{
-			ret = 1;
-			lowest_ascii = node->content;
+			lowest_ascii = (char *)node->content;
+			lowest_ascii_mask = i;
+		//	dprintf(2, "lowestascii %s\n", lowest_ascii);
 		}
 		i++;
 		node = node->next;
 	}
-	if (ret)
-		ft_dprintf(1, "%s\n", (char *)node->content);
-	return (ret);
+	tab[lowest_ascii_mask] = '1';
+	ft_dprintf(1, "%s\n", lowest_ascii);
+	return (1);
 }
 
 int	ft_list_remove_node(t_list **lst_head, t_list *node)
@@ -112,10 +120,11 @@ int	contains_invalid_char(char *str, char *id, int j)
 	i = 0;
 	while (id[i])
 	{
-		if (ft_strchr(str, id[i]) && !(j == 1 && i && str[i] == '='))
-			return (0);
+		if (ft_strchr(str, id[i]) && !(j == 1 && i && ft_strchr(str, '=')))
+			return (1);
+		i++;
 	}
-	return (1);
+	return (0);
 }
 
 
@@ -126,6 +135,8 @@ void	print_tab_nl(char **tab, int nl)
 	i = 0;
 	if (nl)
 	{
+		if (!tab[i])
+			ft_dprintf(1, "\n");
 		while (tab[i])
 		{
 			ft_dprintf(1, "%s\n", tab[i]);

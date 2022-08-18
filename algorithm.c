@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 14:27:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/16 20:15:21 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/18 22:07:28 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	rm_outer_par(char **str_add)
 {
 	int		i;
 	int		j;
+	int		count;
 	char	*str;
 	char	*tmp;
 
@@ -23,39 +24,37 @@ void	rm_outer_par(char **str_add)
 	str = *str_add;
 	i = 0;
 	j = ft_strlen(str) - 1;
-	while (i < j && (str[i] == ' ' || str[i] == '(') && (str[j] == ' '
-			|| str[j] == ')'))
+	count = 0;
+	while (str[i] == ' ' || str[i] == '(')
 	{
-		if (str[j] == ')' && str[i] == '(')
-		{
-			str[j] = '\0';
-			i++;
-			j--;
-		}
-		while (i < j && str[i] == ' ')
-			i++;
-		while (i < j && str[j] == ' ')
-		{
-			str[j] = '\0';
-			j--;
-		}
+		if (str[i] == '(')
+			count++;
+		i++;
 	}
-	if (i >= j)
-		return ;
-	tmp = ft_strndup(&str[i], ft_strlen(&str[i]));
+	while (j >= 0 && (str[j] == ' ' || str[j] == ')') && count)
+	{
+		if (str[i] == ')')
+			count--;
+		j--;
+	}
+	while (j >= 0 && (str[j] == ' '))
+		j--;
+	j++;
+	str[j] = '\0';
+	tmp = ft_strdup(&str[i]);
 	if (!tmp)
 		ft_exit(EXIT_FAILURE, NULL);
 	*str_add = tmp;
 	ft_free(str);
 }
 
-int	go_to_closing_char(char *str)
+int	go_to_closing_char(char *str, char c)
 {
-	char	c;
 	int		i;
 
-	c = *str;
-	i = 0;
+	i = 1;
+	if (!c)
+		c = *str;
 	while (str[i] && str[i] != c)
 		i++;
 	if (str[i])
@@ -84,7 +83,7 @@ t_list **sep_head)
 	while (str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
-			i += go_to_closing_char(&str[i]);
+			i += go_to_closing_char(&str[i], 0);
 		else if (str[i] == '(')
 			count++;
 		else if (str[i] == ')')
@@ -142,7 +141,7 @@ int main(int ac, char **av, char **envp)
 	if (ac != 1)
 	{
 		ft_dprintf(2, "Error\nInvalid number of argument!\n");
-		return (1);
+		ft_exit(EXIT_FAILURE, NULL);
 	}
 	envp_head = NULL;
 	tab_to_list(envp, &envp_head);
@@ -153,12 +152,20 @@ int main(int ac, char **av, char **envp)
 	{
 		get_prompt(&prompt, &envp_head);
 		input = readline(prompt);
-		if (input)
+	//	dprintf(2, "input is '%s'\n", input);
+		if (input && *input)
 		{
-			add_history(input);
-			last_exit_code = algorithm(ft_strndup(input, ft_strlen(input)), &envp_head, last_exit_code);
+			if (even_par_nbr(input))
+			{
+				add_history(input);
+				last_exit_code = algorithm(ft_strndup(input, ft_strlen(input)), &envp_head, last_exit_code);
+		//		printf("%s\n", input);
+			}
+			else
+				ft_dprintf(2, "Error\nInput contains odd number of parentheses!\n");
 		}
-		free(input);
+		ft_free(input);
+		ft_free(prompt);
 	}
 	rl_clear_history();
 	ft_free(prompt);
@@ -172,6 +179,7 @@ int	algorithm(char *str, t_list **envp_head, int last_exit_code)
  	t_list	*sep_head;
 	int 	i;
 	int 	j;
+	int		k;
 	int		pipex_ret;
 	char	*tmp_str;
 	t_list	*submod;
@@ -180,27 +188,60 @@ int	algorithm(char *str, t_list **envp_head, int last_exit_code)
 
 	if (!str)
 		ft_exit(EXIT_FAILURE, NULL);
+	//dprintf(2, "str '%s'\n", str);
 	submod_head = NULL;
 	sep_head = NULL;
 	split_submod_and_sep(&str, &submod_head, &sep_head);
+	//dprintf(2, "rm outer str '%s'\n", str);
 	i = 0;
 	j = 0;
+	k = 0;
 	pipex_ret = 0;
 	tmp_str = NULL;
 	if (!sep_head)
 	{
-		while (str[i] == ' ' || str[i] == '(')
+		while (str[i])
+		{
+			if (str[i] == '\"' || str[i] == '\'')
+			{
+				k = go_to_closing_char(&str[i], 0);
+				i += k;
+				j += k;
+			}
+			if (str[i] != '(' && str[i] != ')')
+				j++;
 			i++;
-		j = ft_strlen(str);
-		while (j > 0 && (str[j] == ' ' ||  str[j] == ')'))
-			j--;
-		if (str[j])
-			str[j] = '\0';
+		}
 		tmp_str = str;
-		str = ft_strndup(&str[i], ft_strlen(&str[i]));
+		// dprintf(2, "STR %s\n", str);
+		str = ft_alloc(sizeof(char) * (j + 1));
 		if (!str)
 			ft_exit(EXIT_FAILURE, NULL);
+		i = 0;
+		j = 0;
+		while (tmp_str[i])
+		{
+			if (tmp_str[i] == '\"' || tmp_str[i] == '\'')
+			{
+				k = go_to_closing_char(&tmp_str[i], 0);
+				while(k)
+				{
+					str[j] = tmp_str[i];
+					i++;
+					j++;
+					k--;
+				}
+			}
+			if (tmp_str[i] && tmp_str[i] != '(' && tmp_str[i] != ')')
+			{
+				str[j] = tmp_str[i];
+				j++;
+			}
+			i++;
+		}
+		str[j] = '\0';
 		ft_free(tmp_str);
+		// dprintf(2, "pipex str '%s'\n", str);
 		pipex_ret = pipex(str, envp_head, last_exit_code);
 		ft_free(str);
 		return (pipex_ret);
@@ -233,3 +274,15 @@ int	algorithm(char *str, t_list **envp_head, int last_exit_code)
 	ft_free(str);
 	return (ret);
 }
+/*
+void	display(t_list *list)
+{
+	t_list *copy;
+
+	copy = list;
+	while(copy)
+	{
+		printf("content:-------%s-------\n", (char*)(copy->content));
+		copy = copy->next;
+	}
+}*/

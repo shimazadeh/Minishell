@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 16:25:55 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/12 04:51:25 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/18 23:40:52 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ int	pwd(void)
 	pwd = getcwd(NULL, 0);
 	if (pwd)
 	{
-		ft_dprintf(1, "%s", pwd);
+		ft_dprintf(1, "%s\n", pwd);
 		ft_free(pwd);
 		return (EXIT_SUCCESS);
 	}
@@ -35,7 +35,7 @@ int	env(t_list **envp_head)
 	node = *envp_head;
 	while (node)
 	{
-		ft_dprintf(1, "%s", (char *)node->content);
+		ft_dprintf(1, "%s\n", (char *)node->content);
 		node = node->next;
 	}
 	return (EXIT_SUCCESS);
@@ -45,6 +45,7 @@ int	export(char **vars, t_list **envp_head)
 {
 	t_list	*new;
 	t_list	*old;
+	char	*tmp;
 	int		i;
 	int		ret;
 
@@ -74,7 +75,10 @@ int	export(char **vars, t_list **envp_head)
 				if (!old->content)
 					ft_exit(EXIT_FAILURE, NULL);
 			}
-			new = ft_lstnew(vars[i]);
+			tmp = ft_strdup(vars[i]);
+			if (!tmp)
+				ft_exit(EXIT_FAILURE, NULL);
+			new = ft_lstnew(tmp);
 			if (!new)
 				ft_exit(EXIT_FAILURE, NULL);
 			ft_lstadd_back(envp_head, new);
@@ -87,6 +91,7 @@ int	export(char **vars, t_list **envp_head)
 int	unset(char **vars, t_list **envp_head)
 {
 	t_list	*node;
+	t_list	*tmp;
 	char	*var2;
 	int		i;
 	int		ret;
@@ -112,9 +117,10 @@ int	unset(char **vars, t_list **envp_head)
 			node = *envp_head;
 			while (node)
 			{
+				tmp = node->next;
 				if (!ft_strncmp(var2, (char *)node->content, ft_strlen(var2)))
 					ft_list_remove_node(envp_head, node);
-				node = node->next;
+				node = tmp;
 			}
 		}
 		i++;
@@ -126,7 +132,7 @@ int	echo(char **av)
 {
 	if (!av)
 		ft_exit(EXIT_FAILURE, NULL);
-	if (ft_strncmp(av[0], "-n", 3))
+	else if (av[0] && !ft_strncmp(av[0], "-n", 3))
 		print_tab_nl(&av[1], 0);
 	else
 		print_tab_nl(av, 1);
@@ -280,7 +286,6 @@ int	cd(char *dir, t_list **envp_head)
 
 int	buildins_dispatch(char **av, t_list **envp_head)
 {
-	// dprintf(2, "av[0] = '%s'\n", av[0]);
 	if (!av || !av[0])
 		ft_exit(EXIT_FAILURE, NULL);
 	if (!ft_strncmp(av[0], "echo", 5))

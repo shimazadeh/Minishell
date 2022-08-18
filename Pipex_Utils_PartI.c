@@ -3,21 +3,23 @@
 /*                                                        :::      ::::::::   */
 /*   Pipex_Utils_PartI.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/07/05 19:14:10 by shabibol         ###   ########.fr       */
+/*   Updated: 2022/08/18 23:41:08 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str)
+int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str)
 {
 	int			pipefds[2];
 	t_struct	*copy;
 	char		**file_names;
+	int			exit_code;
 
+	exit_code = -1;
 	file_names = handle_here_doc(str, elements);
 	set_infiles_outfiles_cmds(elements);
 	copy = *elements;
@@ -30,20 +32,23 @@ void	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str)
 			if (!copy->next->fds[0])
 				copy->next->fds[0] = pipefds[0];
 		}
-		copy->child = fork();
-		execute_function(copy, parsed_path, envp);
-		close(copy->fds[1]);
-		close(copy->fds[0]);
+		if (sc_lstsize(*elements) > 1)
+			copy->child = fork();
+		exit_code = execute_function(copy, parsed_path, envp, sc_lstsize(*elements));
+		if (copy->fds[1] != 0)
+			close(copy->fds[1]);
+		if (copy->fds[0] != 0)
+			close(copy->fds[0]);
 		copy = copy->next;
 	}
 	copy = *elements;
-	while (copy)
+	while (sc_lstsize(*elements) > 1 && copy)
 	{
 		waitpid(copy->child, &(copy->wstatus), 0);
 		copy = copy->next;
 	}
 	ft_unlink(file_names);
-	return ;
+	return (exit_code);
 }
 
 void	envp_lst_to_tab(char ***envp_add, t_list **envp_head)
@@ -71,7 +76,7 @@ void	envp_lst_to_tab(char ***envp_add, t_list **envp_head)
 	*envp_add = envp;
 }
 
-void	execute_function(t_struct *head, char **parsed_path, t_list **envp_head)
+int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size)
 {
 	char	*path_iteri;
 	int		size;
@@ -79,20 +84,17 @@ void	execute_function(t_struct *head, char **parsed_path, t_list **envp_head)
 	char	*last_outfile;
 	int		exit_code;
 	char	**envp;
-	// int		i = 0;
 
 	size = 0;
-	exit_code = 0;
+	exit_code = -1;
 	envp = NULL;
 	envp_lst_to_tab(&envp, envp_head);
-	// while(envp[i])
-	// {
-	// 	dprintf(2, "%s\n", envp[i]);
-	// 	i++;
-	// }
-	if (head->child < 0)
-		return (perror("Fork:"));
-	else if (!(head->child))
+	if (sc_size > 1 && head->child < 0)
+	{
+		perror("Fork:");
+		ft_exit(EXIT_FAILURE, NULL);
+	}
+	else if (sc_size == 1 || !head->child)
 	{
 		if (head->infiles && head->tag == 0)
 		{
@@ -130,6 +132,10 @@ void	execute_function(t_struct *head, char **parsed_path, t_list **envp_head)
 		}
 		if (exit_code != 1 && head->cmd)
 		{
+			// if (!head->cmd[1])
+			// 	dprintf(2, "bonjour!\n");
+			// else
+			// 	dprintf(2, "this is your answer %s\n", head->cmd[1]);
 			exit_code = buildins_dispatch(head->cmd, envp_head);
 			if (exit_code == 127)
 			{
@@ -150,8 +156,11 @@ void	execute_function(t_struct *head, char **parsed_path, t_list **envp_head)
 				}
 			}
 		}
-		exit(exit_code);
+		ft_free_tab(envp);
+		if (sc_size > 1)
+			exit(exit_code);
 	}
+	return (exit_code);
 }
 
 int	all_access_check(t_struct **tab, char **parsed_path)

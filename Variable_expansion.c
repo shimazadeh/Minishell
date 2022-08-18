@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Variable_expansion.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 17:21:24 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/17 17:21:27 by shabibol         ###   ########.fr       */
+/*   Updated: 2022/08/18 22:24:09 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 	{
 		if (str[i] && str[i] == '\"')
 		{
-			k = go_to_closing_char(&str[i]);
+			k = go_to_closing_char(&str[i], 0);
 			if (k)
 			{
 				str[i] = ' ';
@@ -60,7 +60,7 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 		}
 		else if (str[i] && str[i] == '\'')
 		{
-			k = go_to_closing_char(&str[i]);
+			k = go_to_closing_char(&str[i], 0);
 			if (k)
 			{
 				str[i] = ' ';
@@ -72,7 +72,7 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 		{
 			i++;
 			j = i;
-			if (str[i] && str[i] == '?')
+			if (str[i] == '?')
 				find = ft_itoa(last_exit_code);
 			else if (str[i])
 			{
@@ -84,10 +84,11 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 				ft_free(tmp);
 				ft_free(tmp2);
 			}
-			tmp = ft_strdup_range(str, 0, j);
+			// dprintf(2, "find is %s, last exit code %d\n", find, last_exit_code);
+			tmp = ft_strdup_range(str, 0, j - 1);
 			tmp2 = ft_strjoin(tmp, find);
 			ft_free(tmp);
-			tmp = ft_strdup_range(str, i, ft_strlen(str));
+			tmp = ft_strdup_range(str, i + 1, ft_strlen(str));
 			ft_free(str);
 			str = ft_strjoin(tmp, tmp2);
 			i = 0;

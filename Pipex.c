@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   Pipex.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:38:31 by shabibol          #+#    #+#             */
-/*   Updated: 2022/06/07 17:38:33 by shabibol         ###   ########.fr       */
+/*   Updated: 2022/08/18 22:21:39 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,16 @@ int	pipex(char *str, t_list **envp_head, int last_exit_code)
 	t_struct	*elements;
 	int			exit_code;
 
+	if(!str)
+		return (0);
 	elements = NULL;
+	exit_code = -1;
 	parsed_path = parsing("PATH", envp_head);//this will change
-	initialize_lst(&elements, str);
 	variable_expansion(&str, envp_head, last_exit_code);
-	execute(&elements, parsed_path, envp_head, str);
-	exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
+	initialize_lst(&elements, str);
+	exit_code = execute(&elements, parsed_path, envp_head, str);
+	if (sc_lstsize(elements) > 1)
+		exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
 	ft_free_sc(elements);
 	ft_free_tab(parsed_path);
 	return (exit_code);
