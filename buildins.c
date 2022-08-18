@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 16:25:55 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/18 23:40:52 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 00:49:15 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -148,7 +148,7 @@ int	cd(char *dir, t_list **envp_head)
 	char	*tmp;
 	int		i;
 	char	*mask;
-	char	*to_export;
+	char	**to_export;
 	int		ret1;
 	int		ret2;
 
@@ -209,6 +209,7 @@ int	cd(char *dir, t_list **envp_head)
 						ft_exit(errno, NULL);
 				}
 				ft_free(tmp);
+				i++;
 			}
 			ft_free_tab(cd_paths);
 		}
@@ -266,18 +267,24 @@ int	cd(char *dir, t_list **envp_head)
 		}
 	}
 	tmp = curpath;
-	curpath = mask_result_str(curpath, mask);
+	curpath = mask_result_str(mask, tmp);
 	ft_free(tmp);
 	chdir(curpath);
-	to_export = ft_strjoin("PWD=", curpath);
+	to_export = ft_alloc(sizeof(char *) * 2);
+	to_export[0] = ft_strjoin("PWD=", curpath);
 	if (!to_export)
 		ft_exit(errno, NULL);
+	to_export[1] = NULL;
 	ft_free(curpath);
-	ret1 = export(&to_export, envp_head);
+	ret1 = export(to_export, envp_head);
 	ft_free(to_export);
-	to_export = ft_strjoin("OLDPWD=", pwd);
+	to_export = ft_alloc(sizeof(char *) * 2);
+	to_export[0] = ft_strjoin("OLDPWD=", pwd);
+	if (!to_export)
+		ft_exit(errno, NULL);
+	to_export[1] = NULL;
 	ft_free(pwd);
-	ret2 = export(&to_export, envp_head);
+	ret2 = export(to_export, envp_head);
 	ft_free(to_export);
 	if (!ret2)
 		return (ret1);
@@ -291,7 +298,7 @@ int	buildins_dispatch(char **av, t_list **envp_head)
 	if (!ft_strncmp(av[0], "echo", 5))
 		return (echo(&av[1]));
 	if (!ft_strncmp(av[0], "cd", 3) && av[1] && !av[2])
-		return (cd(av[0], envp_head));
+		return (cd(av[1], envp_head));
 	if (!ft_strncmp(av[0], "pwd", 4))
 		return (pwd());
 	if (!ft_strncmp(av[0], "export", 7))

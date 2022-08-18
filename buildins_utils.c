@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 20:50:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/18 23:42:34 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 00:48:48 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -198,7 +198,7 @@ char	*mask_result_str(char *mask, char *curpath)
 
 	size = 0;
 	i = 0;
-	while (mask[i])
+	while (curpath[i])
 	{
 		if (mask[i])
 			size++;
