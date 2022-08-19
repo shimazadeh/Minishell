@@ -88,7 +88,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 	size = 0;
 	exit_code = -1;
 	envp = NULL;
-	envp_lst_to_tab(&envp, envp_head);
+	lst_to_tab(&envp, envp_head);
 	if (head->child < 0)
 	{
 		perror("Fork:");
