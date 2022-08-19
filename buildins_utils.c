@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 20:50:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/19 15:31:08 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 18:01:09 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,22 +133,17 @@ void	print_tab_nl(char **tab, int nl)
 	int	i;
 
 	i = 0;
-	if (nl)
-	{
-		if (!tab[i])
-			ft_dprintf(1, "\n");
-		while (tab[i])
-		{
-			ft_dprintf(1, "%s\n", tab[i]);
-			i++;
-		}
-		return ;
-	}
+	if (!tab)
+		ft_exit(EXIT_FAILURE, NULL);
 	while (tab[i])
 	{
 		ft_dprintf(1, "%s", tab[i]);
+		if (tab[i + 1])
+			ft_dprintf(1, " ", tab[i]);
 		i++;
 	}
+	if (nl)
+		ft_dprintf(1, "\n", tab[i]);
 }
 
 void	find_env_var(char *var_name, t_list **envp_head, char **var_exp)
