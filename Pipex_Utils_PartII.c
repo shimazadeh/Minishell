@@ -40,17 +40,18 @@ int	write_to_file(int fd1, char *stop, char	*file_name, t_list **envp_head, int 
 		return (printf("error with creating here_doc\n"), -1);
 	write(1, "> ", 2);
 	gnl = get_next_line(0);
-	variable_expansion(&gnl, envp_head, last_exit_code);
 	while (gnl && ft_strncmp(gnl, stop, ft_strlen(stop) + 1) != 0)
 	{
-		write(1, "> ", 2);
+		// dprintf(2, "before expansion %s\n", gnl);
 		variable_expansion(&gnl, envp_head, last_exit_code);
+		// dprintf(2, "after expansion %s\n", gnl);
 		if (write(fd1, gnl, ft_strlen(gnl)) < 0)
 		{
 			perror("write:");
 			return (-1);
 		}
 		ft_free(gnl);
+		write(1, "> ", 2);
 		gnl = get_next_line(0);
 	}
 	ft_free(gnl);

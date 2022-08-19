@@ -160,8 +160,8 @@ void	find_env_var(char *var_name, t_list **envp_head, char **var_exp)
 	{
 		if (!ft_strncmp(var_name, (char *)node->content, ft_strlen(var_name)))
 		{
-			*var_exp = ft_strchr(node->content, '=');
-			*var_exp = *var_exp + 1;
+			*var_exp = ft_strchr((char *)node->content, '=');
+			++(*var_exp);
 				return ;
 		}
 		node = node->next;

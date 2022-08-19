@@ -24,7 +24,7 @@ char *create_new_str(char *str, char *to_add, int to_break, int to_continue)
 	tmp2 = ft_strjoin(tmp, to_add);
 	ft_free(tmp);
 	tmp = ft_strdup_range(str, to_continue, ft_strlen(str));
-	new_str = ft_strjoin(tmp, tmp2);
+	new_str = ft_strjoin(tmp2, tmp);
 	ft_free(tmp);
 	ft_free(tmp2);
 	return (new_str);
@@ -42,6 +42,8 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 	i = 0;
 	j = 0;
 	str = *str_add;
+	var_exp = NULL;
+	var_name = NULL;
 	while(str[i])
 	{
 		if (str[i] && (str[i] == '\"' || str[i] == '\''))
@@ -65,12 +67,15 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 			}
 			else if (str[i])
 			{
-				while(str[i] && str[i] != ' ')
+				while(str[i] && (str[i] != ' ' && str[i] != '\n'))
 					i++;
 				var_name = ft_strdup_range(str, j, i);
 				find_env_var(var_name, envp_head, &var_exp);
+				// dprintf(2, "variable name is %s\n", var_name);
+				// dprintf(2, "variable is %s\n", var_exp);
 				ft_free(var_name);
 			}
+			// dprintf(2, "the j is %d, i is %d\n", j, i);
 			str = create_new_str(str, var_exp, j - 1, i);
 			i = 0;
 		}
