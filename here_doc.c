@@ -154,9 +154,9 @@ char	**handle_here_doc(char *str, t_struct **elements)
 
 	loc = NULL;
 	size = number_of_here_doc(str);
-	stop = check_for_here_doc(str, &loc);
 	if (size == 0)
 		return (NULL);
+	stop = check_for_here_doc(str, &loc);
 	fds = ft_alloc(sizeof(int) * size);
 	file_names = fancy_name_generator(size);
 	i = 0;

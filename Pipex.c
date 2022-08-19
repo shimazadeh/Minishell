@@ -49,7 +49,7 @@ int	pipex(char *str, t_list **envp_head, int last_exit_code)
 		return (0);
 	elements = NULL;
 	exit_code = -1;
-	parsed_path = parsing("PATH", envp_head);//this will change
+	parsed_path = parsing("PATH", envp_head);
 	variable_expansion(&str, envp_head, last_exit_code);
 	initialize_lst(&elements, str);
 	exit_code = execute(&elements, parsed_path, envp_head, str);

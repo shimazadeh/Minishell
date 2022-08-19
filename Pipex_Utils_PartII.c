@@ -31,7 +31,6 @@ void	ft_free_sc(t_struct *lst)
 	return ;
 }
 
-
 int	write_to_file(int fd1, char *stop, char	*file_name)
 {
 	char	*gnl;
