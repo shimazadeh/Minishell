@@ -159,7 +159,7 @@ int			remove_double_quotes(char **str);
 char		**ft_split_custom(const char *str, char c);
 
 //execution
-int			execute(t_struct **elements, char **parsed_path, t_list **envp, char *str);
+int			execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, int last_exit_code);
 int			execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size);
 char		*file_access_check(char **files, int flag);
 void		envp_lst_to_tab(char ***envp_add, t_list **envp_head);
@@ -172,8 +172,8 @@ char		**parsing(char *find, t_list **envp_list);
 //here__doc handling
 char 		**check_for_here_doc(char *str, int **loc);
 int 		number_of_here_doc(char *str);
-int			write_to_file(int fd1, char *stop, char	*file_name);
-char		**handle_here_doc(char *str, t_struct **elements);
+int			write_to_file(int fd1, char *stop, char	*file_name, t_list **envp_head, int last_exit_code);
+char		**handle_here_doc(char *str, t_struct **elements, t_list **envp_head, int last_exit_code);
 char		**fancy_name_generator(int size);
 void		ft_unlink(char **file_names);
 

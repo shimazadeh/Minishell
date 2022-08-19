@@ -52,7 +52,7 @@ int	pipex(char *str, t_list **envp_head, int last_exit_code)
 	parsed_path = parsing("PATH", envp_head);
 	variable_expansion(&str, envp_head, last_exit_code);
 	initialize_lst(&elements, str);
-	exit_code = execute(&elements, parsed_path, envp_head, str);
+	exit_code = execute(&elements, parsed_path, envp_head, str, last_exit_code);
 	if (sc_lstsize(elements) > 1)
 		exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
 	ft_free_sc(elements);

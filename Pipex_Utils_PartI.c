@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str)
+int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, int last_exit_code)
 {
 	int			pipefds[2];
 	t_struct	*copy;
@@ -20,7 +20,7 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str)
 	int			exit_code;
 
 	exit_code = -1;
-	file_names = handle_here_doc(str, elements);
+	file_names = handle_here_doc(str, elements, envp, last_exit_code);
 	set_infiles_outfiles_cmds(elements);
 	copy = *elements;
 	while (copy)

@@ -31,7 +31,7 @@ void	ft_free_sc(t_struct *lst)
 	return ;
 }
 
-int	write_to_file(int fd1, char *stop, char	*file_name)
+int	write_to_file(int fd1, char *stop, char	*file_name, t_list **envp_head, int last_exit_code)
 {
 	char	*gnl;
 
@@ -40,9 +40,11 @@ int	write_to_file(int fd1, char *stop, char	*file_name)
 		return (printf("error with creating here_doc\n"), -1);
 	write(1, "> ", 2);
 	gnl = get_next_line(0);
+	variable_expansion(&gnl, envp_head, last_exit_code);
 	while (gnl && ft_strncmp(gnl, stop, ft_strlen(stop) + 1) != 0)
 	{
 		write(1, "> ", 2);
+		variable_expansion(&gnl, envp_head, last_exit_code);
 		if (write(fd1, gnl, ft_strlen(gnl)) < 0)
 		{
 			perror("write:");

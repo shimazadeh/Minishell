@@ -141,7 +141,7 @@ char **check_for_here_doc(char *str, int **loc_add)
 	return (stop);
 }
 
-char	**handle_here_doc(char *str, t_struct **elements)
+char	**handle_here_doc(char *str, t_struct **elements, t_list **envp_head, int last_exit_code)
 {
 	int 	i;
 	int 	j;
@@ -163,7 +163,7 @@ char	**handle_here_doc(char *str, t_struct **elements)
 	while(stop[i])
 	{
 		// dprintf(2, "stop[i] is %s, filename is %s\n", stop[i], file_names[i]);
-		write_to_file(fds[i], stop[i], file_names[i]);
+		write_to_file(fds[i], stop[i], file_names[i], envp_head, last_exit_code);
 		i++;
 	}
 	ft_free(stop[i]);
