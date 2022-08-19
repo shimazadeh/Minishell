@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/19 18:12:23 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 19:20:24 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,9 @@ char	*ft_ull_itoa_base(unsigned long long nb, char *base);
 char	*ft_ull_nbr_to_string(unsigned long long int nb, char *str, int nb_len, char *base);
 int		ft_ull_nb_len(unsigned long long int nb, int base_len);
 
-
+void	handle_wildcards(char ***av_tab_add);
+void	expand_wc_node(t_list *node);
+void	replace_node_by_sublist(t_list *node, t_list *sublist);
 
 void	ft_lstadd_back(t_list **alst, t_list *new);
 t_list	*ft_lstnew(void *content);
@@ -147,7 +149,6 @@ int			sc_lstsize(t_struct *lst);
 //variable expansion
 
 int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code);
-
 
 //parsing
 void		initialize_lst(t_struct **tab, char *str);
