@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/18 21:52:38 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 18:12:23 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ char		**ft_split_custom(const char *str, char c);
 int			execute(t_struct **elements, char **parsed_path, t_list **envp, char *str);
 int			execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size);
 char		*file_access_check(char **files, int flag);
-void		envp_lst_to_tab(char ***envp_add, t_list **envp_head);
+void		lst_to_tab(char ***tab_add, t_list **lst_head);
 
 //finding paths
 int			access_check(char **cmd, char **parsed_path);

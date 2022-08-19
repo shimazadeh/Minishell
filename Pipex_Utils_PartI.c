@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/18 23:41:08 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 18:12:07 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,29 +51,29 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str)
 	return (exit_code);
 }
 
-void	envp_lst_to_tab(char ***envp_add, t_list **envp_head)
+void	lst_to_tab(char ***tab_add, t_list **lst_head)
 {
-	char	**envp;
+	char	**tab;
 	int		size;
 	int		i;
 	t_list	*node;
 
-	if (!envp_head || !envp_add)
+	if (!lst_head || !tab_add)
 		ft_exit(EXIT_FAILURE, NULL);
-	node = *envp_head;
+	node = *lst_head;
 	size = ft_lstsize(node);
-	envp = ft_alloc(sizeof(char *) * (size + 1));
+	tab = ft_alloc(sizeof(char *) * (size + 1));
 	i = 0;
 	while (i < size)
 	{
-		envp[i] = ft_strdup((char *)node->content);
-		if (!envp[i])
+		tab[i] = ft_strdup((char *)node->content);
+		if (!tab[i])
 			ft_exit(errno, NULL);
 		node = node->next;
 		i++;
 	}
-	envp[i] = NULL;
-	*envp_add = envp;
+	tab[i] = NULL;
+	*tab_add = tab;
 }
 
 int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size)
