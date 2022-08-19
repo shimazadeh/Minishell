@@ -12,43 +12,39 @@
 
 #include "minishell.h"
 
-char	*look_up(char *to_find, t_list **envp)
+char *create_new_str(char *str, char *to_add, int to_break, int to_continue)
 {
-	t_list *node;
-	char *result;
-	int  size;
+	char *tmp;
+	char *tmp2;
+	char *new_str;
 
-	size = ft_strlen(to_find);
-	node = *envp;
-	while(node)
-	{
-		if (!ft_strncmp(to_find, (char *)node->content, size))
-		{
-			result = ft_strdup_range((char *)node->content , size, ft_strlen((char *)node->content));
-			return (result);
-		}
-		node = node->next;
-	}
-	return (NULL);
+	if (to_continue <= to_break)
+		return (str);
+	tmp = ft_strdup_range(str, 0, to_break);
+	tmp2 = ft_strjoin(tmp, to_add);
+	ft_free(tmp);
+	tmp = ft_strdup_range(str, to_continue, ft_strlen(str));
+	new_str = ft_strjoin(tmp, tmp2);
+	ft_free(tmp);
+	ft_free(tmp2);
+	return (new_str);
 }
 
 int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 {
 	int i;
 	int j;
-	int	k;
-	char *tmp;
-	char *tmp2;
-	char *find;
+	int k;
+	char *var_name;
+	char *var_exp;
 	char *str;
 
 	i = 0;
 	j = 0;
-	k = 0;
 	str = *str_add;
 	while(str[i])
 	{
-		if (str[i] && str[i] == '\"')
+		if (str[i] && (str[i] == '\"' || str[i] == '\''))
 		{
 			k = go_to_closing_char(&str[i], 0);
 			if (k)
@@ -58,39 +54,24 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 				str[i] = ' ';
 			}
 		}
-		else if (str[i] && str[i] == '\'')
-		{
-			k = go_to_closing_char(&str[i], 0);
-			if (k)
-			{
-				str[i] = ' ';
-				i += k;
-				str[i] = ' ';
-			}
-		}
-		else if (str[i] && str[i] == '$' && str[i + 1] != ' ')
+		else if (str[i] && str[i] == '$' && str[i + 1] && str[i + 1] != ' ')
 		{
 			i++;
 			j = i;
 			if (str[i] == '?')
-				find = ft_itoa(last_exit_code);
+			{
+				var_exp = ft_itoa(last_exit_code);
+				i++;
+			}
 			else if (str[i])
 			{
-				while(str[i] != ' ')
+				while(str[i] && str[i] != ' ')
 					i++;
-				tmp = ft_strdup_range(str, j, i);
-				tmp2 = ft_strjoin(tmp, "=");
-				find = look_up(tmp2, envp_head);
-				ft_free(tmp);
-				ft_free(tmp2);
+				var_name = ft_strdup_range(str, j, i);
+				find_env_var(var_name, envp_head, &var_exp);
+				ft_free(var_name);
 			}
-			// dprintf(2, "find is %s, last exit code %d\n", find, last_exit_code);
-			tmp = ft_strdup_range(str, 0, j - 1);
-			tmp2 = ft_strjoin(tmp, find);
-			ft_free(tmp);
-			tmp = ft_strdup_range(str, i + 1, ft_strlen(str));
-			ft_free(str);
-			str = ft_strjoin(tmp, tmp2);
+			str = create_new_str(str, var_exp, j - 1, i);
 			i = 0;
 		}
 		else
@@ -99,3 +80,4 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 	*str_add = str;
 	return (0);
 }
+

@@ -32,8 +32,7 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str)
 			if (!copy->next->fds[0])
 				copy->next->fds[0] = pipefds[0];
 		}
-		if (sc_lstsize(*elements) > 1)
-			copy->child = fork();
+		copy->child = fork();
 		exit_code = execute_function(copy, parsed_path, envp, sc_lstsize(*elements));
 		if (copy->fds[1] != 0)
 			close(copy->fds[1]);
@@ -42,7 +41,8 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str)
 		copy = copy->next;
 	}
 	copy = *elements;
-	while (sc_lstsize(*elements) > 1 && copy)
+	// dprintf(2, "structure size %d\n", sc_lstsize(*elements));
+	while (copy)
 	{
 		waitpid(copy->child, &(copy->wstatus), 0);
 		copy = copy->next;
@@ -89,12 +89,12 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 	exit_code = -1;
 	envp = NULL;
 	envp_lst_to_tab(&envp, envp_head);
-	if (sc_size > 1 && head->child < 0)
+	if (head->child < 0)
 	{
 		perror("Fork:");
 		ft_exit(EXIT_FAILURE, NULL);
 	}
-	else if (sc_size == 1 || !head->child)
+	else if (!head->child)
 	{
 		if (head->infiles && head->tag == 0)
 		{
@@ -132,10 +132,6 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 		}
 		if (exit_code != 1 && head->cmd)
 		{
-			// if (!head->cmd[1])
-			// 	dprintf(2, "bonjour!\n");
-			// else
-			// 	dprintf(2, "this is your answer %s\n", head->cmd[1]);
 			exit_code = buildins_dispatch(head->cmd, envp_head);
 			if (exit_code == 127)
 			{
@@ -148,7 +144,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 							path_iteri = ft_strjoin(*parsed_path, *(head->cmd));
 						else
 							path_iteri = ft_strdup(*(head->cmd));
-						execve(path_iteri, head->cmd, envp);///I need envp for execve
+						execve(path_iteri, head->cmd, envp);
 						ft_free(path_iteri);
 						(parsed_path)++;
 					}
@@ -199,7 +195,7 @@ char	**parsing(char *find, t_list **envp_head)
 		tab_temp = ft_split(temp, ':');
 		while (tab_temp[j])
 			j++;
-		paths = ft_alloc(sizeof(char *) * (j + 1));
+		paths = ft_alloc(sizeof(char *) * (j + 2));//the extra space is for adding pwd at the end
 		j = 0;
 		while (tab_temp[k])
 		{
@@ -207,12 +203,18 @@ char	**parsing(char *find, t_list **envp_head)
 				paths[j] = ft_strjoin(tab_temp[k], "/");
 			else
 				paths[j] = ft_strdup(tab_temp[k]);
-			// printf("%s\n", paths[j]);
 			ft_free(tab_temp[k]);
 			k++;
 			j++;
 		}
 		ft_free(temp);
+	}
+	find_env_var("PWD", envp_head, &paths[j]);
+	if (paths[j])
+	{
+		paths[j] = ft_strjoin(paths[j], "/");
+		// dprintf(2, "PWD is %s\n", paths[j]);
+		j++;
 	}
 	paths[j] = NULL;
 	return (paths);
