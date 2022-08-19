@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/24 16:06:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/18 15:03:38 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 17:27:54 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ char	*get_user(t_list **envp_head)
 
 	if (!envp_head || !*envp_head)
 		return (NULL);
+	user = NULL;
 	node = *envp_head;
 	while (node && ft_strncmp((char *)node->content, "USER=", 5))
 		node = node->next;
@@ -40,6 +41,8 @@ char	*get_pwd(t_list **envp_head, char *user)
 	if (!user || !envp_head || !*envp_head)
 		return (NULL);
 	node = *envp_head;
+	pwd = NULL;
+	usr_in_pwd = NULL;
 	while (node && ft_strncmp((char *)node->content, "PWD=", 4))
 		node = node->next;
 	if (node)
@@ -72,11 +75,13 @@ char	*get_pos(t_list **envp_head)
 	if (!envp_head || !*envp_head)
 		return (NULL);
 	node = *envp_head;
+	j = 0;
+	pos = NULL;
+	str = NULL;
 	while (node && ft_strncmp((char *)node->content, "SESSION_MANAGER=local/", 22))
 		node = node->next;
 	if (!node)
 		return (NULL);
-	j = 0;
 	str = (char *)node->content;
 	while (str[23 + j] && str[22 + j] != '.')
 		j++;
@@ -121,6 +126,10 @@ void	get_prompt(char **prompt_add, t_list **envp_head)
 	char	*tmp;
 	int		i;
 
+	prompt_elems = NULL;
+	prompt = NULL;
+	tmp = NULL;
+	i = 0;
 	prompt_elems = set_prompt_elems(envp_head);
 	if (!prompt_elems)
 	{
@@ -129,9 +138,6 @@ void	get_prompt(char **prompt_add, t_list **envp_head)
 			ft_exit(EXIT_FAILURE, NULL);
 		return ;
 	}
-	prompt = NULL;
-	tmp = NULL;
-	i = 0;
 	while (prompt_elems[i])
 	{
 		tmp = prompt;

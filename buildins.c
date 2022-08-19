@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 16:25:55 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/19 00:49:15 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 16:26:56 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -254,7 +254,7 @@ int	cd(char *dir, t_list **envp_head)
 			i++;
 			if (curpath[i] == '.')
 			{
-				mask_prev_compo(mask, curpath, i);
+				mask_prev_compo(mask, curpath, i - 2);
 				i++;
 			}
 			while (curpath[i] == '/')
@@ -268,8 +268,10 @@ int	cd(char *dir, t_list **envp_head)
 	}
 	tmp = curpath;
 	curpath = mask_result_str(mask, tmp);
+	dprintf(2, "%s\n", curpath);
 	ft_free(tmp);
-	chdir(curpath);
+	if (chdir(curpath) == -1)
+		return (1);
 	to_export = ft_alloc(sizeof(char *) * 2);
 	to_export[0] = ft_strjoin("PWD=", curpath);
 	if (!to_export)
