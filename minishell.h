@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/19 19:20:24 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 19:35:15 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,6 +118,8 @@ int		ft_ull_nb_len(unsigned long long int nb, int base_len);
 
 void	handle_wildcards(char ***av_tab_add);
 void	expand_wc_node(t_list *node);
+void	split_path_and_file(t_list *node, char **path_add, char **file_add);
+void	get_sublist(t_list **sublist, char *path, char *file);
 void	replace_node_by_sublist(t_list *node, t_list *sublist);
 
 void	ft_lstadd_back(t_list **alst, t_list *new);

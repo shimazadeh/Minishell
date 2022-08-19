@@ -6,18 +6,71 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/19 19:19:17 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 19:33:48 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+void	replace_node_by_sublist(t_list *node, t_list *sublist)
+{
+	t_list	*tmp;
+
+	if (!node || !sublist)
+		return ;
+	tmp = NULL;
+	ft_free(node->content);
+	node->content = sublist->content;
+	tmp = node->next;
+	node->next = sublist->next;
+	sublist = ft_lstlast(sublist);
+	sublist->next = tmp;
+}
+
+void	split_path_and_file(t_list *node, char **path_add, char **file_add)
+{
+	char	*path;
+	char	*file;
+
+	path = NULL;
+	file = NULL;
+	str = ft_strdup((char *)node->content);
+	if (!str)
+		ft_exit(errno, NULL);
+	i = ft_strlen(str);
+	if (i)
+		i--;
+	while (i > 0 && str[i - 1] != '/')
+		i--;
+	file = ft_strdup(&str[i]);
+	if (!file)
+		ft_exit(errno, NULL);
+	str[i] = '\0';
+	path = ft_strdup(str);
+	if (!path)
+		ft_exit(errno, NULL);
+	ft_free(str);
+	*path_add = path;
+	*file_add = file;
+}
+
 void	expand_wc_node(t_list *node)
 {
-	0. split path and file
-	1. get sublist (path + file)
-	recursively lauch getpath
-	which recusrively lauch get file
+	t_list	*sublist;
+	char	*file;
+	char	*path;
+	char	*str;
+	int		i;
+
+	sublist = NULL;
+	file = NULL;
+	path = NULL;
+	str = NULL;
+	i = 0;
+	if (!node)
+		ft_exit(EXIT_FAILURE, NULL);
+	split_path_and_file(&path, &file, node);
+	get_sublist(&sublist, path, file);
 	if (sublist)
 		replace_node_by_sublist(node, sublist);
 }
