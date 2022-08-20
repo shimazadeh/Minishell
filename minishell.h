@@ -184,6 +184,7 @@ int 		number_of_here_doc(char *str);
 int			write_to_file(int fd1, char *stop, char	*file_name, t_list **envp_head, int last_exit_code);
 char		**handle_here_doc(char *str, t_struct **elements, t_list **envp_head, int last_exit_code);
 char		**fancy_name_generator(int size);
+char		**default_name_generator(int size);
 void		ft_unlink(char **file_names);
 
 //custom free functions

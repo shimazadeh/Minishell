@@ -32,25 +32,21 @@ int find_last_infile_type(char *str)//returns 0 if the last infile is an actual 
 	return (flag);
 }
 
-// void	default_name_generator(int size, char ***file_names)
-// {
-// 	int	i;
-// 	char *str;
-// 	char *tmp1;
-// 	char *tmp2;
+char	**default_name_generator(int size)
+{
+	int	i;
+	char **file_names;
 
-// 	i = 0;
-// 	while (i < size)
-// 	{
-// 		tmp1 = ft_strjoin("here_doc_", itoa(i));
-// 		tmp2 = ft_strjoin(tmp1, " ");
-// 		ft_free(str);
-// 		str = tmp2;
-// 		ft_free(tmp1);
-// 		i++;
-// 	}
-// 	*file_name = ft_split(str, " ");
-// }
+	i = 0;
+	file_names = ft_alloc(sizeof(char *) * (size + 1));
+	while (i < size)
+	{
+		file_names[i] = ft_strjoin("here_doc_", ft_itoa(i));
+		i++;
+	}
+	file_names[i] = NULL;
+	return (file_names);
+}
 
 char	**fancy_name_generator(int size)
 {
@@ -64,8 +60,9 @@ char	**fancy_name_generator(int size)
 		return (NULL);
 	file_names = ft_alloc(sizeof(char *) * (size + 1));
 	fd = open("/dev/urandom", O_RDONLY);
+	if (fd < 0)
+		return (NULL);
 	i = 0;
-	// dprintf(2, "size is %d\n", size);
 	while (i < size)
 	{
 		buf = get_next_line(fd);
@@ -159,6 +156,8 @@ char	**handle_here_doc(char *str, t_struct **elements, t_list **envp_head, int l
 	stop = check_for_here_doc(str, &loc);
 	fds = ft_alloc(sizeof(int) * size);
 	file_names = fancy_name_generator(size);
+	if (file_names == NULL)
+		file_names = default_name_generator(size);
 	i = 0;
 	while(stop[i])
 	{
