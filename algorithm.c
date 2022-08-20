@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 14:27:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 04:04:07 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 04:15:15 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,8 @@ t_list **sep_head)
 t_list	*alloc_lst = NULL;
 
 // exit buildin ? shima ?
-// char and wc mix
+// deal with wc path 
+// norm
 
 int main(int ac, char **av, char **envp)
 {
@@ -198,7 +199,7 @@ int main(int ac, char **av, char **envp)
 	last_exit_code = 0;
 	input = NULL;
 	prompt = NULL;
-	prompt = NULL;
+	envp_head = NULL;
 	if (ac != 1)
 	{
 		ft_dprintf(2, "Error\nInvalid number of argument!\n");
