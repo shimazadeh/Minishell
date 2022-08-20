@@ -29,8 +29,10 @@ void	initialize_lst(t_struct **elements, char *str)
 		copy->infiles = NULL;
 		copy->outfiles = NULL;
 		copy->fds[0] = 0;
-		copy->fds[1] = 0;
+		copy->fds[1] = 1;
 		copy->next = NULL;
+		copy->child = NULL;
+		// copy->wstatus = 0;
 		sc_lstadd_back(elements, copy);
 		i++;
 		copy = copy->next;
@@ -53,8 +55,6 @@ int	pipex(char *str, t_list **envp_head, int last_exit_code)
 	variable_expansion(&str, envp_head, last_exit_code);
 	initialize_lst(&elements, str);
 	exit_code = execute(&elements, parsed_path, envp_head, str, last_exit_code);
-	if (sc_lstsize(elements) > 1)
-		exit_code = (0xff00 & sc_lstlast(elements)->wstatus) >> 8;
 	ft_free_sc(elements);
 	ft_free_tab(parsed_path);
 	return (exit_code);

@@ -6,11 +6,33 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/20 15:34:55 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 19:12:28 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int	check_buildins_cmd(char **av, t_list **envp_head)
+{
+	if (!av || !av[0])
+		return (-1);
+	if (!ft_strncmp(av[0], "echo", 5))
+		return (1);
+	if (!ft_strncmp(av[0], "cd", 3) && (!av[1] || (av[1] && !av[2])))
+		return (1);
+	if (!ft_strncmp(av[0], "pwd", 4))
+		return (1);
+	if (!ft_strncmp(av[0], "export", 7))
+		return (1);
+	if (!ft_strncmp(av[0], "unset", 6))
+		return (1);
+	if (!ft_strncmp(av[0], "env", 4) && !av[1])
+		return (1);
+	if (!ft_strncmp(av[0], "exit", 5))
+		return (1);
+	return (0);
+}
+
 
 int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, int last_exit_code)
 {
@@ -18,7 +40,9 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 	t_struct	*copy;
 	char		**file_names;
 	int			exit_code;
+	int			flag;
 
+	flag = 1;
 	exit_code = -1;
 	file_names = handle_here_doc(str, elements, envp, last_exit_code);
 	set_infiles_outfiles_cmds(elements);
@@ -32,20 +56,26 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 			if (!copy->next->fds[0])
 				copy->next->fds[0] = pipefds[0];
 		}
-		copy->child = fork();
-		exit_code = execute_function(copy, parsed_path, envp, sc_lstsize(*elements));
-		if (copy->fds[1] != 0)
+		if (check_buildins_cmd(copy->cmd, envp) == 1 && sc_lstsize(*elements) == 1)
+			flag = 0;
+		if (flag == 1)
+			copy->child = fork();
+		exit_code = execute_function(copy, parsed_path, envp, flag);
+		if (copy->fds[1] != 1)
 			close(copy->fds[1]);
 		if (copy->fds[0] != 0)
 			close(copy->fds[0]);
 		copy = copy->next;
 	}
 	copy = *elements;
-	// dprintf(2, "structure size %d\n", sc_lstsize(*elements));
-	while (copy)
+	if (flag == 1)
 	{
-		waitpid(copy->child, &(copy->wstatus), 0);
-		copy = copy->next;
+		while (copy)
+		{
+			waitpid(copy->child, &(copy->wstatus), 0);
+			copy = copy->next;
+		}
+		exit_code = (0xff00 & sc_lstlast(*elements)->wstatus) >> 8;
 	}
 	ft_unlink(file_names);
 	return (exit_code);
@@ -76,7 +106,7 @@ void	lst_to_tab(char ***tab_add, t_list **lst_head)
 	*tab_add = tab;
 }
 
-int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size)
+int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int flag)
 {
 	char	*path_iteri;
 	int		size;
@@ -104,14 +134,22 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 			else
 			{
 				head->fds[0] = open(last_infile, O_RDONLY);
-				if (dup2(head->fds[0], STDIN_FILENO) < 0)
-					perror("dup2 stdin inside:");
+				if (head->fds[0] != STDIN_FILENO)
+				{
+					if (dup2(head->fds[0], STDIN_FILENO) < 0)
+						perror("dup2 stdin inside:");
+					close(head->fds[0]);
+				}
 			}
 		}
 		else
 		{
-			if (dup2(head->fds[0], STDIN_FILENO) < 0)
-				perror("dup2 stdin:");
+			if (head->fds[0] != STDIN_FILENO)
+			{
+				if (dup2(head->fds[0], STDIN_FILENO) < 0)
+					perror("dup2 stdin inside:");
+				close(head->fds[0]);
+			}
 		}
 		if (exit_code != 1 && head->outfiles)
 		{
@@ -121,14 +159,22 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 			else
 			{
 				head->fds[1] = open(last_outfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
-				if (dup2(head->fds[1], STDOUT_FILENO) < 0)
-					perror("dup2 stdout inside:");
+				if (head->fds[1]  != STDOUT_FILENO)
+				{
+					if (dup2(head->fds[1], STDOUT_FILENO) < 0)
+						perror("dup2 stdout inside:");
+					close(head->fds[1]);
+				}
 			}
 		}
 		else if (exit_code != 1)
 		{
-			if (dup2(head->fds[1], STDOUT_FILENO) < 0)
-				perror("dup2 stdout:");
+			if (head->fds[1] != STDOUT_FILENO)
+			{
+				if (dup2(head->fds[1], STDOUT_FILENO) < 0)
+					perror("dup2 stdout:");
+				close(head->fds[1]);
+			}
 		}
 		if (exit_code != 1 && head->cmd)
 		{
@@ -145,7 +191,6 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 						else
 							path_iteri = ft_strdup(*(head->cmd));
 						execve(path_iteri, head->cmd, envp);
-						ft_free(path_iteri);
 						(parsed_path)++;
 					}
 					exit_code = 127;
@@ -153,9 +198,15 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 			}
 		}
 		ft_free_tab(envp);
-		if (sc_size > 1)
-			ft_exit(exit_code, NULL);
+		if (flag == 1)
+		{
+			ft_free_list(*envp_head);
+			ft_free_tab(parsed_path);
+			ft_free_sc(head);
+			exit(exit_code);
+		}
 	}
+	// dprintf(2, "HI SHIMSHIM exit\n");
 	return (exit_code);
 }
 
@@ -213,7 +264,6 @@ char	**parsing(char *find, t_list **envp_head)
 	if (paths[j])
 	{
 		paths[j] = ft_strjoin(paths[j], "/");
-		// dprintf(2, "PWD is %s\n", paths[j]);
 		j++;
 	}
 	paths[j] = NULL;
