@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 16:25:55 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/19 16:26:56 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 01:35:47 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,17 +71,20 @@ int	export(char **vars, t_list **envp_head)
 			if (old)
 			{
 				ft_free(old->content);
-				old->content = ft_strndup(vars[i], ft_strlen(vars[i]));
+				old->content = ft_strdup(vars[i]);
 				if (!old->content)
 					ft_exit(EXIT_FAILURE, NULL);
 			}
-			tmp = ft_strdup(vars[i]);
-			if (!tmp)
-				ft_exit(EXIT_FAILURE, NULL);
-			new = ft_lstnew(tmp);
-			if (!new)
-				ft_exit(EXIT_FAILURE, NULL);
-			ft_lstadd_back(envp_head, new);
+			else
+			{
+				tmp = ft_strdup(vars[i]);
+				if (!tmp)
+					ft_exit(EXIT_FAILURE, NULL);
+				new = ft_lstnew(tmp);
+				if (!new)
+					ft_exit(EXIT_FAILURE, NULL);
+				ft_lstadd_back(envp_head, new);
+			}
 		}
 		i++;
 	}
@@ -158,7 +161,7 @@ int	cd(char *dir, t_list **envp_head)
 		find_env_var("HOME", envp_head, &var_exp);
 		if (var_exp && *var_exp)
 		{
-			dir = ft_strndup(var_exp, ft_strlen(var_exp));
+			dir = ft_strdup(var_exp);
 			if (!dir)
 				ft_exit(errno, NULL);
 		}
@@ -179,7 +182,7 @@ int	cd(char *dir, t_list **envp_head)
 				ft_exit(errno, NULL);
 			if (!access(tmp, F_OK))
 			{
-				curpath = ft_strndup(tmp, ft_strlen(tmp));
+				curpath = ft_strdup(tmp);
 				if (!curpath)
 					ft_exit(errno, NULL);
 			}
@@ -204,7 +207,7 @@ int	cd(char *dir, t_list **envp_head)
 				tmp = ft_strjoin(cd_paths[i], dir);
 				if (!access(tmp, F_OK))
 				{
-					curpath = ft_strndup(tmp, ft_strlen(tmp));
+					curpath = ft_strdup(tmp);
 					if (!curpath)
 						ft_exit(errno, NULL);
 				}
@@ -268,7 +271,6 @@ int	cd(char *dir, t_list **envp_head)
 	}
 	tmp = curpath;
 	curpath = mask_result_str(mask, tmp);
-	dprintf(2, "%s\n", curpath);
 	ft_free(tmp);
 	if (chdir(curpath) == -1)
 		return (1);

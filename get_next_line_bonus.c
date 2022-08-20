@@ -6,25 +6,23 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 14:13:12 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/18 13:58:55 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/19 23:55:04 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_free_list(t_list *list)
+void	ft_free_list(t_list *list)
 {
 	t_list	*tmp;
 
 	while (list)
 	{
 		tmp = list->next;
-		// dprintf(2, "%s\n", (char *)list->content);
 		ft_free(list->content);
 		ft_free(list);
 		list = tmp;
 	}
-	return (NULL);
 }
 
 char	*ft_join_contents(t_list *first)
@@ -40,7 +38,10 @@ char	*ft_join_contents(t_list *first)
 		tmp = ft_strjoin(str, current->content);
 		ft_free(str);
 		if (!tmp)
-			return (ft_free_list(first));
+		{
+			ft_free_list(first);
+			return (NULL);
+		}
 		str = tmp;
 		current = current->next;
 	}
@@ -59,18 +60,27 @@ t_list	*ft_expand_list(t_list *first, t_list *last, char *str, int size)
 
 	new = ft_alloc(sizeof(t_list));
 	if (!new)
-		return ((t_list *)ft_free_list(first));
+	{
+		ft_free_list(first);
+		return (NULL);
+	}
 	if (!size)
 	{
 		new->content = ft_strjoin(0, str);
 		if (!new->content)
-			return ((t_list *)ft_free_list(first));
+		{
+			ft_free_list(first);
+			return (NULL);
+		}
 	}
 	else
 	{
 		new->content = ft_alloc(sizeof(char) * (size + 1));
 		if (!new->content)
-			return ((t_list *)ft_free_list(first));
+		{
+			ft_free_list(first);
+			return (NULL);
+		}
 	}
 	if (last)
 		last->next = new;
@@ -98,7 +108,10 @@ char	*get_next_line_2(int fd, char **tab, t_list *first, t_list *last)
 	{
 		tab[fd] = ft_strjoin(0, (j + 1));
 		if (!tab[fd])
-			return (ft_free_list(first));
+		{
+			ft_free_list(first);
+			return (NULL);
+		}
 		*(j + 1) = 0;
 	}
 	return (ft_join_contents(first));

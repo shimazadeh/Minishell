@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/19 19:35:15 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 03:22:52 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,8 +55,10 @@ typedef struct s_struct
 
 int		pipex(char *str, t_list **envp_head, int last_exit_code);
 
+int		str_is_only_spaces(char *str);
+int		go_to_closing_par(char *str);
 void	rm_outer_par(char **str_add);
-int		go_to_closing_char(char *str, char c);
+int		go_to_closing_char(char *str);
 void	split_submod_and_sep(char **str_add, t_list **submod_head, t_list **sep_head);
 int		algorithm(char *str, t_list **envp_head, int last_exit_code);
 
@@ -94,7 +96,7 @@ char	*get_next_line(int fd);
 char	*get_next_line_2(int fd, char **tab, t_list *first, t_list *last);
 t_list	*ft_expand_list(t_list *first, t_list *last, char *str, int size);
 char	*ft_join_contents(t_list *first);
-char	*ft_free_list(t_list *list);
+void	ft_free_list(t_list *list);
 
 void	get_prompt(char **prompt_add, t_list **envp_head);
 char	**set_prompt_elems(t_list **envp_head);
@@ -118,8 +120,12 @@ int		ft_ull_nb_len(unsigned long long int nb, int base_len);
 
 void	handle_wildcards(char ***av_tab_add);
 void	expand_wc_node(t_list *node);
-void	split_path_and_file(t_list *node, char **path_add, char **file_add);
-void	get_sublist(t_list **sublist, char *path, char *file);
+void	get_sublist(t_list **sublist, char *path);
+char	**get_file_tab(char *path);
+int		read_dir_content(struct dirent **dir_content_add, DIR *stream);
+t_list	*get_new_path(char *path, char **file_tab);
+int		compatible_name(char *file, char *wc);
+int		next_char_index(char *str, char c);
 void	replace_node_by_sublist(t_list *node, t_list *sublist);
 
 void	ft_lstadd_back(t_list **alst, t_list *new);
@@ -180,9 +186,15 @@ char		**handle_here_doc(char *str, t_struct **elements, t_list **envp_head, int 
 char		**fancy_name_generator(int size);
 void		ft_unlink(char **file_names);
 
-//custoom free functions
+//custom free functions
 void		ft_free_sc(t_struct *lst);
 
-void	display(t_list *list);
+
+
+void	print_tab(char **tab);
+void	print_list(t_list *list);
+
+
+
 
 #endif

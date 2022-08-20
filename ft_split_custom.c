@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 16:48:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/18 17:26:05 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 03:20:51 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static int	ft_wc_custom(char *str, char c)
 			while (str[i] && (str[i] != c))
 			{
 				if (str[i] && (str[i] == '\"' || str[i] == '\''))
-					i += go_to_closing_char((char *)&str[i], 0);
+					i += go_to_closing_char((char *)&str[i]);
 				i++;
 			}
 		}
@@ -52,7 +52,7 @@ static int	ft_wl_custom(char *str, char c)
 	{
 		if (str[i] && (str[i] == '\"' || str[i] == '\''))
 		{
-			gtcc = go_to_closing_char((char *)&str[i], 0);
+			gtcc = go_to_closing_char((char *)&str[i]);
 			i += gtcc;
 			wl += gtcc;
 		}
@@ -87,7 +87,7 @@ static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c)
 		{
 			if (str[k] && (str[k] == '\"' || str[k] == '\''))
 			{
-				gtcc = go_to_closing_char((char *)&str[k], 0);
+				gtcc = go_to_closing_char((char *)&str[k]);
 				while (gtcc)
 				{
 					tab[i][j++] = str[k++];

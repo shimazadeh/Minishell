@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 17:21:24 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/18 22:24:09 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 03:21:07 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 	{
 		if (str[i] && (str[i] == '\"' || str[i] == '\''))
 		{
-			k = go_to_closing_char(&str[i], 0);
+			k = go_to_closing_char(&str[i]);
 			if (k)
 			{
 				str[i] = ' ';

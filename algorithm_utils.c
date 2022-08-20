@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:02:30 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/18 18:19:47 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 04:04:17 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,9 @@ void	tab_to_list(char **tab, t_list **lst_head)
 		ft_exit(EXIT_FAILURE, NULL);
 	if (!tab || !tab[0])
 		return ;
-	// dprintf(2, "we are inside the tab_list\n");
 	while (tab[i])
 	{
-		str = ft_strndup(tab[i], ft_strlen(tab[i]));
+		str = ft_strdup(tab[i]);
 		if (!str)
 			ft_exit(EXIT_FAILURE, NULL);
 		new = ft_lstnew(str);

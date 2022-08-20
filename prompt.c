@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/24 16:06:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/19 17:27:54 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 00:28:35 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ char	*get_user(t_list **envp_head)
 		node = node->next;
 	if (node)
 	{
-		user = ft_strndup(node->content + (sizeof(char) * 5), ft_strlen(node->content + (sizeof(char) * 5)));
+		user = ft_strdup(node->content + (sizeof(char) * 5));
 		if (!user)
 			ft_exit(EXIT_FAILURE, NULL);
 	}
@@ -50,14 +50,14 @@ char	*get_pwd(t_list **envp_head, char *user)
 		usr_in_pwd = ft_strstr((node->content + (sizeof(char) * 4)), user);
 		if (usr_in_pwd)
 		{
-			pwd = ft_strndup(&usr_in_pwd[ft_strlen(user) - 1], ft_strlen(&usr_in_pwd[ft_strlen(user) - 1]));
+			pwd = ft_strdup(&usr_in_pwd[ft_strlen(user) - 1]);
 			if (!pwd)
 				ft_exit(EXIT_FAILURE, NULL);
 			pwd[0] = '~';
 		}
 		else
 		{
-			pwd = ft_strndup((node->content + (sizeof(char) * 4)), ft_strlen(node->content + (sizeof(char) * 4)));
+			pwd = ft_strdup((node->content + (sizeof(char) * 4)));
 			if (!pwd)
 				ft_exit(EXIT_FAILURE, NULL);
 		}
@@ -100,11 +100,11 @@ char	**set_prompt_elems(t_list **envp_head)
 	if (!prompt_elems)
 		ft_exit(EXIT_FAILURE, NULL);
 	prompt_elems[0] = get_user(envp_head);
-	prompt_elems[1] = ft_strndup("@", 1);
+	prompt_elems[1] = ft_strdup("@");
 	prompt_elems[2] = get_pos(envp_head);
-	prompt_elems[3] = ft_strndup(":", 1);
+	prompt_elems[3] = ft_strdup(":");
 	prompt_elems[4] = get_pwd(envp_head, prompt_elems[0]);
-	prompt_elems[5] = ft_strndup("$ ", 2);
+	prompt_elems[5] = ft_strdup("$ ");
 	prompt_elems[6] = NULL;
 	i = 0;
 	while (i < 6)
@@ -133,7 +133,7 @@ void	get_prompt(char **prompt_add, t_list **envp_head)
 	prompt_elems = set_prompt_elems(envp_head);
 	if (!prompt_elems)
 	{
-		*prompt_add = ft_strndup("$>", 2);
+		*prompt_add = ft_strdup("$>");
 		if (!*prompt_add)
 			ft_exit(EXIT_FAILURE, NULL);
 		return ;
