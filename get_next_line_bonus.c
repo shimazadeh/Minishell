@@ -6,24 +6,11 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 14:13:12 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/19 23:55:04 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 22:57:37 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	ft_free_list(t_list *list)
-{
-	t_list	*tmp;
-
-	while (list)
-	{
-		tmp = list->next;
-		ft_free(list->content);
-		ft_free(list);
-		list = tmp;
-	}
-}
 
 char	*ft_join_contents(t_list *first)
 {

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:53:45 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/18 14:32:45 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 22:57:51 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,4 +55,32 @@ int	ft_free(void *to_free)
 		prev = prev->next;
 	}
 	return (0);
+}
+
+void	ft_free_tab(char **tab)
+{
+	int	i;
+
+	i = 0;
+	if (!tab)
+		return ;
+	while (tab[i])
+	{
+		ft_free(tab[i]);
+		i++;
+	}
+	ft_free(tab);
+}
+
+void	ft_free_list(t_list *list)
+{
+	t_list	*tmp;
+
+	while (list)
+	{
+		tmp = list->next;
+		ft_free(list->content);
+		ft_free(list);
+		list = tmp;
+	}
 }
