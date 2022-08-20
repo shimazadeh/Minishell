@@ -43,10 +43,13 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 	int			flag;
 
 	flag = 1;
+	if (sc_lstsize(*elements) == 1 && check_buildins_cmd(*elements->cmd, envp) == 1)
+		flag = 0;
 	exit_code = -1;
 	file_names = handle_here_doc(str, elements, envp, last_exit_code);
 	set_infiles_outfiles_cmds(elements);
 	copy = *elements;
+
 	while (copy)
 	{
 		if (copy->next)
@@ -56,15 +59,14 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 			if (!copy->next->fds[0])
 				copy->next->fds[0] = pipefds[0];
 		}
-		if (check_buildins_cmd(copy->cmd, envp) == 1 && sc_lstsize(*elements) == 1)
-			flag = 0;
 		if (flag == 1)
 			copy->child = fork();
+		dprintf(2, "fds[0] %d and fds[1] %d\n", copy->fds[0], copy->fds[1]);
 		exit_code = execute_function(copy, parsed_path, envp, flag);
-		if (copy->fds[1] != 1)
-			close(copy->fds[1]);
-		if (copy->fds[0] != 0)
-			close(copy->fds[0]);
+		// if (copy->fds[1] != STDOUT_FILENO)
+		// 	close(copy->fds[1]);
+		// if (copy->fds[0] != STDIN_FILENO)
+		// 	close(copy->fds[0]);
 		copy = copy->next;
 	}
 	copy = *elements;
@@ -119,6 +121,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 	exit_code = -1;
 	envp = NULL;
 	lst_to_tab(&envp, envp_head);
+	dprintf(2, "flag is %d\n", flag);
 	if (head->child < 0)
 	{
 		perror("Fork:");
@@ -134,12 +137,13 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 			else
 			{
 				head->fds[0] = open(last_infile, O_RDONLY);
-				if (head->fds[0] != STDIN_FILENO)
-				{
+				// if (head->fds[0] != STDIN_FILENO)
+				// {
 					if (dup2(head->fds[0], STDIN_FILENO) < 0)
 						perror("dup2 stdin inside:");
 					close(head->fds[0]);
-				}
+					dprintf(2, "closing1\n");
+				// }
 			}
 		}
 		else
@@ -149,6 +153,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 				if (dup2(head->fds[0], STDIN_FILENO) < 0)
 					perror("dup2 stdin inside:");
 				close(head->fds[0]);
+				dprintf(2, "closing2\n");
 			}
 		}
 		if (exit_code != 1 && head->outfiles)
@@ -159,12 +164,13 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 			else
 			{
 				head->fds[1] = open(last_outfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
-				if (head->fds[1]  != STDOUT_FILENO)
-				{
+				// if (head->fds[1]  != STDOUT_FILENO)
+				// {
 					if (dup2(head->fds[1], STDOUT_FILENO) < 0)
 						perror("dup2 stdout inside:");
-					close(head->fds[1]);
-				}
+					// close(head->fds[1]);
+					dprintf(2, "closing3 %d\n", head->fds[1]);
+				// }
 			}
 		}
 		else if (exit_code != 1)
@@ -174,6 +180,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 				if (dup2(head->fds[1], STDOUT_FILENO) < 0)
 					perror("dup2 stdout:");
 				close(head->fds[1]);
+				dprintf(2, "closing4\n");
 			}
 		}
 		if (exit_code != 1 && head->cmd)
@@ -205,27 +212,9 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 			ft_free_sc(head);
 			exit(exit_code);
 		}
+		dprintf(2, "returning\n");
 	}
-	// dprintf(2, "HI SHIMSHIM exit\n");
 	return (exit_code);
-}
-
-int	all_access_check(t_struct **tab, char **parsed_path)
-{
-	t_struct	*copy;
-
-	copy = *tab;
-	while (copy && access_check(copy->cmd, parsed_path) == 0)
-		copy = copy->next;
-	if (!copy)
-		return (0);
-	while (copy)
-	{
-		if (access_check(copy->cmd, parsed_path) == 1)
-			printf("command not found: %s\n", *(copy->cmd));
-		copy = copy->next;
-	}
-	return (close((*tab)->fds[0]), close(sc_lstlast(*tab)->fds[1]), 1);
 }
 
 char	**parsing(char *find, t_list **envp_head)

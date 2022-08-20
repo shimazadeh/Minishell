@@ -28,8 +28,8 @@ void	initialize_lst(t_struct **elements, char *str)
 		copy->tag = 0;
 		copy->infiles = NULL;
 		copy->outfiles = NULL;
-		copy->fds[0] = 0;
-		copy->fds[1] = 1;
+		copy->fds[0] = STDIN_FILENO;
+		copy->fds[1] = STDOUT_FILENO;
 		copy->next = NULL;
 		copy->child = 0;
 		// copy->wstatus = 0;
@@ -40,31 +40,6 @@ void	initialize_lst(t_struct **elements, char *str)
 	ft_free_tab(tab);
 	return ;
 }
-
-// int handle_quotes(char **str_add)
-// {
-// 	int		i;
-// 	char	*str;
-
-// 	i = 0;
-// 	str = *str_add;
-// 	while (str[i])
-// 	{
-// 		if (str[i] == '\"' || str[i] == '\'')
-// 		{
-// 			k = go_to_closing_char(&str[i]);
-// 			if (k)
-// 			{
-// 				str[i] = ' ';
-// 				i += k;
-// 				str[i] = ' ';
-// 			}
-// 		}
-// 		i++;
-// 	}
-// 	*str_add = str;
-// 	return (0);
-// }
 
 int	pipex(char *str, t_list **envp_head, int last_exit_code)
 {
