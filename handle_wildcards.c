@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 01:20:05 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 19:04:52 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void	print_tab(char **tab)
 		i++;
 	}
 }
+
+///////////////////////////////////////////////////////////////////////////////////////
 
 void	replace_node_by_sublist(t_list *node, t_list *sublist)
 {
@@ -102,7 +104,7 @@ int	compatible_name(char *file, char *wc)
 	return(0);
 }
 
-t_list	*get_new_path(char *path, char **file_tab)
+void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 {
 	char	*content;
 	char	*wc_str;
@@ -144,7 +146,7 @@ t_list	*get_new_path(char *path, char **file_tab)
 		}
 		i++;
 	}
-	return (new_path_lst);
+	*new_path_lst_add = new_path_lst;
 }
 
 int	read_dir_content(struct dirent **dir_content_add, DIR *stream)
@@ -153,7 +155,7 @@ int	read_dir_content(struct dirent **dir_content_add, DIR *stream)
 
 	if (!dir_content_add)
 		ft_exit(EXIT_FAILURE, NULL);
-	if (!*dir_content_add || !stream)
+	if (!stream)
 		return (0);
 	dir_content = NULL;
 	dir_content = readdir(stream);
@@ -163,9 +165,8 @@ int	read_dir_content(struct dirent **dir_content_add, DIR *stream)
 	return (1);
 }
 
-char	**get_file_tab(char *path)
+void	get_file_tab(char *opendir_path, char ***file_tab_add)
 {
-	char			*dir_path;
 	DIR				*stream;
 	struct dirent	*dir_content;
 	char			*file_str;
@@ -173,26 +174,15 @@ char	**get_file_tab(char *path)
 	char			*tmp;
 	int				i;
 
-	dir_path = NULL;
 	stream = NULL;
 	dir_content = NULL;
 	file_str = NULL;
 	file_tab = NULL;
 	tmp = NULL;
 	i = 0;
-	if (!path)
+	if (!opendir_path)
 		return (NULL);
-	dir_path = ft_strdup(path);
-	if (!dir_path)
-		ft_exit(errno, NULL);
-	while (dir_path[i] && dir_path[i] != '*')
-		i++;
-	while (i > 1 && dir_path[i - 1] != '/')
-		i--;
-	dprintf(2, "IN get_file_tab path %s, i %d\n", path, i);
-// pb : only works if abs path
-	dir_path[i] = '\0';
-	stream = opendir(dir_path);
+	stream = opendir(opendir_path);
 	if (!stream)
 		return (NULL);
 	while (read_dir_content(&dir_content, stream))
@@ -200,20 +190,20 @@ char	**get_file_tab(char *path)
 		tmp = file_str;
 		file_str = ft_strjoin(tmp, " ");
 		ft_free(tmp);
+		tmp = file_str;
 		file_str = ft_strjoin(tmp, dir_content->d_name);
 		ft_free(tmp);
 	}
 	file_tab = ft_split(file_str, ' ');
-	print_tab(file_tab);
 	if (!file_tab)
 		ft_exit(errno, NULL);
 	free(file_str);
 	if (!*file_tab)
 		return (NULL);
-	return (file_tab);
+	*file_tab_add = file_tab; 
 }
 
-void	get_sublist(t_list **sublist, char *path)
+void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 {
 	char	*wc;
 	char	**file_tab;
@@ -240,16 +230,17 @@ void	get_sublist(t_list **sublist, char *path)
 	}
 	else
 	{
-		file_tab = get_file_tab(path);
+		get_file_tab(opendir_path, &file_tab);
 		if (!file_tab)
 			return ;
-		new_path_lst = get_new_path(path, file_tab);
+		get_new_path_list(path, file_tab, &new_path_lst);
 		ft_free_tab(file_tab);
 		if (!new_path_lst)
 			return ;
 		while(new_path_lst)
 		{
 			new_path = ft_strdup((char *)new_path_lst->content);
+			new_opendir_path = 
 			if (!new_path)
 				ft_exit(errno, NULL);
 			get_sublist(sublist, new_path);
@@ -261,7 +252,32 @@ void	get_sublist(t_list **sublist, char *path)
 	ft_free(path);
 }
 
-char	*trim_extra_wc(char	*str)
+void	get_opendir_path(char *path, char **opendir_path_add)
+{
+	int	i;
+	int	opendir_path;
+
+	i = 0;
+	opendir_path = NULL;
+	if (!path || !*path)
+		ft_exit(EXIT_FAILURE, NULL);
+	i = ft_strlen(path);
+	while (i >= 0 && path[i] != '/')
+		i--;
+	if (ft_strncmp(path, ".", 2) 
+		|| ft_strncmp(path, "./", 2) 
+		|| ft_strncmp(path, "..", 3) 
+		|| ft_strncmp(path, "../", 3) 
+		|| ft_strncmp(path, "/", 1))
+		opendir_path = ft_strnjoin("./", path, i);
+	else
+		opendir_path = ft_strndup(path, i);
+	if (!opendir_path)
+		ft_exit(errno, NULL);
+	*opendir_path_add = opendir_path;
+}
+
+void	trim_extra_wc(char	*str, char *path_add)
 {
 	int		i;
 	int		j;
@@ -297,21 +313,24 @@ char	*trim_extra_wc(char	*str)
 		}
 	}
 	path[j] = '\0';
-	return (path);
+	*path_add = path;
 }
 
 void	expand_wc_node(t_list *node)
 {
 	t_list	*sublist;
+	char	*opendir_path;
 	char	*path;
 
 	sublist = NULL;
+	opendir_path = NULL;
 	path = NULL;
-	if (!node)
-		return ;
-	path = trim_extra_wc((char *)node->content);
-	get_sublist(&sublist, path);
-	print_list(sublist);
+	if (!node || !node->content || !*(node->content))
+		ft_exit(EXIT_FAILURE, NULL);
+	trim_extra_wc((char *)node->content, &path);
+	init_opendir_path(path, &opendir_path);
+	get_sublist(&sublist, path, opendir_path);
+	//print_list(sublist);
 	if (sublist)
 		replace_node_by_sublist(node, sublist);
 	ft_free(path);
