@@ -29,7 +29,7 @@ void	initialize_lst(t_struct **elements, char *str)
 		copy->infiles = NULL;
 		copy->outfiles = NULL;
 		copy->fds[0] = 0;
-		copy->fds[1] = 0;
+		copy->fds[1] = 1;
 		copy->next = NULL;
 		sc_lstadd_back(elements, copy);
 		i++;

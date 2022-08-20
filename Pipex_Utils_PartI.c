@@ -34,7 +34,7 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 		}
 		copy->child = fork();
 		exit_code = execute_function(copy, parsed_path, envp, sc_lstsize(*elements));
-		if (copy->fds[1] != 0)
+		if (copy->fds[1] != 1)
 			close(copy->fds[1]);
 		if (copy->fds[0] != 0)
 			close(copy->fds[0]);
@@ -44,6 +44,7 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 	// dprintf(2, "structure size %d\n", sc_lstsize(*elements));
 	while (copy)
 	{
+		dprintf(2, "fds[0] is %d, fds[1] is %d\n", copy->fds[0], copy->fds[1]);
 		waitpid(copy->child, &(copy->wstatus), 0);
 		copy = copy->next;
 	}
@@ -127,6 +128,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 		}
 		else if (exit_code != 1)
 		{
+			dprintf(2, "the outfile is stand output for cmd %s\n", head->cmd[0]);
 			if (dup2(head->fds[1], STDOUT_FILENO) < 0)
 				perror("dup2 stdout:");
 		}
