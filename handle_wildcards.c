@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 19:04:52 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 22:36:47 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,9 @@ int	compatible_name(char *file, char *wc)
 void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 {
 	char	*content;
+	char	*path_start;
+	char	*path_end;
+	char	*tmp;
 	char	*wc_str;
 	int		i;
 	int		j;
@@ -114,6 +117,9 @@ void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 	t_list	*new_path_lst;
 
 	content = NULL;
+	path_start = NULL;
+	path_end = NULL;
+	tmp = NULL;
 	wc_str = NULL;
 	i = 0;
 	j = 0;
@@ -127,25 +133,32 @@ void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 		i--;
 	while (path[i + j] && path[i + j] != '/')
 		j++;
+	path_start = ft_strndup(path, i);
+	path_end = ft_strdup(&path[j]);
 	wc_str = ft_strndup(&path[i], j);
-	if (!wc_str)
+	if (!path_start || !path_end || !wc_str)
 		ft_exit(errno, NULL);
-	path[i] = '\0';
 	i = 0;
 	while (file_tab[i])
 	{
 		if (compatible_name(file_tab[i], wc_str))
 		{
-			content = ft_strjoin(path, file_tab[i]);
+			content = ft_strjoin(path_start, file_tab[i]);
+			tmp = content;
+			content = ft_strjoin(tmp, path_end);
+			ft_free(tmp);
 			if (!content)
 				ft_exit(errno, NULL);
 			new = ft_lstnew(content);
 			if (!new)
 				ft_exit(errno, NULL);
+			ft_free(content);
 			ft_lstadd_back(&new_path_lst, new);
 		}
 		i++;
 	}
+	ft_free(path_start);
+	ft_free(path_end);
 	*new_path_lst_add = new_path_lst;
 }
 
@@ -194,7 +207,7 @@ void	get_file_tab(char *opendir_path, char ***file_tab_add)
 		file_str = ft_strjoin(tmp, dir_content->d_name);
 		ft_free(tmp);
 	}
-	file_tab = ft_split(file_str, ' ');
+	file_tab = ft_split_custom(file_str, ' ');
 	if (!file_tab)
 		ft_exit(errno, NULL);
 	free(file_str);
@@ -240,10 +253,10 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 		while(new_path_lst)
 		{
 			new_path = ft_strdup((char *)new_path_lst->content);
-			new_opendir_path = 
+			new_opendir_path = get_opendir_path(new_path);
 			if (!new_path)
 				ft_exit(errno, NULL);
-			get_sublist(sublist, new_path);
+			get_sublist(sublist, new_path, new_opendir_path);
 			ft_free(new_path);
 			new_path_lst = new_path_lst->next;
 		}
@@ -261,7 +274,7 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 	opendir_path = NULL;
 	if (!path || !*path)
 		ft_exit(EXIT_FAILURE, NULL);
-	i = ft_strlen(path);
+	while(str[i] && str[i] != '*')
 	while (i >= 0 && path[i] != '/')
 		i--;
 	if (ft_strncmp(path, ".", 2) 
@@ -277,7 +290,7 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 	*opendir_path_add = opendir_path;
 }
 
-void	trim_extra_wc(char	*str, char *path_add)
+void	trim_extra_wc(char	*str, char **path_add)
 {
 	int		i;
 	int		j;
@@ -325,10 +338,10 @@ void	expand_wc_node(t_list *node)
 	sublist = NULL;
 	opendir_path = NULL;
 	path = NULL;
-	if (!node || !node->content || !*(node->content))
+	if (!node || !(char *)node->content || !*((char *)node->content))
 		ft_exit(EXIT_FAILURE, NULL);
 	trim_extra_wc((char *)node->content, &path);
-	init_opendir_path(path, &opendir_path);
+	get_opendir_path(path, &opendir_path);
 	get_sublist(&sublist, path, opendir_path);
 	//print_list(sublist);
 	if (sublist)
