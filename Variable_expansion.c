@@ -50,11 +50,7 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 		{
 			k = go_to_closing_char(&str[i]);
 			if (k)
-			{
-				str[i] = ' ';
-				i += k;
-				str[i] = ' ';
-			}
+				i += k + 1;
 		}
 		else if (str[i] && str[i] == '$' && str[i + 1] && str[i + 1] != ' ')
 		{
@@ -71,11 +67,8 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 					i++;
 				var_name = ft_strdup_range(str, j, i);
 				find_env_var(var_name, envp_head, &var_exp);
-				// dprintf(2, "variable name is %s\n", var_name);
-				// dprintf(2, "variable is %s\n", var_exp);
 				ft_free(var_name);
 			}
-			// dprintf(2, "the j is %d, i is %d\n", j, i);
 			str = create_new_str(str, var_exp, j - 1, i);
 			i = 0;
 		}
