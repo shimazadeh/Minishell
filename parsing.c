@@ -149,7 +149,7 @@ int parse(char *str, t_struct *node)
 		copy->outfiles[k_o] = '\0';
 	copy->cmd = ft_split_custom(str, ' ');//whatever is left in the string is cmd
 	// remove_double_quotes(copy->cmd);
-	handle_wildcards(&copy->cmd);
+	// handle_wildcards(&copy->cmd);
 	return (0);
 }
 

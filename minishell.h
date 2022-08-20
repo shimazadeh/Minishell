@@ -118,7 +118,7 @@ char	*ft_ull_itoa_base(unsigned long long nb, char *base);
 char	*ft_ull_nbr_to_string(unsigned long long int nb, char *str, int nb_len, char *base);
 int		ft_ull_nb_len(unsigned long long int nb, int base_len);
 
-void	handle_wildcards(char ***av_tab_add);
+// void	handle_wildcards(char ***av_tab_add);
 void	expand_wc_node(t_list *node);
 void	trim_extra_wc(char	*str, char **path_add);
 void	get_opendir_path(char *path, char **opendir_path_add);

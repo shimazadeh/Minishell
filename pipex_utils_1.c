@@ -43,6 +43,8 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 	int			flag;
 
 	flag = 1;
+	if (check_buildins_cmd((*elements)->cmd, envp) == 1 && sc_lstsize(*elements) == 1)
+		flag = 0;
 	exit_code = -1;
 	file_names = handle_here_doc(str, elements, envp, last_exit_code);
 	set_infiles_outfiles_cmds(elements);
@@ -56,8 +58,6 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 			if (!copy->next->fds[0])
 				copy->next->fds[0] = pipefds[0];
 		}
-		if (check_buildins_cmd(copy->cmd, envp) == 1 && sc_lstsize(*elements) == 1)
-			flag = 0;
 		if (flag == 1)
 			copy->child = fork();
 		exit_code = execute_function(copy, parsed_path, envp, flag);
