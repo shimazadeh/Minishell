@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 16:48:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 03:20:51 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 19:09:03 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,8 @@ static int	ft_wl_custom(char *str, char c)
 		if (str[i] && (str[i] == '\"' || str[i] == '\''))
 		{
 			gtcc = go_to_closing_char((char *)&str[i]);
-			i += gtcc;
-			wl += gtcc;
+			i += gtcc + 1;
+			wl += gtcc - 1;
 		}
 		wl++;
 		i++;
@@ -88,11 +88,13 @@ static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c)
 			if (str[k] && (str[k] == '\"' || str[k] == '\''))
 			{
 				gtcc = go_to_closing_char((char *)&str[k]);
-				while (gtcc)
+				k++;
+				while (gtcc - 2)
 				{
 					tab[i][j++] = str[k++];
 					gtcc--;
 				}
+				k++;
 			}
 			tab[i][j++] = str[k++];
 		}

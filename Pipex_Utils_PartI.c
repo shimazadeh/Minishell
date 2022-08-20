@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/19 18:12:07 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 15:34:55 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,7 +154,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 		}
 		ft_free_tab(envp);
 		if (sc_size > 1)
-			exit(exit_code);
+			ft_exit(exit_code, NULL);
 	}
 	return (exit_code);
 }
