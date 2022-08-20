@@ -31,7 +31,7 @@ void	initialize_lst(t_struct **elements, char *str)
 		copy->fds[0] = 0;
 		copy->fds[1] = 1;
 		copy->next = NULL;
-		copy->child = NULL;
+		copy->child = 0;
 		// copy->wstatus = 0;
 		sc_lstadd_back(elements, copy);
 		i++;
@@ -40,6 +40,31 @@ void	initialize_lst(t_struct **elements, char *str)
 	ft_free_tab(tab);
 	return ;
 }
+
+// int handle_quotes(char **str_add)
+// {
+// 	int		i;
+// 	char	*str;
+
+// 	i = 0;
+// 	str = *str_add;
+// 	while (str[i])
+// 	{
+// 		if (str[i] == '\"' || str[i] == '\'')
+// 		{
+// 			k = go_to_closing_char(&str[i]);
+// 			if (k)
+// 			{
+// 				str[i] = ' ';
+// 				i += k;
+// 				str[i] = ' ';
+// 			}
+// 		}
+// 		i++;
+// 	}
+// 	*str_add = str;
+// 	return (0);
+// }
 
 int	pipex(char *str, t_list **envp_head, int last_exit_code)
 {
@@ -53,6 +78,7 @@ int	pipex(char *str, t_list **envp_head, int last_exit_code)
 	exit_code = -1;
 	parsed_path = parsing("PATH", envp_head);
 	variable_expansion(&str, envp_head, last_exit_code);
+	//check for double quotes and remove accordingly
 	initialize_lst(&elements, str);
 	exit_code = execute(&elements, parsed_path, envp_head, str, last_exit_code);
 	ft_free_sc(elements);

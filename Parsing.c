@@ -58,22 +58,32 @@ int number_of_delim(char *str, char delim, int flag)//if flag == 1 it also count
 	return (count);
 }
 
-int save_the_next_word(char **str, int i, char **dest, int to_clean)
+int save_the_next_word(char **str_add, int i, char **dest, int to_clean)
 {
 	int start;
+	char end;
+	char *str;
 
-	while((*str)[i] && (*str)[i] == ' ')
+	str = *str_add;
+	end = ' ';
+	while(str[i] && str[i] == ' ')
 		i++;
+	if (str[i] == '\'' || str[i] == '\"')
+	{
+		end = str[i];
+		i++;
+	}
 	start = i;
-	while((*str)[i] && (*str)[i] != ' ' && (*str)[i] != '<' && (*str)[i] != '>')
+	while(str[i] && str[i] != end && str[i] != '<' && str[i] != '>')
 		i++;
-	*dest = ft_strdup_range(*str, start, i);
+	*dest = ft_strdup_range(str, start, i);
 	start--;
 	while(to_clean < i)
 	{
-		(*str)[to_clean] = ' ';
+		str[to_clean] = ' ';
 		to_clean++;
 	}
+	*str_add = str;
 	return (i);
 }
 
@@ -99,12 +109,13 @@ int parse(char *str, t_struct *node)
 	while(str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
-			i = i + go_to_closing_char(&str[i]) + 1;
+			i = i + go_to_closing_char(&str[i]) + 1;//if there is no match of closing char return
 		if (str[i] && infile_size > 0 && str[i] == '<' && str[i + 1] != '<')//we reached the infile
 		{
+			dprintf(2, "the str is : --%s--\n", str);
 			i = save_the_next_word(&str, i + 1, &copy->infiles[k_i], i);
+			dprintf(2, "infile is ---%s---\n", copy->infiles[k_i]);
 			k_i++;
-
 		}
 		else if (str[i] && str[i] == '<' && str[i + 1] == '<')//we reached the heredoc replace by space and skip
 		{
@@ -137,7 +148,7 @@ int parse(char *str, t_struct *node)
 	if (outfile_size)
 		copy->outfiles[k_o] = '\0';
 	copy->cmd = ft_split_custom(str, ' ');//whatever is left in the string is cmd
-	remove_double_quotes(copy->cmd);
+	// remove_double_quotes(copy->cmd);
 	handle_wildcards(&copy->cmd);
 	return (0);
 }
