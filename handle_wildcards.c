@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 22:36:47 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 23:09:26 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,19 +185,17 @@ void	get_file_tab(char *opendir_path, char ***file_tab_add)
 	char			*file_str;
 	char			**file_tab;
 	char			*tmp;
-	int				i;
 
 	stream = NULL;
 	dir_content = NULL;
 	file_str = NULL;
 	file_tab = NULL;
 	tmp = NULL;
-	i = 0;
-	if (!opendir_path)
-		return (NULL);
+	if (!opendir_path || !*opendir_path || !file_tab_add)
+		ft_exit(EXIT_FAILURE, NULL);
 	stream = opendir(opendir_path);
 	if (!stream)
-		return (NULL);
+		return ;
 	while (read_dir_content(&dir_content, stream))
 	{
 		tmp = file_str;
@@ -212,27 +210,27 @@ void	get_file_tab(char *opendir_path, char ***file_tab_add)
 		ft_exit(errno, NULL);
 	free(file_str);
 	if (!*file_tab)
-		return (NULL);
+		return ;
 	*file_tab_add = file_tab; 
 }
 
 void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 {
+	char	*new_opendir_path;
+	char	*new_path;
 	char	*wc;
 	char	**file_tab;
-	t_list	*new_path_lst;
-	char	*new_path;
 	t_list	*new;
+	t_list	*new_path_lst;
 
+	new_opendir_path = NULL;
+	new_path = NULL;
 	wc = NULL;
 	file_tab = NULL;
-	new_path_lst = NULL;
-	new_path = NULL;
 	new = NULL;
-	if (!sublist)
+	new_path_lst = NULL;
+	if (!sublist || !opendir_path || !*opendir_path || !path || !*path)
 		ft_exit(EXIT_FAILURE, NULL);
-	if (!path)
-		return ;
 	wc = ft_strchr(path, '*');
 	if (!wc)
 	{
@@ -253,7 +251,7 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 		while(new_path_lst)
 		{
 			new_path = ft_strdup((char *)new_path_lst->content);
-			new_opendir_path = get_opendir_path(new_path);
+			get_opendir_path(new_path, &opendir_path);
 			if (!new_path)
 				ft_exit(errno, NULL);
 			get_sublist(sublist, new_path, new_opendir_path);
@@ -267,14 +265,14 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 
 void	get_opendir_path(char *path, char **opendir_path_add)
 {
-	int	i;
-	int	opendir_path;
+	int		i;
+	char	*opendir_path;
 
 	i = 0;
 	opendir_path = NULL;
 	if (!path || !*path)
 		ft_exit(EXIT_FAILURE, NULL);
-	while(str[i] && str[i] != '*')
+	while(path[i] && path[i] != '*')
 	while (i >= 0 && path[i] != '/')
 		i--;
 	if (ft_strncmp(path, ".", 2) 
