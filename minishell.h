@@ -137,6 +137,7 @@ int		ft_lstsize(t_list *lst);
 
 char	*ft_strchr(const char *s, int c);
 char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strnjoin(char const *s1, char const *s2, int size);
 size_t	ft_strlen(const char *s);
 void	ft_putstr_fd(char *str, int fd);
 void	ft_bzero(void *s, size_t n);

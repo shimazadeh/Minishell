@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-char	*ft_strjoin(char const *s1, char const *s2, int size)
+char	*ft_strnjoin(char const *s1, char const *s2, int size)
 {
 	int		i;
 	int		j;
