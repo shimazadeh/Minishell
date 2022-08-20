@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 18:35:08 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/21 00:25:57 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ int		ft_list_remove_node(t_list **lst_head, t_list *node);
 int		contains_invalid_char(char *str, char *id, int j);
 void	print_tab_nl(char **tab, int nl);
 void	find_env_var(char *var_name, t_list **envp_head, char **var_exp);
+void	prev_compo_2dot_or_root(char *curpath, int i, char **prev_compo_add, char **prev_compo_path_add);
 void	mask_prev_compo(char *mask, char *curpath, int i);
 char	*mask_result_str(char *mask, char *curpath);
 
@@ -118,7 +119,7 @@ char	*ft_ull_itoa_base(unsigned long long nb, char *base);
 char	*ft_ull_nbr_to_string(unsigned long long int nb, char *str, int nb_len, char *base);
 int		ft_ull_nb_len(unsigned long long int nb, int base_len);
 
-// void	handle_wildcards(char ***av_tab_add);
+void	handle_wildcards(char ***av_tab_add);
 void	expand_wc_node(t_list *node);
 void	trim_extra_wc(char	*str, char **path_add);
 void	get_opendir_path(char *path, char **opendir_path_add);

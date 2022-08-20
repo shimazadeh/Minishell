@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 23:09:26 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/21 01:32:08 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,8 +125,10 @@ void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 	j = 0;
 	new = NULL;
 	new_path_lst = NULL;
+	if (!new_path_lst_add)
+		ft_exit(EXIT_FAILURE, NULL);
 	if (!path || !file_tab || !*file_tab)
-		return (NULL);
+		return ;
 	while (path[i] && path[i] != '*')
 		i++;
 	while (i > 0 && path[i - 1] != '/')
@@ -270,10 +272,11 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 
 	i = 0;
 	opendir_path = NULL;
-	if (!path || !*path)
+	if (!path || !*path || !opendir_path_add)
 		ft_exit(EXIT_FAILURE, NULL);
 	while(path[i] && path[i] != '*')
-	while (i >= 0 && path[i] != '/')
+		i++;
+	while (i > 0 && path[i] != '/')
 		i--;
 	if (ft_strncmp(path, ".", 2) 
 		|| ft_strncmp(path, "./", 2) 
@@ -283,6 +286,7 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 		opendir_path = ft_strnjoin("./", path, i);
 	else
 		opendir_path = ft_strndup(path, i);
+//	dprintf(2, "HELLO %d\n", i);
 	if (!opendir_path)
 		ft_exit(errno, NULL);
 	*opendir_path_add = opendir_path;
@@ -297,8 +301,10 @@ void	trim_extra_wc(char	*str, char **path_add)
 	i = 0;
 	j = 0;
 	path = NULL;
+	if (!path_add)
+		ft_exit(EXIT_FAILURE, NULL);
 	if (!str)
-		return (NULL);
+		return ;
 	while (str[i])
 	{
 		if (i > 0 && !ft_strncmp(&str[i - 1], "**", 2))
@@ -340,8 +346,9 @@ void	expand_wc_node(t_list *node)
 		ft_exit(EXIT_FAILURE, NULL);
 	trim_extra_wc((char *)node->content, &path);
 	get_opendir_path(path, &opendir_path);
+	dprintf(2, "opendir_path '%s'\n", opendir_path);
 	get_sublist(&sublist, path, opendir_path);
-	//print_list(sublist);
+//	print_list(sublist);
 	if (sublist)
 		replace_node_by_sublist(node, sublist);
 	ft_free(path);

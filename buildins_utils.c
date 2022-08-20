@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 20:50:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/19 18:01:09 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/21 01:33:21 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,9 +169,40 @@ void	find_env_var(char *var_name, t_list **envp_head, char **var_exp)
 	*var_exp = NULL;
 }
 
+void	prev_compo_2dot_or_root(char *path, int i, char **prev_compo_add, char **prev_compo_path_add)
+{
+	char	*path_dup;
+	char	*prev_compo;
+	char	*prev_compo_path;
+
+	path_dup = NULL;
+	prev_compo = NULL;
+	prev_compo_path = NULL;
+	if (!path || !prev_compo_add || !prev_compo_path_add)
+		ft_exit(EXIT_FAILURE, NULL);
+	if (i < 0)
+		return ;
+	path_dup = ft_strdup(path);
+	if (!path_dup)
+		ft_exit(errno, NULL);
+	while (i >= 0 && path_dup[i] == '/')
+		i--;
+	if (i == -1)
+	{
+		ft_free(path_dup);
+		return ;
+	}
+	// finish this function
+	// code the hyphen / CD_PATH cd thing
+	// finish wc hanling
+	// norm this bitch
+	// deal with infunction checks and error_msg;
+}
 
 void	mask_prev_compo(char *mask, char *curpath, int i)
 {
+	if (i < 0)
+		return ;
 	while (i >= 0 && curpath[i] == '/')
 	{
 		mask[i] = 0;
@@ -182,7 +213,6 @@ void	mask_prev_compo(char *mask, char *curpath, int i)
 		mask[i] = 0;
 		i--;
 	}
-	i = 0;
 }
 
 char	*mask_result_str(char *mask, char *curpath)

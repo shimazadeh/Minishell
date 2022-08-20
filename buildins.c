@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 16:25:55 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 04:30:11 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/21 00:29:20 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,18 +144,33 @@ int	echo(char **av)
 
 int	cd(char *dir, t_list **envp_head)
 {
-	char	*pwd;
-	char	*var_exp;
-	char	*curpath;
-	char	**cd_paths;
-	char	*tmp;
 	int		i;
-	char	*mask;
-	char	**to_export;
 	int		ret1;
 	int		ret2;
+	char	*curpath;
+	char	*mask;
+	char	*prev_compo;
+	char	*prev_compo_path;
+	char	*pwd;
+	char	*tmp;
+	char	*var_exp;
+	char	**cd_paths;
+	char	**to_export;
 
+	i = 0;
+	ret1 = 0;
+	ret2 = 0;
 	curpath = NULL;
+	mask = NULL;
+	prev_compo = NULL;
+	prev_compo_path = NULL;
+	pwd = NULL;
+	tmp = NULL;
+	var_exp = NULL;
+	cd_paths = NULL;
+	to_export = NULL;
+	if (!envp_head)
+		ft_exit(EXIT_FAILURE, NULL);
 	if (!dir)
 	{
 		find_env_var("HOME", envp_head, &var_exp);
@@ -257,8 +272,17 @@ int	cd(char *dir, t_list **envp_head)
 			i++;
 			if (curpath[i] == '.')
 			{
-				mask_prev_compo(mask, curpath, i - 2);
-				i++;
+				prev_compo_2dot_or_root(curpath, i - 2, &prev_compo, &prev_compo_path);
+				if (prev_compo && ft_strncmp(prev_compo, "..", 3))
+				{
+					if (opendir(prev_compo_path) != -1 || errno !=  ENOTDIR)
+					{
+						mask_prev_compo(mask, curpath, i - 2);
+						i++;
+					}
+					else
+						return (EXIT_FAILURE); 
+				}
 			}
 			while (curpath[i] == '/')
 				i++;

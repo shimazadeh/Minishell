@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 12:33:23 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/20 23:00:56 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 23:32:14 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,7 +149,7 @@ int parse(char *str, t_struct *node)
 		copy->outfiles[k_o] = '\0';
 	copy->cmd = ft_split_custom(str, ' ');//whatever is left in the string is cmd
 	// remove_double_quotes(copy->cmd);
-	// handle_wildcards(&copy->cmd);
+	handle_wildcards(&copy->cmd);
 	return (0);
 }
 
