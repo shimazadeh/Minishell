@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/24 16:06:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 00:28:35 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 04:28:02 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,7 +133,7 @@ void	get_prompt(char **prompt_add, t_list **envp_head)
 	prompt_elems = set_prompt_elems(envp_head);
 	if (!prompt_elems)
 	{
-		*prompt_add = ft_strdup("$>");
+		*prompt_add = ft_strdup("$> ");
 		if (!*prompt_add)
 			ft_exit(EXIT_FAILURE, NULL);
 		return ;

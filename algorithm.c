@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 14:27:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 04:15:15 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/20 04:17:38 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,9 @@ t_list **sep_head)
 t_list	*alloc_lst = NULL;
 
 // exit buildin ? shima ?
-// deal with wc path 
+// deal with wc path
+// error msg
+// why exit code -1 with invalid cmd?
 // norm
 
 int main(int ac, char **av, char **envp)
