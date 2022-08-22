@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 14:27:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/22 18:06:10 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 23:41:03 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,13 +166,7 @@ t_list **sep_head)
 
 t_list	*alloc_lst = NULL;
 
-//ls a*l*g*o*.c not working fucccc
-//massive forking pb wtf, dopple fns like W T F
-// caps im names stop this
-// cd- oon ~ shit wtfffffff
-// old firefox data shit
 // test for syscall error handlingin bash
-//implement . .. in wc handling
 // norm
 // rm 2 printing fn
 

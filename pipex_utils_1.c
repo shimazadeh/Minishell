@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/22 19:37:20 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 23:23:15 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -256,11 +256,9 @@ char	**parsing(char *find, t_list **envp_head)
 		ft_free(temp);
 	}
 	paths[j] = ft_getcwd();
-	if (paths[j])
-	{
+	if (paths[j][ft_strlen(paths[j]) - 1] != '/')
 		paths[j] = ft_strjoin(paths[j], "/");
-		j++;
-	}
+	j++;
 	paths[j] = NULL;
 	return (paths);
 }

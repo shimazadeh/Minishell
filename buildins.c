@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 16:25:55 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/22 20:06:14 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 23:12:13 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,6 +167,7 @@ int	cd(char *dir, t_list **envp_head)
 	to_export = NULL;
 	if (!envp_head)
 		ft_exit(EXIT_FAILURE, "Exited in function: cd\nExit due to: argument check fail\n");
+	pwd_exp = ft_getcwd();
 	if (!dir)
 	{
 		find_env_var("HOME", envp_head, &home_exp);
@@ -192,7 +193,7 @@ int	cd(char *dir, t_list **envp_head)
 			return (pwd());
 		return (ret1);
 	}
-	else if (dir[0] != '/' && (!ft_strncmp(dir, ".", 2) || !ft_strncmp(dir, "./", 2) || !ft_strncmp(dir, "..", 3) || !ft_strncmp(dir, "../", 3)))
+	else if (dir[0] != '/' && ft_strncmp(dir, ".", 2) && ft_strncmp(dir, "./", 2) && ft_strncmp(dir, "..", 3) && ft_strncmp(dir, "../", 3))
 	{
 		find_env_var("CDPATH", envp_head, &cdpath_exp);
 		if (!cdpath_exp)
@@ -229,7 +230,6 @@ int	cd(char *dir, t_list **envp_head)
 	ft_free(dir);
 	if (curpath[0] != '/')
 	{
-		pwd_exp = ft_getcwd();
 		if ((pwd_exp[ft_strlen(pwd_exp) - 1] != '/'))
 		{
 			tmp = pwd_exp;
