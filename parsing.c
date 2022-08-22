@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 12:33:23 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/20 23:32:14 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 20:08:16 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,9 +112,9 @@ int parse(char *str, t_struct *node)
 			i = i + go_to_closing_char(&str[i]) + 1;//if there is no match of closing char return
 		if (str[i] && infile_size > 0 && str[i] == '<' && str[i + 1] != '<')//we reached the infile
 		{
-			dprintf(2, "the str is : --%s--\n", str);
+			// dprintf(2, "the str is : --%s--\n", str);
 			i = save_the_next_word(&str, i + 1, &copy->infiles[k_i], i);
-			dprintf(2, "infile is ---%s---\n", copy->infiles[k_i]);
+			// dprintf(2, "infile is ---%s---\n", copy->infiles[k_i]);
 			k_i++;
 		}
 		else if (str[i] && str[i] == '<' && str[i + 1] == '<')//we reached the heredoc replace by space and skip
@@ -148,6 +148,7 @@ int parse(char *str, t_struct *node)
 	if (outfile_size)
 		copy->outfiles[k_o] = '\0';
 	copy->cmd = ft_split_custom(str, ' ');//whatever is left in the string is cmd
+	// dprintf(2, "cmd is %s\n", copy->cmd[0]);
 	// remove_double_quotes(copy->cmd);
 	handle_wildcards(&copy->cmd);
 	return (0);

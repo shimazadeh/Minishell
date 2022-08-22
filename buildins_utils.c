@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 20:50:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/22 03:47:31 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 18:52:06 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,7 +74,6 @@ int	print_lowest_ascii(t_list *node, char *tab)
 		{
 			lowest_ascii = (char *)node->content;
 			lowest_ascii_mask = i;
-		//	dprintf(2, "lowestascii %s\n", lowest_ascii);
 		}
 		i++;
 		node = node->next;

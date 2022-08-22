@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/22 02:24:12 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 19:37:20 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,12 +43,12 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 	int			flag;
 
 	flag = 1;
-	if (check_buildins_cmd((*elements)->cmd, envp) == 1 && sc_lstsize(*elements) == 1)
-		flag = 0;
 	exit_code = -1;
 	file_names = handle_here_doc(str, elements, envp, last_exit_code);
 	set_infiles_outfiles_cmds(elements);
 	copy = *elements;
+	if (check_buildins_cmd(copy->cmd, envp) == 1 && sc_lstsize(*elements) == 1)
+		flag = 0;
 	while (copy)
 	{
 		if (copy->next)
@@ -198,7 +198,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 			ft_free_list(*envp_head);
 			ft_free_tab(parsed_path);
 			ft_free_sc(head);
-			exit(exit_code);
+			ft_exit(exit_code, NULL);
 		}
 	}
 	// dprintf(2, "HI SHIMSHIM exit\n");

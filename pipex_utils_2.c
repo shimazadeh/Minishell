@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/02 17:10:45 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/20 23:01:00 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 20:07:13 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,8 +63,10 @@ int	access_check(char **cmd, char **parsed_path)
 {
 	int		i;
 	char	*path_iteri;
+	DIR		*stream;
 
 	i = 0;
+	stream = NULL;
 	while (parsed_path[i])
 	{
 		if (cmd[0] && ft_strncmp(parsed_path[i], cmd[0], ft_strlen(parsed_path[i])) == 0)
@@ -76,13 +78,21 @@ int	access_check(char **cmd, char **parsed_path)
 		{
 			path_iteri = ft_strjoin(parsed_path[i], cmd[0]);
 			if (access(path_iteri, F_OK) == 0 && access(path_iteri, X_OK) == 0)
-				return (ft_free(path_iteri), 0);
+			{
+				stream = opendir(path_iteri);
+				if (!stream)
+				{
+					if (errno == ENOTDIR)
+						return (ft_free(path_iteri), 0);
+				}
+				else
+					closedir(stream);
+			}
+
 			ft_free(path_iteri);
 		}
 		i++;
 	}
-	write(2, "command not found ", 18); //replace these with Adrien's dprintf
-	write(2, cmd[0], ft_strlen(cmd[0]));
-	write(2, "\n", 1);
+	ft_dprintf(2, "%s: command not found\n", cmd[0]);
 	return (1);
 }

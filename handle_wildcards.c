@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/22 07:07:15 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 22:00:47 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,14 +80,13 @@ int	compatible_name(char *file, char *wc)
 	int	i;
 	int	j;
 	int	k;
-	int	l;
 
 	i = 0;
 	j = 1;
 	k = 0;
 	if (!file || !wc)
 		return (0);
-	if (!ft_strncmp(file, ".", 2) || !ft_strncmp(file, "..", 3))
+	if (file[0] == '.' && wc[0] != '.')
 		return (0);
 	if (wc[0] != '*')
 	{
@@ -100,19 +99,17 @@ int	compatible_name(char *file, char *wc)
 			j = k + 1;
 		}
 	}
-	l = 0;
-	while (file[l])
-		dprintf(2, "%c", file[l++]);
-	dprintf(2, "\nPOUIC\n");
 	while (file[i])
 	{
 		k = next_char_index(&wc[j], '*');
 		if (wc[j] && !ft_strncmp(&file[i], &wc[j], k))
 		{
 			j += k - 1;
+			i += k - 1;
 			if (wc[j])
 				j += 2;
-			i += k;
+			if (file[i])
+				i++;
 		}
 		else
 			i++;
@@ -122,7 +119,7 @@ int	compatible_name(char *file, char *wc)
 	return(0);
 }
 
-void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
+void	get_new_path_list(char *path, t_list *file_lst, t_list **new_path_lst_add)
 {
 	char	*content;
 	char	*path_start;
@@ -145,7 +142,7 @@ void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 	new_path_lst = NULL;
 	if (!new_path_lst_add)
 		ft_exit(EXIT_FAILURE, "Exited in function: get_new_path_list\nExit due to: argument check fail\n");
-	if (!path || !file_tab || !*file_tab)
+	if (!path || !file_lst)
 		return ;
 	while (path[i] && path[i] != '*')
 		i++;
@@ -157,19 +154,18 @@ void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 	path_start = ft_strndup(path, i);
 	path_end = ft_strdup(&path[j]);
 	wc_str = ft_strndup(&path[i], j - i);
-	i = 0;
-	while (file_tab[i])
+	while (file_lst)
 	{
-		if (compatible_name(file_tab[i], wc_str))
+		if (compatible_name((char *)file_lst->content, wc_str))
 		{
-			content = ft_strjoin(path_start, file_tab[i]);
+			content = ft_strjoin(path_start, (char *)file_lst->content);
 			tmp = content;
 			content = ft_strjoin(tmp, path_end);
 			ft_free(tmp);
 			new = ft_lstnew(content);
 			ft_lstadd_back(&new_path_lst, new);
 		}
-		i++;
+		file_lst = file_lst->next;
 	}
 	ft_free(path_start);
 	ft_free(path_end);
@@ -193,39 +189,30 @@ int	read_dir_content(struct dirent **dir_content_add, DIR *stream)
 	return (1);
 }
 
-void	get_file_tab(char *opendir_path, char ***file_tab_add)
+void	get_file_list(char *opendir_path, t_list **file_lst_add)
 {
 	DIR				*stream;
 	struct dirent	*dir_content;
-	char			*file_str;
-	char			**file_tab;
+	t_list			*file_lst;
 	char			*tmp;
 
 	stream = NULL;
 	dir_content = NULL;
-	file_str = NULL;
-	file_tab = NULL;
-	tmp = NULL;
-	if (!opendir_path || !*opendir_path || !file_tab_add)
+	file_lst = NULL;
+	if (!opendir_path || !*opendir_path || !file_lst_add)
 		ft_exit(EXIT_FAILURE, "Exited in function: get_file_tab\nExit due to: argument check fail\n");
 	stream = opendir(opendir_path);
 	if (!stream)
 		return ;
 	while (read_dir_content(&dir_content, stream))
 	{
-		tmp = file_str;
-		file_str = ft_strjoin(tmp, " ");
-		ft_free(tmp);
-		tmp = file_str;
-		file_str = ft_strjoin(tmp, dir_content->d_name);
-		ft_free(tmp);
+		tmp = ft_strdup((char *)dir_content->d_name);
+		ft_lstadd_back(&file_lst, ft_lstnew(tmp));
 	}
 	closedir(stream);
-	file_tab = ft_split_custom(file_str, ' ');
-	ft_free(file_str);
-	if (!*file_tab)
-		return ;
-	*file_tab_add = file_tab; 
+	if (!file_lst)
+		return;
+	*file_lst_add = file_lst; 
 }
 
 void	get_sublist(t_list **sublist, char *path, char *opendir_path)
@@ -233,14 +220,14 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 	char	*new_opendir_path;
 	char	*new_path;
 	char	*wc;
-	char	**file_tab;
+	t_list	*file_lst;
 	t_list	*new;
 	t_list	*new_path_lst;
 
 	new_opendir_path = NULL;
 	new_path = NULL;
 	wc = NULL;
-	file_tab = NULL;
+	file_lst = NULL;
 	new = NULL;
 	new_path_lst = NULL;
 	if (!sublist || !opendir_path || !*opendir_path || !path || !*path)
@@ -253,11 +240,11 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 	}
 	else
 	{
-		get_file_tab(opendir_path, &file_tab);
-		if (!file_tab)
+		get_file_list(opendir_path, &file_lst);
+		if (!file_lst)
 			return ;
-		get_new_path_list(path, file_tab, &new_path_lst);
-		ft_free_tab(file_tab);
+		get_new_path_list(path, file_lst, &new_path_lst);
+		ft_free_list(file_lst);
 		if (!new_path_lst)
 			return ;
 		while(new_path_lst)
@@ -286,8 +273,7 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 		i++;
 	while (i > 0 && path[i] != '/')
 		i--;
-	if (ft_strncmp(path, ".", 2) && ft_strncmp(path, "./", 2) && ft_strncmp(path, "..", 3) 
-		&& ft_strncmp(path, "../", 3) && ft_strncmp(path, "/", 1))
+	if (ft_strncmp(path, "./", 2) && ft_strncmp(path, "../", 3) && ft_strncmp(path, "/", 1))
 		opendir_path = ft_strnjoin("./", path, i + 2);
 	else
 		opendir_path = ft_strndup(path, i);
