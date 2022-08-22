@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:02:30 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 04:04:17 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 01:17:42 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,14 @@ void	tab_to_list(char **tab, t_list **lst_head)
 
 	i = 0;
 	if (!lst_head)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: tab_to_list\nExit due to: argument check fail\n");
 	if (!tab || !tab[0])
 		return ;
 	while (tab[i])
 	{
 		str = ft_strdup(tab[i]);
-		if (!str)
-			ft_exit(EXIT_FAILURE, NULL);
 		new = ft_lstnew(str);
-		if (!new)
-			ft_exit(EXIT_FAILURE, NULL);
 		ft_lstadd_back(lst_head, new);
-		// dprintf(2, "the content is %s, cont_add is %p, the node add is %p\n", (char *)new->content, new->content, new);
 		i++;
 	}
 }

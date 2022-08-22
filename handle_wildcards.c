@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/21 01:32:08 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 01:39:45 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 	new = NULL;
 	new_path_lst = NULL;
 	if (!new_path_lst_add)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: get_new_path_list\nExit due to: argument check fail\n");
 	if (!path || !file_tab || !*file_tab)
 		return ;
 	while (path[i] && path[i] != '*')
@@ -138,8 +138,6 @@ void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 	path_start = ft_strndup(path, i);
 	path_end = ft_strdup(&path[j]);
 	wc_str = ft_strndup(&path[i], j);
-	if (!path_start || !path_end || !wc_str)
-		ft_exit(errno, NULL);
 	i = 0;
 	while (file_tab[i])
 	{
@@ -149,11 +147,7 @@ void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 			tmp = content;
 			content = ft_strjoin(tmp, path_end);
 			ft_free(tmp);
-			if (!content)
-				ft_exit(errno, NULL);
 			new = ft_lstnew(content);
-			if (!new)
-				ft_exit(errno, NULL);
 			ft_free(content);
 			ft_lstadd_back(&new_path_lst, new);
 		}
@@ -169,7 +163,7 @@ int	read_dir_content(struct dirent **dir_content_add, DIR *stream)
 	struct dirent	*dir_content;
 
 	if (!dir_content_add)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: read_dir_content\nExit due to: argument check fail\n");
 	if (!stream)
 		return (0);
 	dir_content = NULL;
@@ -194,7 +188,7 @@ void	get_file_tab(char *opendir_path, char ***file_tab_add)
 	file_tab = NULL;
 	tmp = NULL;
 	if (!opendir_path || !*opendir_path || !file_tab_add)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: get_file_tab\nExit due to: argument check fail\n");
 	stream = opendir(opendir_path);
 	if (!stream)
 		return ;
@@ -208,8 +202,6 @@ void	get_file_tab(char *opendir_path, char ***file_tab_add)
 		ft_free(tmp);
 	}
 	file_tab = ft_split_custom(file_str, ' ');
-	if (!file_tab)
-		ft_exit(errno, NULL);
 	free(file_str);
 	if (!*file_tab)
 		return ;
@@ -232,13 +224,11 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 	new = NULL;
 	new_path_lst = NULL;
 	if (!sublist || !opendir_path || !*opendir_path || !path || !*path)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: get_sublist\nExit due to: argument check fail\n");
 	wc = ft_strchr(path, '*');
 	if (!wc)
 	{
 		new = ft_lstnew(path);
-		if (!new)
-			ft_exit(errno, NULL);
 		ft_lstadd_back(sublist, new);
 	}
 	else
@@ -254,10 +244,9 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 		{
 			new_path = ft_strdup((char *)new_path_lst->content);
 			get_opendir_path(new_path, &opendir_path);
-			if (!new_path)
-				ft_exit(errno, NULL);
 			get_sublist(sublist, new_path, new_opendir_path);
 			ft_free(new_path);
+			ft_free(new_opendir_path);
 			new_path_lst = new_path_lst->next;
 		}
 		ft_free_list(new_path_lst);
@@ -273,7 +262,7 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 	i = 0;
 	opendir_path = NULL;
 	if (!path || !*path || !opendir_path_add)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: get_opendir_path\nExit due to: argument check fail\n");
 	while(path[i] && path[i] != '*')
 		i++;
 	while (i > 0 && path[i] != '/')
@@ -286,9 +275,6 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 		opendir_path = ft_strnjoin("./", path, i);
 	else
 		opendir_path = ft_strndup(path, i);
-//	dprintf(2, "HELLO %d\n", i);
-	if (!opendir_path)
-		ft_exit(errno, NULL);
 	*opendir_path_add = opendir_path;
 }
 
@@ -302,7 +288,7 @@ void	trim_extra_wc(char	*str, char **path_add)
 	j = 0;
 	path = NULL;
 	if (!path_add)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: trim_extra_wc\nExit due to: argument check fail\n");
 	if (!str)
 		return ;
 	while (str[i])
@@ -343,12 +329,10 @@ void	expand_wc_node(t_list *node)
 	opendir_path = NULL;
 	path = NULL;
 	if (!node || !(char *)node->content || !*((char *)node->content))
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: expand_wc_node\nExit due to: argument check fail\n");
 	trim_extra_wc((char *)node->content, &path);
 	get_opendir_path(path, &opendir_path);
-	dprintf(2, "opendir_path '%s'\n", opendir_path);
 	get_sublist(&sublist, path, opendir_path);
-//	print_list(sublist);
 	if (sublist)
 		replace_node_by_sublist(node, sublist);
 	ft_free(path);
@@ -364,7 +348,7 @@ void	handle_wildcards(char ***av_tab_add)
 	node = NULL;
 	av_tab = NULL;
 	if (!av_tab_add)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: handle_wildcards\nExit due to: argument check fail\n");
 	if (!*av_tab_add || !***av_tab_add)
 		return ; 
 	av_tab = *av_tab_add;

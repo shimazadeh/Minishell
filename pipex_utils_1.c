@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/20 23:00:53 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 02:24:12 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ void	lst_to_tab(char ***tab_add, t_list **lst_head)
 	t_list	*node;
 
 	if (!lst_head || !tab_add)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: lst_to_tab\nExit due to: argument check fail\n");
 	node = *lst_head;
 	size = ft_lstsize(node);
 	tab = ft_alloc(sizeof(char *) * (size + 1));
@@ -97,8 +97,6 @@ void	lst_to_tab(char ***tab_add, t_list **lst_head)
 	while (i < size)
 	{
 		tab[i] = ft_strdup((char *)node->content);
-		if (!tab[i])
-			ft_exit(errno, NULL);
 		node = node->next;
 		i++;
 	}
@@ -120,10 +118,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 	envp = NULL;
 	lst_to_tab(&envp, envp_head);
 	if (head->child < 0)
-	{
 		perror("Fork:");
-		ft_exit(EXIT_FAILURE, NULL);
-	}
 	else if (!head->child)
 	{
 		if (head->infiles && head->tag == 0)
@@ -260,7 +255,7 @@ char	**parsing(char *find, t_list **envp_head)
 		}
 		ft_free(temp);
 	}
-	find_env_var("PWD", envp_head, &paths[j]);
+	paths[j] = ft_getcwd();
 	if (paths[j])
 	{
 		paths[j] = ft_strjoin(paths[j], "/");

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/21 00:25:57 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 02:59:42 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,10 +84,11 @@ int		print_lowest_ascii(t_list *node, char *tab);
 int		ft_list_remove_node(t_list **lst_head, t_list *node);
 int		contains_invalid_char(char *str, char *id, int j);
 void	print_tab_nl(char **tab, int nl);
-void	find_env_var(char *var_name, t_list **envp_head, char **var_exp);
-void	prev_compo_2dot_or_root(char *curpath, int i, char **prev_compo_add, char **prev_compo_path_add);
-void	mask_prev_compo(char *mask, char *curpath, int i);
-char	*mask_result_str(char *mask, char *curpath);
+void	find_env_var(char *var_name, t_list **envp_head, char **var_exp_add);
+void	prev_compo_2dot_or_root(char *path, char *mask, int i, char **prev_compo_add, char **prev_compo_path_add);
+void	mask_prev_compo(char *mask, char *path, int i);
+char	*mask_result_str(char *mask, char *path);
+char	*ft_getcwd(void);
 
 void	ft_exit(int exit_code, char *error_msg);
 

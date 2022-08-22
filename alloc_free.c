@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:53:45 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 22:57:51 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 01:26:58 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,10 @@ void	*ft_alloc(int size)
 
 	alloc = malloc(size);
 	if (!alloc)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(errno, "Exited in function: ft_alloc\nExit due to: malloc fail\n");
 	new = ft_lstnew_regular(alloc);
 	if (!new)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(errno, "Exited in function: ft_alloc\nExit due to: malloc fail\n");
 	ft_lstadd_back(&alloc_lst, new);
 	return (alloc);
 }

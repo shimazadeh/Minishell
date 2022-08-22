@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/24 16:06:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 04:28:02 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 01:42:22 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ char	*get_user(t_list **envp_head)
 	char	*user;
 	t_list	*node;
 
+	user = NULL;
+	node = NULL;
 	if (!envp_head || !*envp_head)
 		return (NULL);
 	user = NULL;
@@ -24,11 +26,7 @@ char	*get_user(t_list **envp_head)
 	while (node && ft_strncmp((char *)node->content, "USER=", 5))
 		node = node->next;
 	if (node)
-	{
 		user = ft_strdup(node->content + (sizeof(char) * 5));
-		if (!user)
-			ft_exit(EXIT_FAILURE, NULL);
-	}
 	return (user);
 }
 
@@ -51,16 +49,10 @@ char	*get_pwd(t_list **envp_head, char *user)
 		if (usr_in_pwd)
 		{
 			pwd = ft_strdup(&usr_in_pwd[ft_strlen(user) - 1]);
-			if (!pwd)
-				ft_exit(EXIT_FAILURE, NULL);
 			pwd[0] = '~';
 		}
 		else
-		{
 			pwd = ft_strdup((node->content + (sizeof(char) * 4)));
-			if (!pwd)
-				ft_exit(EXIT_FAILURE, NULL);
-		}
 	}
 	return (pwd);
 }
@@ -86,8 +78,6 @@ char	*get_pos(t_list **envp_head)
 	while (str[23 + j] && str[22 + j] != '.')
 		j++;
 	pos = ft_strndup(&str[22], j);
-	if (!pos)
-		ft_exit(EXIT_FAILURE, NULL);
 	return (pos);
 }
 
@@ -97,8 +87,6 @@ char	**set_prompt_elems(t_list **envp_head)
 	int		i;
 
 	prompt_elems = ft_alloc(sizeof(char *) * 7);
-	if (!prompt_elems)
-		ft_exit(EXIT_FAILURE, NULL);
 	prompt_elems[0] = get_user(envp_head);
 	prompt_elems[1] = ft_strdup("@");
 	prompt_elems[2] = get_pos(envp_head);
@@ -134,16 +122,12 @@ void	get_prompt(char **prompt_add, t_list **envp_head)
 	if (!prompt_elems)
 	{
 		*prompt_add = ft_strdup("$> ");
-		if (!*prompt_add)
-			ft_exit(EXIT_FAILURE, NULL);
 		return ;
 	}
 	while (prompt_elems[i])
 	{
 		tmp = prompt;
 		prompt = ft_strjoin(tmp, prompt_elems[i]);
-		if (!prompt)
-			ft_exit(EXIT_FAILURE, NULL);
 		ft_free(tmp);
 		i++;
 	}

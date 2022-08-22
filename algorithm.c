@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 14:27:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 04:17:38 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 01:43:04 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	str_is_only_spaces(char *str)
 
 	i = 0;
 	if (!str)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: str_is_only_spaces\nExit due to: argument check fail\n");
 	while (str[i])
 	{
 		if (str[i] != ' ')
@@ -36,7 +36,7 @@ int	go_to_closing_par(char *str)
 	count = 0;
 	i = 0;
 	if (!str)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: go_to_closing_char\nExit due to: argument check fail\n");
 	count = 1;
 	i = 1;
 	while (str[i])
@@ -66,7 +66,7 @@ void	rm_outer_par(char **str_add)
 	str = NULL;
 	tmp = NULL;
 	if (!str_add || !*str_add)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: rm_outer_par\nExit due to: argument check fail\n");
 	flag = 1;
 	str = *str_add;
 	while ((str[i] == ' ' || str[i] == '(') && flag)
@@ -88,8 +88,6 @@ void	rm_outer_par(char **str_add)
 		}
 	}
 	tmp = ft_strdup(&str[i]);
-	if (!tmp)
-		ft_exit(EXIT_FAILURE, NULL);
 	*str_add = tmp;
 	ft_free(str);
 }
@@ -131,7 +129,7 @@ t_list **sep_head)
 	submod = NULL;
 	tmp_node = NULL;
 	if (!str_add || !*str_add || !submod_head || !sep_head)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: split_submod_and_sep\nExit due to: argument check fail\n");
 	rm_outer_par(str_add);
 	str = *str_add;
 	while (str[i])
@@ -145,27 +143,13 @@ t_list **sep_head)
 		if (count == 0 && (ft_strncmp(&str[i], " || ", 4) == 0 || ft_strncmp(&str[i], " && ", 4) == 0))
 		{
 			submod = ft_strndup(&str[j], i - j);
-			if (!submod)
-				ft_exit(EXIT_FAILURE, NULL);
 			if (ft_strncmp(&str[i], " || ", 4) == 0)
-			{
 				sep = ft_strdup("2");
-				if (!sep)
-					ft_exit(EXIT_FAILURE, NULL);
-			}
 			else if (ft_strncmp(&str[i], " && ", 4) == 0)
-			{
 				sep = ft_strdup("1");
-				if (!sep)
-					ft_exit(EXIT_FAILURE, NULL);
-			}
 			tmp_node = ft_lstnew(submod);
-			if (!tmp_node)
-				ft_exit(EXIT_FAILURE, NULL);
 			ft_lstadd_back(submod_head, tmp_node);
 			tmp_node = ft_lstnew(sep);
-			if (!tmp_node)
-				ft_exit(EXIT_FAILURE, NULL);
 			ft_lstadd_back(sep_head, tmp_node);
 			i += 3;
 			j = i + 1;
@@ -173,8 +157,6 @@ t_list **sep_head)
 		else if (count == 0 && !str[i + 1] && submod)
 		{
 			submod = ft_strndup(&str[j], i + 1 - j);
-			if (!submod)
-				ft_exit(EXIT_FAILURE, NULL);
 			tmp_node =  ft_lstnew(submod);
 			ft_lstadd_back(submod_head, tmp_node);
 		}
@@ -184,11 +166,8 @@ t_list **sep_head)
 
 t_list	*alloc_lst = NULL;
 
-// exit buildin ? shima ?
-// deal with wc path
-// error msg
-// why exit code -1 with invalid cmd?
 // norm
+// rm 2 printing fn
 
 int main(int ac, char **av, char **envp)
 {
@@ -203,10 +182,7 @@ int main(int ac, char **av, char **envp)
 	prompt = NULL;
 	envp_head = NULL;
 	if (ac != 1)
-	{
-		ft_dprintf(2, "Error\nInvalid number of argument!\n");
-		ft_exit(EXIT_FAILURE, NULL);
-	}
+		ft_exit(EXIT_FAILURE, "Exited in function: main\nExit due to: argument check fail\n");
 	tab_to_list(envp, &envp_head);
 	while (1)
 	{
@@ -225,9 +201,6 @@ int main(int ac, char **av, char **envp)
 		ft_free(input);
 		ft_free(prompt);
 	}
-	rl_clear_history();
-	ft_free_list(envp_head);
-	ft_exit(EXIT_SUCCESS, NULL);
 }
 
 int	algorithm(char *str, t_list **envp_head, int last_exit_code)
@@ -253,8 +226,6 @@ int	algorithm(char *str, t_list **envp_head, int last_exit_code)
 	submod = NULL;
 	sep_head = NULL;
 	submod_head = NULL;
-	if (!str)
-		ft_exit(EXIT_FAILURE, NULL);
 	split_submod_and_sep(&str, &submod_head, &sep_head);
 	if (!sep_head)
 	{
@@ -272,8 +243,6 @@ int	algorithm(char *str, t_list **envp_head, int last_exit_code)
 		}
 		tmp_str = str;
 		str = ft_alloc(sizeof(char) * (j + 1));
-		if (!str)
-			ft_exit(EXIT_FAILURE, NULL);
 		i = 0;
 		j = 0;
 		while (tmp_str[i])

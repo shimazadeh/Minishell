@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 16:25:55 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/21 00:29:20 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 03:45:07 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ int	pwd(void)
 {
 	char	*pwd;
 
-	pwd = getcwd(NULL, 0);
+	pwd = ft_getcwd();
 	if (pwd)
 	{
 		ft_dprintf(1, "%s\n", pwd);
@@ -31,7 +31,7 @@ int	env(t_list **envp_head)
 	t_list	*node;
 
 	if (!envp_head || !*envp_head)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: env\nExit due to: argument check fail\n");
 	node = *envp_head;
 	while (node)
 	{
@@ -50,7 +50,7 @@ int	export(char **vars, t_list **envp_head)
 	int		ret;
 
 	if (!envp_head || !vars)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: export\nExit due to: argument check fail\n");
 	if (!vars[0])
 	{
 		print_sorted_list(envp_head);
@@ -72,17 +72,11 @@ int	export(char **vars, t_list **envp_head)
 			{
 				ft_free(old->content);
 				old->content = ft_strdup(vars[i]);
-				if (!old->content)
-					ft_exit(EXIT_FAILURE, NULL);
 			}
 			else
 			{
 				tmp = ft_strdup(vars[i]);
-				if (!tmp)
-					ft_exit(EXIT_FAILURE, NULL);
 				new = ft_lstnew(tmp);
-				if (!new)
-					ft_exit(EXIT_FAILURE, NULL);
 				ft_lstadd_back(envp_head, new);
 			}
 		}
@@ -100,7 +94,7 @@ int	unset(char **vars, t_list **envp_head)
 	int		ret;
 
 	if (!envp_head || !vars)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: unset\nExit due to: argument check fail\n");
 	ret = 0;
 	if (!vars[0] || !*envp_head)
 		return (ret);
@@ -115,8 +109,6 @@ int	unset(char **vars, t_list **envp_head)
 		else
 		{
 			var2 = ft_strjoin(vars[i], "=");
-			if (!var2)
-				ft_exit(EXIT_FAILURE, NULL);
 			node = *envp_head;
 			while (node)
 			{
@@ -147,67 +139,73 @@ int	cd(char *dir, t_list **envp_head)
 	int		i;
 	int		ret1;
 	int		ret2;
+	char	*cdpath_exp;
 	char	*curpath;
+	char	*home_exp;
+	char	*oldpwd_exp;
 	char	*mask;
 	char	*prev_compo;
 	char	*prev_compo_path;
-	char	*pwd;
+	char	*pwd_exp;
 	char	*tmp;
-	char	*var_exp;
 	char	**cd_paths;
 	char	**to_export;
 
 	i = 0;
 	ret1 = 0;
 	ret2 = 0;
+	cdpath_exp = NULL;
 	curpath = NULL;
+	home_exp = NULL;
 	mask = NULL;
+	oldpwd_exp = NULL;
 	prev_compo = NULL;
 	prev_compo_path = NULL;
-	pwd = NULL;
+	pwd_exp = NULL;
 	tmp = NULL;
-	var_exp = NULL;
 	cd_paths = NULL;
 	to_export = NULL;
 	if (!envp_head)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: cd\nExit due to: argument check fail\n");
 	if (!dir)
 	{
-		find_env_var("HOME", envp_head, &var_exp);
-		if (var_exp && *var_exp)
+		find_env_var("HOME", envp_head, &home_exp);
+		if (home_exp)
 		{
-			dir = ft_strdup(var_exp);
-			if (!dir)
-				ft_exit(errno, NULL);
+			dir = ft_strdup(home_exp);
+			ft_free(home_exp);
 		}
 		else
-		{
-			dir = getcwd(NULL, 0);
-			if (!dir)
-				ft_exit(errno, NULL);
-		}
+			dir = ft_getcwd();
 	}
-	else if (dir[0] != '/' && dir[0] != '.' && ft_strncmp(dir, "..", 2))
+	else if (!ft_strncmp(dir, "-", 2))
 	{
-		find_env_var("CDPATH", envp_head, &var_exp);
-		if (!var_exp || !*var_exp)
+		find_env_var("OLDPWD", envp_head, &oldpwd_exp);
+		if (!oldpwd_exp)
+		{
+			dprintf(2, "bash: cd: OLDPWD not set\n");
+			return (EXIT_FAILURE);
+		}
+		ret1 = cd(oldpwd_exp, envp_head);
+		ft_free(oldpwd_exp);
+		if (!ret1)
+			return (pwd());
+		return (ret1);
+	}
+	else if (dir[0] != '/' && (!ft_strncmp(dir, ".", 2) || !ft_strncmp(dir, "./", 2) || !ft_strncmp(dir, "..", 3) || !ft_strncmp(dir, "../", 3)))
+	{
+		find_env_var("CDPATH", envp_head, &cdpath_exp);
+		if (!cdpath_exp)
 		{
 			tmp = ft_strjoin("./", dir);
-			if (!tmp)
-				ft_exit(errno, NULL);
 			if (!access(tmp, F_OK))
-			{
 				curpath = ft_strdup(tmp);
-				if (!curpath)
-					ft_exit(errno, NULL);
-			}
 			ft_free(tmp);
 		}
 		else
 		{
-			cd_paths = ft_split(var_exp, ':');
-			if (!cd_paths)
-				ft_exit(errno, NULL);
+			cd_paths = ft_split(cdpath_exp, ':');
+			ft_free(cdpath_exp);
 			i = 0;
 			while (cd_paths[i] && !curpath)
 			{
@@ -215,17 +213,11 @@ int	cd(char *dir, t_list **envp_head)
 				{
 					tmp = cd_paths[i];
 					cd_paths[i] = ft_strjoin(tmp, "/");
-					if (!cd_paths[i])
-						ft_exit(errno, NULL);
 					ft_free(tmp);
 				}
 				tmp = ft_strjoin(cd_paths[i], dir);
 				if (!access(tmp, F_OK))
-				{
 					curpath = ft_strdup(tmp);
-					if (!curpath)
-						ft_exit(errno, NULL);
-				}
 				ft_free(tmp);
 				i++;
 			}
@@ -233,35 +225,38 @@ int	cd(char *dir, t_list **envp_head)
 		}
 	}
 	if (!curpath)
-		curpath = dir;
+		curpath = ft_strdup(dir);
+	ft_free(dir);
 	if (curpath[0] != '/')
 	{
-		pwd = getcwd(NULL, 0);
-		if (!pwd)
-			ft_exit(errno, NULL);
-		if (pwd[ft_strlen(pwd) - 1] != '/')
+		pwd_exp = ft_getcwd();
+		if ((pwd_exp[ft_strlen(pwd_exp) - 1] != '/'))
 		{
-			tmp = pwd;
-			pwd = ft_strjoin(tmp, "/");
+			tmp = pwd_exp;
+			pwd_exp = ft_strjoin(tmp, "/");
 			ft_free(tmp);
 		}
 		tmp = curpath;
-		curpath = (ft_strjoin(pwd, tmp));
+		curpath = (ft_strjoin(pwd_exp, tmp));
 		ft_free(tmp);
 	}
-	tmp = curpath;
-	i = 0;
 	mask = ft_alloc(sizeof(char) * (ft_strlen(curpath) + 1));
 	ft_bzero(mask, (sizeof(char) * (ft_strlen(curpath) + 1)));
+	mask[0] = 1;
+	i = 1;
+	if (!ft_strncmp(&curpath[1], "//", 2))
+	{
+		while (curpath[i] == '/')
+			i++;
+	}
+	else if (curpath[1] == '/')
+	{
+		mask[1] = 1;
+		i++;
+	}
 	while (curpath[i])
 	{
-		if (i == 0 && !ft_strncmp(curpath, "///", 3))
-		{
-			mask[0] = 1;
-			while (curpath[i] == '/')
-				i++;
-		}
-		else if (i != 0 && !ft_strncmp(&curpath[i], "//", 2))
+		if (curpath[i] == '/')
 		{
 			mask[i] = 1;
 			while (curpath[i] == '/')
@@ -272,10 +267,10 @@ int	cd(char *dir, t_list **envp_head)
 			i++;
 			if (curpath[i] == '.')
 			{
-				prev_compo_2dot_or_root(curpath, i - 2, &prev_compo, &prev_compo_path);
+				prev_compo_2dot_or_root(curpath, mask, i - 2, &prev_compo, &prev_compo_path);
 				if (prev_compo && ft_strncmp(prev_compo, "..", 3))
 				{
-					if (opendir(prev_compo_path) != -1 || errno !=  ENOTDIR)
+					if (opendir(prev_compo_path) || errno != ENOTDIR)
 					{
 						mask_prev_compo(mask, curpath, i - 2);
 						i++;
@@ -283,6 +278,8 @@ int	cd(char *dir, t_list **envp_head)
 					else
 						return (EXIT_FAILURE); 
 				}
+				ft_free(prev_compo);
+				ft_free(prev_compo_path);
 			}
 			while (curpath[i] == '/')
 				i++;
@@ -296,22 +293,23 @@ int	cd(char *dir, t_list **envp_head)
 	tmp = curpath;
 	curpath = mask_result_str(mask, tmp);
 	ft_free(tmp);
+	ft_free(mask);
 	if (chdir(curpath) == -1)
+	{
+		ft_free(curpath);
+		ft_free(pwd_exp);
 		return (1);
+	}
 	to_export = ft_alloc(sizeof(char *) * 2);
 	to_export[0] = ft_strjoin("PWD=", curpath);
-	if (!to_export)
-		ft_exit(errno, NULL);
 	to_export[1] = NULL;
 	ft_free(curpath);
 	ret1 = export(to_export, envp_head);
 	ft_free(to_export);
 	to_export = ft_alloc(sizeof(char *) * 2);
-	to_export[0] = ft_strjoin("OLDPWD=", pwd);
-	if (!to_export)
-		ft_exit(errno, NULL);
+	to_export[0] = ft_strjoin("OLDPWD=", pwd_exp);
 	to_export[1] = NULL;
-	ft_free(pwd);
+	ft_free(pwd_exp);
 	ret2 = export(to_export, envp_head);
 	ft_free(to_export);
 	if (!ret2)
@@ -322,7 +320,7 @@ int	cd(char *dir, t_list **envp_head)
 int	buildins_dispatch(char **av, t_list **envp_head)
 {
 	if (!av || !av[0])
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "Exited in function: buildins_dispatch\nExit due to: argument check fail\n");
 	if (!ft_strncmp(av[0], "echo", 5))
 		return (echo(&av[1]));
 	if (!ft_strncmp(av[0], "cd", 3) && (!av[1] || (av[1] && !av[2])))
