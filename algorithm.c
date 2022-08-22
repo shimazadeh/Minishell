@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 14:27:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/22 01:43:04 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 07:12:56 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,6 +166,12 @@ t_list **sep_head)
 
 t_list	*alloc_lst = NULL;
 
+//massive forking pb wtf, dopple fns like W T F
+//custom spplit null termination pb
+// caps im names stop this
+// no need to protec malloc , same for otehr system calls?
+
+//implement . .. in wc handling
 // norm
 // rm 2 printing fn
 

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/22 01:39:45 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/22 07:07:15 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,12 @@ int	next_char_index(char *str, char c)
 	int	i;
 
 	i = 0;
-	if (!str)
+	if (!str || !*str)
 		return (0);
 	while (str[i] && str[i] != c)
 		i++;
 	if (!str[i])
-		return (0);
+		return (i + 1);
 	return (i);
 }
 
@@ -80,24 +80,42 @@ int	compatible_name(char *file, char *wc)
 	int	i;
 	int	j;
 	int	k;
+	int	l;
 
 	i = 0;
-	j = 0;
+	j = 1;
 	k = 0;
 	if (!file || !wc)
 		return (0);
-	if (*wc != '*' && ft_strncmp(file, wc, next_char_index(wc, '*')))
+	if (!ft_strncmp(file, ".", 2) || !ft_strncmp(file, "..", 3))
 		return (0);
-	j = i + 1;
+	if (wc[0] != '*')
+	{
+		k = next_char_index(wc, '*');
+		if (ft_strncmp(wc, file, k))
+			return (0);
+		else
+		{
+			i = k;
+			j = k + 1;
+		}
+	}
+	l = 0;
+	while (file[l])
+		dprintf(2, "%c", file[l++]);
+	dprintf(2, "\nPOUIC\n");
 	while (file[i])
 	{
-		k =  next_char_index(wc, '*');
-		if (wc[j] && ft_strncmp(&file[i], &wc[j], k))
+		k = next_char_index(&wc[j], '*');
+		if (wc[j] && !ft_strncmp(&file[i], &wc[j], k))
 		{
-			j += k + 1;
+			j += k - 1;
+			if (wc[j])
+				j += 2;
 			i += k;
 		}
-		i++;
+		else
+			i++;
 	}
 	if (!wc[j])
 		return (1);
@@ -133,11 +151,12 @@ void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 		i++;
 	while (i > 0 && path[i - 1] != '/')
 		i--;
-	while (path[i + j] && path[i + j] != '/')
+	j = i;
+	while (path[j] && path[j] != '/')
 		j++;
 	path_start = ft_strndup(path, i);
 	path_end = ft_strdup(&path[j]);
-	wc_str = ft_strndup(&path[i], j);
+	wc_str = ft_strndup(&path[i], j - i);
 	i = 0;
 	while (file_tab[i])
 	{
@@ -148,13 +167,13 @@ void	get_new_path_list(char *path, char **file_tab, t_list **new_path_lst_add)
 			content = ft_strjoin(tmp, path_end);
 			ft_free(tmp);
 			new = ft_lstnew(content);
-			ft_free(content);
 			ft_lstadd_back(&new_path_lst, new);
 		}
 		i++;
 	}
 	ft_free(path_start);
 	ft_free(path_end);
+	ft_free(wc_str);
 	*new_path_lst_add = new_path_lst;
 }
 
@@ -201,8 +220,9 @@ void	get_file_tab(char *opendir_path, char ***file_tab_add)
 		file_str = ft_strjoin(tmp, dir_content->d_name);
 		ft_free(tmp);
 	}
+	closedir(stream);
 	file_tab = ft_split_custom(file_str, ' ');
-	free(file_str);
+	ft_free(file_str);
 	if (!*file_tab)
 		return ;
 	*file_tab_add = file_tab; 
@@ -243,15 +263,14 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 		while(new_path_lst)
 		{
 			new_path = ft_strdup((char *)new_path_lst->content);
-			get_opendir_path(new_path, &opendir_path);
+			get_opendir_path(new_path, &new_opendir_path);
 			get_sublist(sublist, new_path, new_opendir_path);
-			ft_free(new_path);
 			ft_free(new_opendir_path);
 			new_path_lst = new_path_lst->next;
 		}
 		ft_free_list(new_path_lst);
+		ft_free(path);
 	}
-	ft_free(path);
 }
 
 void	get_opendir_path(char *path, char **opendir_path_add)
@@ -267,12 +286,9 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 		i++;
 	while (i > 0 && path[i] != '/')
 		i--;
-	if (ft_strncmp(path, ".", 2) 
-		|| ft_strncmp(path, "./", 2) 
-		|| ft_strncmp(path, "..", 3) 
-		|| ft_strncmp(path, "../", 3) 
-		|| ft_strncmp(path, "/", 1))
-		opendir_path = ft_strnjoin("./", path, i);
+	if (ft_strncmp(path, ".", 2) && ft_strncmp(path, "./", 2) && ft_strncmp(path, "..", 3) 
+		&& ft_strncmp(path, "../", 3) && ft_strncmp(path, "/", 1))
+		opendir_path = ft_strnjoin("./", path, i + 2);
 	else
 		opendir_path = ft_strndup(path, i);
 	*opendir_path_add = opendir_path;
@@ -349,7 +365,7 @@ void	handle_wildcards(char ***av_tab_add)
 	av_tab = NULL;
 	if (!av_tab_add)
 		ft_exit(EXIT_FAILURE, "Exited in function: handle_wildcards\nExit due to: argument check fail\n");
-	if (!*av_tab_add || !***av_tab_add)
+	if (!*av_tab_add || !**av_tab_add)
 		return ; 
 	av_tab = *av_tab_add;
 	tab_to_list(av_tab, &av_lst);
