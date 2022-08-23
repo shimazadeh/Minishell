@@ -174,14 +174,17 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code);
 void		initialize_sc(t_struct **tab, char *str);
 char		*ft_strdup_range(char *str, int start, int end);
 int 		parse(char *str, t_struct *node);
+char		**parse_outfiles(char **str_add);
+char		**parse_infiles(char **str_add);
 int 		set_infiles_outfiles_cmds(t_struct **elements);
 int 		find_last_infile_type(char *str);
-int			remove_double_quotes(char **str);
-char		**ft_split_custom(const char *str, char c);
+char		**ft_split_custom(const char *str, char c, int flag);
 
 //execution
 int			execute(t_struct **elements, char **parsed_path, t_list **envp);
 int			execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size);
+int	execute_pipe(t_struct **elements, char **parsed_path, t_list **envp);
+
 char		*file_access_check(char **files, int flag);
 void		lst_to_tab(char ***tab_add, t_list **lst_head);
 int			boolean_if_buildin(char **av);

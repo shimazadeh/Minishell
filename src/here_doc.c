@@ -86,9 +86,15 @@ int number_of_here_doc(char *str)
 	i = 0;
 	while(str[i])
 	{
-		if (str[i] == '<' && str[i + 1] == '<')
+		if (str[i] == '\"' || str[i] == '\'')
+			i += go_to_closing_char((char *)&str[i]) + 1;
+		else if (str[i] == '<' && str[i + 1] == '<')
+		{
 			count++;
-		i++;
+			i++;
+		}
+		else
+			i++;
 	}
 	return (count);
 }
@@ -103,8 +109,10 @@ char **check_for_here_doc(char *str, int **loc_add)
 	int k;
 	char *tmp;
 	int *loc;
+	char end;
 
 	i = 0;
+	end =' ';
 	loc_pipe = 0;
 	k = 0;
 	size = number_of_here_doc(str);
@@ -114,24 +122,31 @@ char **check_for_here_doc(char *str, int **loc_add)
 	loc = ft_alloc(sizeof(int) * (size));
 	while(str[i])
 	{
+		if (str[i] == '|')
+			loc_pipe++;
 		if (k < size && str[i] == '<' && str[i + 1] == '<')
 		{
 			i = i + 2;
 			while(str[i] && str[i] == ' ')
 				i++;
+			if (str[i] && (str[i] == '\"' || str[i] == '\''))
+			{
+				end = str[i];
+				i++;
+			}
 			start = i;
-			i++;
-			while (str[i] && str[i] != ' ')
+			while (str[i] && str[i] != end && str[i] != '<' && str[i] != '>' && str[i] != '|')
 				i++;
 			tmp = ft_strdup_range(str, start, i);
+			// dprintf(2, "tmp is %s\n", tmp);
 			stop[k] = ft_strjoin(tmp, "\n");
 			ft_free(tmp);
 			loc[k] = loc_pipe;
 			k++;
+			end = ' ';
 		}
-		if (str[i] == '|')
-			loc_pipe++;
-		i++;
+		else
+			i++;
 	}
 	stop[k] = '\0';
 	*loc_add = loc;
@@ -184,7 +199,6 @@ char	**handle_here_doc(char *str, t_struct **elements, t_list **envp_head, int l
 		i++;
 	}
 	ft_free_tab(stop);
-	// ft_free_tab(file_names);
 	ft_free(fds);
 	ft_free(loc);
 	return(file_names);
