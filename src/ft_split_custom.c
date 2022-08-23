@@ -29,15 +29,16 @@ static int	ft_wc_custom(char *str, char c)
 			while (str[i] && (str[i] != c))
 			{
 				if (str[i] && (str[i] == '\"' || str[i] == '\''))
-					i += go_to_closing_char((char *)&str[i]);
-				i++;
+					i += go_to_closing_char((char *)&str[i]) + 1;
+				else
+					i++;
 			}
 		}
 	}
 	return (wc);
 }
 
-static int	ft_wl_custom(char *str, char c)
+static int	ft_wl_custom(char *str, char c, int flag)
 {
 	int	i;
 	int	wl;
@@ -54,15 +55,20 @@ static int	ft_wl_custom(char *str, char c)
 		{
 			gtcc = go_to_closing_char((char *)&str[i]);
 			i += gtcc + 1;
-			wl += gtcc - 1;
+			wl += gtcc + 1;
+			if (flag)
+				wl -= 2;
 		}
-		wl++;
-		i++;
+		else
+		{
+			wl++;
+			i++;
+		}
 	}
 	return (wl);
 }
 
-static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c)
+static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c, int flag)
 {
 	int	i;
 	int	j;
@@ -75,12 +81,7 @@ static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c)
 	while (i < wc)
 	{
 		j = 0;
-		tab[i] = ft_alloc(sizeof(char) * (ft_wl_custom((char *)&str[k], c) + 1));
-		if (!tab[i])
-		{
-			ft_free_tab(tab);
-			return (0);
-		}
+		tab[i] = ft_alloc(sizeof(char) * (ft_wl_custom((char *)&str[k], c, flag) + 1));
 		while (str[k] && (str[k] == c))
 			k++;
 		while (str[k] && (str[k] != c))
@@ -88,15 +89,20 @@ static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c)
 			if (str[k] && (str[k] == '\"' || str[k] == '\''))
 			{
 				gtcc = go_to_closing_char((char *)&str[k]);
-				k++;
-				while (gtcc - 2)
+				// dprintf(2, "str[k]: %c\n",str[k]);
+				if (flag)
+					k++;
+				while ((gtcc - flag * 2) >= 0)
 				{
+					// dprintf(2, "str[k]: %c\n",str[k]);
 					tab[i][j++] = str[k++];
 					gtcc--;
 				}
-				k++;
+				if (flag)
+					k++;
 			}
-			tab[i][j++] = str[k++];
+			else
+				tab[i][j++] = str[k++];
 		}
 		tab[i][j] = '\0';
 		i++;
@@ -105,7 +111,7 @@ static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c)
 	return (1);
 }
 
-char	**ft_split_custom(const char *str, char c)
+char	**ft_split_custom(const char *str, char c, int flag)//flag of 1 is to supress the "" ''
 {
 	char	**tab;
 	int		wc;
@@ -116,7 +122,7 @@ char	**ft_split_custom(const char *str, char c)
 	tab = ft_alloc(sizeof(char *) * (wc + 1));
 	if (!tab)
 		return (0);
-	if (!ft_fill_tab_custom(tab, wc, str, c))
+	if (!ft_fill_tab_custom(tab, wc, str, c, flag))
 		return (0);
 	return (tab);
 }

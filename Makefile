@@ -14,7 +14,7 @@ TARGET   = minishell
 
 CC       = gcc
 
-CFLAGS   = -Wall -Wextra -Werror
+CFLAGS   = -Wall -Wextra -Werror -g3
 
 LINKER   = gcc
 
@@ -34,7 +34,7 @@ $(TARGET): $(OBJECTS)
 $(OBJECTS):	$(OBJDIR)/%.o :	$(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-all: $(BINDIR)/$(TARGET)
+all: $(TARGET)
 
 bonus: all
 

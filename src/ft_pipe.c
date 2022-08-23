@@ -21,9 +21,11 @@ void	initialize_sc(t_struct **elements, char *str)
 	if(!str)
 		return ;
 	i = 0;
-	tab = ft_split_custom(str, '|');
+	// dprintf(2,"str before split%s\n", str);
+	tab = ft_split_custom(str, '|', 0);
 	while (tab[i])
 	{
+		// dprintf(2,"str intialization %s\n", tab[i]);
 		copy = ft_alloc(sizeof(t_struct));
 		copy->str = ft_strdup(tab[i]);
 		copy->cmd = NULL;

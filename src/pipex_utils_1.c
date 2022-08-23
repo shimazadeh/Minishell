@@ -33,21 +33,35 @@ int	boolean_if_buildin(char **av)
 	return (0);
 }
 
-int	execute(t_struct **elements, char **parsed_path, t_list **envp)
+int	buildins_execution(t_struct **elements, char **parsed_path, t_list **envp)
+{
+	t_struct	*copy;
+	int			exit_code;
+	int			tmp_stdin;
+	int			tmp_stdout;
+
+	exit_code = -1;
+	tmp_stdin = dup(STDIN_FILENO);
+	tmp_stdout = dup(STDOUT_FILENO);
+	copy = *elements;
+	exit_code = execute_function(copy, parsed_path, envp, 0);
+	if (dup2(tmp_stdin, STDIN_FILENO) < 0)
+		perror("tmp_stdin:");
+	close(tmp_stdin);
+	if (dup2(tmp_stdout, STDOUT_FILENO) < 0)
+		perror("tmp_stdout:");
+	close(tmp_stdout);
+	return (exit_code);
+}
+
+int	execute_pipe(t_struct **elements, char **parsed_path, t_list **envp)
 {
 	int			pipefds[2];
 	t_struct	*copy;
 	int			exit_code;
-	int			flag;
-	int		tmp_stdin;
-	int		tmp_stdout;
 
-	flag = 1;
 	exit_code = -1;
-	set_infiles_outfiles_cmds(elements);
 	copy = *elements;
-	if (structure_size(*elements) == 1 && boolean_if_buildin(copy->cmd) == 1)
-		flag = 0;
 	while (copy)
 	{
 		if (copy->next)
@@ -57,14 +71,8 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 			if (!copy->next->fds[0])
 				copy->next->fds[0] = pipefds[0];
 		}
-		if (flag == 1)
-			copy->child = fork();
-		else
-		{
-			tmp_stdin = dup(STDIN_FILENO);
-			tmp_stdout = dup(STDOUT_FILENO);
-		}
-		exit_code = execute_function(copy, parsed_path, envp, flag);
+		copy->child = fork();
+		exit_code = execute_function(copy, parsed_path, envp, 1);
 		if (copy->fds[1] != 1)
 			close(copy->fds[1]);
 		if (copy->fds[0] != 0)
@@ -72,24 +80,27 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 		copy = copy->next;
 	}
 	copy = *elements;
-	if (flag == 1)
+	while (copy)
 	{
-		while (copy)
-		{
-			waitpid(copy->child, &(copy->wstatus), 0);
-			copy = copy->next;
-		}
-		exit_code = (0xff00 & structure_last(*elements)->wstatus) >> 8;
+		waitpid(copy->child, &(copy->wstatus), 0);
+		copy = copy->next;
 	}
+	exit_code = (0xff00 & structure_last(*elements)->wstatus) >> 8;
+	return (exit_code);
+}
+
+int	execute(t_struct **elements, char **parsed_path, t_list **envp)
+{
+	t_struct	*copy;
+	int			exit_code;
+
+	exit_code = -1;
+	set_infiles_outfiles_cmds(elements);
+	copy = *elements;
+	if (structure_size(*elements) == 1 && boolean_if_buildin(copy->cmd) == 1)
+		exit_code = buildins_execution(elements, parsed_path, envp);
 	else
-	{
-		if (dup2(tmp_stdin, STDIN_FILENO) < 0)
-			perror(":");
-		close(tmp_stdin);
-		if (dup2(tmp_stdout, STDOUT_FILENO) < 0)
-			perror(":");
-		close(tmp_stdout);
-	}
+		exit_code = execute_pipe(elements, parsed_path, envp);
 	return (exit_code);
 }
 
@@ -171,7 +182,6 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 					if (dup2(head->fds[1], STDOUT_FILENO) < 0)
 						perror("dup2 stdout inside:");
 					close(head->fds[1]);
-					dprintf(2, "closing outfile %s with fd of %d\n", head->outfiles[0], head->fds[1]);
 				}
 			}
 		}
@@ -289,3 +299,64 @@ char	*file_access_check(char **files, int flag) //0 for infiles, 1 for outfiles 
 	}
 	return (files[i - 1]);
 }
+
+
+// int	execute(t_struct **elements, char **parsed_path, t_list **envp)
+// {
+// 	int			pipefds[2];
+// 	t_struct	*copy;
+// 	int			exit_code;
+// 	int			flag;
+// 	int		tmp_stdin;
+// 	int		tmp_stdout;
+
+// 	flag = 1;
+// 	exit_code = -1;
+// 	set_infiles_outfiles_cmds(elements);
+// 	copy = *elements;
+// 	if (structure_size(*elements) == 1 && boolean_if_buildin(copy->cmd) == 1)
+// 		flag = 0;
+// 	while (copy)
+// 	{
+// 		if (copy->next)
+// 		{
+// 			pipe(pipefds);
+// 			copy->fds[1] = pipefds[1];
+// 			if (!copy->next->fds[0])
+// 				copy->next->fds[0] = pipefds[0];
+// 		}
+// 		if (flag == 1)
+// 			copy->child = fork();
+// 		else if(flag == 0)
+// 		{
+// 			tmp_stdin = dup(STDIN_FILENO);
+// 			tmp_stdout = dup(STDOUT_FILENO);
+// 		}
+// 		exit_code = execute_function(copy, parsed_path, envp, flag);
+// 		if (copy->fds[1] != 1)
+// 			close(copy->fds[1]);
+// 		if (copy->fds[0] != 0)
+// 			close(copy->fds[0]);
+// 		copy = copy->next;
+// 	}
+// 	copy = *elements;
+// 	if (flag == 1)
+// 	{
+// 		while (copy)
+// 		{
+// 			waitpid(copy->child, &(copy->wstatus), 0);
+// 			copy = copy->next;
+// 		}
+// 		exit_code = (0xff00 & structure_last(*elements)->wstatus) >> 8;
+// 	}
+// 	else
+// 	{
+// 		if (dup2(tmp_stdin, STDIN_FILENO) < 0)
+// 			perror(":");
+// 		close(tmp_stdin);
+// 		if (dup2(tmp_stdout, STDOUT_FILENO) < 0)
+// 			perror(":");
+// 		close(tmp_stdout);
+// 	}
+// 	return (exit_code);
+// }
