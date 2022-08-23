@@ -12,52 +12,38 @@
 
 #include "minishell.h"
 
-void	sc_lstadd_back(t_struct **lst, t_struct *new)
+void	structure_add_back(t_struct **sc, t_struct *new)
 {
 	t_struct	*repl;
 
 	if (!new)
 		return ;
-	if (!(*lst))
+	if (!(*sc))
 	{
-		*lst = new;
+		*sc = new;
 		return ;
 	}
-//	printf("the str is %s\n", (*lst)->str);
-	repl = sc_lstlast(*lst);
+	repl = structure_last(*sc);
 	repl->next = new;
 }
 
-void	sc_lstadd_front(t_struct **lst, t_struct *new)
+t_struct	*structure_last(t_struct	*sc)
 {
-	if (!new)
-		return ;
-	if (!(*lst))
-	{
-		*lst = new;
-		return ;
-	}
-	new->next = *lst;
-	*lst = new;
-}
-
-t_struct	*sc_lstlast(t_struct	*lst)
-{
-	if (!lst)
+	if (!sc)
 		return (0);
-	while (lst->next)
-		lst = lst->next;
-	return (lst);
+	while (sc->next)
+		sc = sc->next;
+	return (sc);
 }
 
-int	sc_lstsize(t_struct *lst)
+int	structure_size(t_struct *sc)
 {
 	int	i;
 
 	i = 0;
-	while (lst)
+	while (sc)
 	{
-		lst = lst->next;
+		sc = sc->next;
 		i++;
 	}
 	return (i);

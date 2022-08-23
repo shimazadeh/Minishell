@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	check_buildins_cmd(char **av)
+int	boolean_if_buildin(char **av)
 {
 	if (!av || !av[0])
 		return (-1);
@@ -33,21 +33,20 @@ int	check_buildins_cmd(char **av)
 	return (0);
 }
 
-
-int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, int last_exit_code)
+int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 {
 	int			pipefds[2];
 	t_struct	*copy;
-	char		**file_names;
 	int			exit_code;
 	int			flag;
+	int		tmp_stdin;
+	int		tmp_stdout;
 
 	flag = 1;
 	exit_code = -1;
-	file_names = handle_here_doc(str, elements, envp, last_exit_code);
 	set_infiles_outfiles_cmds(elements);
 	copy = *elements;
-	if (check_buildins_cmd(copy->cmd) == 1 && sc_lstsize(*elements) == 1)
+	if (structure_size(*elements) == 1 && boolean_if_buildin(copy->cmd) == 1)
 		flag = 0;
 	while (copy)
 	{
@@ -60,6 +59,11 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 		}
 		if (flag == 1)
 			copy->child = fork();
+		else
+		{
+			tmp_stdin = dup(STDIN_FILENO);
+			tmp_stdout = dup(STDOUT_FILENO);
+		}
 		exit_code = execute_function(copy, parsed_path, envp, flag);
 		if (copy->fds[1] != 1)
 			close(copy->fds[1]);
@@ -75,9 +79,17 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, i
 			waitpid(copy->child, &(copy->wstatus), 0);
 			copy = copy->next;
 		}
-		exit_code = (0xff00 & sc_lstlast(*elements)->wstatus) >> 8;
+		exit_code = (0xff00 & structure_last(*elements)->wstatus) >> 8;
 	}
-	ft_unlink(file_names);
+	else
+	{
+		if (dup2(tmp_stdin, STDIN_FILENO) < 0)
+			perror(":");
+		close(tmp_stdin);
+		if (dup2(tmp_stdout, STDOUT_FILENO) < 0)
+			perror(":");
+		close(tmp_stdout);
+	}
 	return (exit_code);
 }
 
@@ -159,6 +171,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 					if (dup2(head->fds[1], STDOUT_FILENO) < 0)
 						perror("dup2 stdout inside:");
 					close(head->fds[1]);
+					dprintf(2, "closing outfile %s with fd of %d\n", head->outfiles[0], head->fds[1]);
 				}
 			}
 		}
@@ -201,29 +214,10 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 			ft_exit(exit_code, NULL);
 		}
 	}
-	// dprintf(2, "HI SHIMSHIM exit\n");
 	return (exit_code);
 }
 
-int	all_access_check(t_struct **tab, char **parsed_path)
-{
-	t_struct	*copy;
-
-	copy = *tab;
-	while (copy && access_check(copy->cmd, parsed_path) == 0)
-		copy = copy->next;
-	if (!copy)
-		return (0);
-	while (copy)
-	{
-		if (access_check(copy->cmd, parsed_path) == 1)
-			printf("command not found: %s\n", *(copy->cmd));
-		copy = copy->next;
-	}
-	return (close((*tab)->fds[0]), close(sc_lstlast(*tab)->fds[1]), 1);
-}
-
-char	**parsing(char *find, t_list **envp_head)
+char	**extract_env_paths(char *find, t_list **envp_head)
 {
 	char	**paths;
 	char	*temp;
@@ -235,6 +229,7 @@ char	**parsing(char *find, t_list **envp_head)
 	k = 0;
 	temp = NULL;
 	paths = NULL;
+	tab_temp = NULL;
 	find_env_var(find, envp_head, &temp);
 	if (temp)
 	{

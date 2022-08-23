@@ -53,7 +53,7 @@ typedef struct s_struct
 # define BUFFER_SIZE 100
 
 
-int		pipex(char *str, t_list **envp_head, int last_exit_code);
+int		ft_pipe(char *str, t_list **envp_head, int last_exit_code);
 
 int		str_is_only_spaces(char *str);
 int		go_to_closing_par(char *str);
@@ -154,17 +154,16 @@ char	*ft_itoa(int n);
 ///**********shima's stuff***********///
 
 //libft modified functions
-void		sc_lstadd_back(t_struct **lst, t_struct *new);
-void		sc_lstadd_front(t_struct **lst, t_struct *new);
-t_struct	*sc_lstlast(t_struct	*lst);
-int			sc_lstsize(t_struct *lst);
+void		structure_add_back(t_struct **lst, t_struct *new);
+t_struct	*structure_last(t_struct	*lst);
+int			structure_size(t_struct *lst);
 
 //variable expansion
 
 int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code);
 
 //parsing
-void		initialize_lst(t_struct **tab, char *str);
+void		initialize_sc(t_struct **tab, char *str);
 char		*ft_strdup_range(char *str, int start, int end);
 int 		parse(char *str, t_struct *node);
 int 		set_infiles_outfiles_cmds(t_struct **elements);
@@ -173,15 +172,15 @@ int			remove_double_quotes(char **str);
 char		**ft_split_custom(const char *str, char c);
 
 //execution
-int			execute(t_struct **elements, char **parsed_path, t_list **envp, char *str, int last_exit_code);
+int			execute(t_struct **elements, char **parsed_path, t_list **envp);
 int			execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size);
 char		*file_access_check(char **files, int flag);
 void		lst_to_tab(char ***tab_add, t_list **lst_head);
+int			boolean_if_buildin(char **av);
 
 //finding paths
 int			access_check(char **cmd, char **parsed_path);
-int			all_access_check(t_struct **tab, char **parsed_path);
-char		**parsing(char *find, t_list **envp_list);
+char		**extract_env_paths(char *find, t_list **envp_list);
 
 //here__doc handling
 char 		**check_for_here_doc(char *str, int **loc);

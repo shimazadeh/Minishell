@@ -42,9 +42,7 @@ int	write_to_file(int fd1, char *stop, char	*file_name, t_list **envp_head, int 
 	gnl = get_next_line(0);
 	while (gnl && ft_strncmp(gnl, stop, ft_strlen(stop) + 1) != 0)
 	{
-		// dprintf(2, "before expansion %s\n", gnl);
 		variable_expansion(&gnl, envp_head, last_exit_code);
-		// dprintf(2, "after expansion %s\n", gnl);
 		if (write(fd1, gnl, ft_strlen(gnl)) < 0)
 		{
 			perror("write:");

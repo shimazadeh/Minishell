@@ -269,7 +269,7 @@ int	algorithm(char *str, t_list **envp_head, int last_exit_code)
 		}
 		str[j] = '\0';
 		ft_free(tmp_str);
-		pipex_ret = pipex(str, envp_head, last_exit_code);
+		pipex_ret = ft_pipe(str, envp_head, last_exit_code);
 		ft_free(str);
 		return (pipex_ret);
 	}
