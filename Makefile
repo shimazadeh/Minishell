@@ -5,31 +5,45 @@
 #                                                     +:+ +:+         +:+      #
 #    By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2022/07/02 17:41:06 by shabibol          #+#    #+#              #
-#    Updated: 2022/08/22 22:17:05 by aguillar         ###   ########.fr        #
+#    Created: 2022/08/23 16:58:55 by aguillar          #+#    #+#              #
+#    Updated: 2022/08/23 17:23:08 by aguillar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = minishell
+TARGET   = minishell
 
-SRCS = algorithm.c algorithm_utils.c alloc_free.c alloc_free_utils.c buildins.c buildins_utils.c ft_bzero.c ft_dprintf.c ft_exit.c ft_exit_utils.c ft_itoa.c ft_ll_itoa_base.c ft_lstadd_back.c ft_lstlast.c ft_lstnew.c ft_lstsize.c ft_putstr_fd.c ft_split.c ft_split_custom.c ft_strchr.c ft_strdup.c ft_strjoin.c ft_strlen.c ft_strncmp.c ft_strndup.c ft_strnjoin.c ft_ull_itoa_base.c get_next_line_bonus.c handle_wildcards.c here_doc.c libft_utils_lst.c parsing.c pipex.c pipex_utils_1.c pipex_utils_2.c prompt.c prompt_utils.c variable_expansion.c
+CC       = gcc
 
-OBJS = $(SRCS:%.c=%.o)
+CFLAGS   = -Wall -Wextra -Werror
 
-FLAGS = -Wall -Wextra -g3
+LINKER   = gcc
 
-all: $(NAME)
+LFLAGS   = -L/usr/include -lreadline
 
-$(NAME): $(OBJS)
-	gcc $(FLAGS) $(OBJS) -L/usr/include -lreadline -o $(NAME)
+SRCDIR   = src
+OBJDIR   = obj
 
-%.o: %.c
-	gcc $(FLAGS) -c $< -o $@
+SOURCES  := $(wildcard $(SRCDIR)/*.c)
+INCLUDES := $(wildcard $(SRCDIR)/*.h)
+OBJECTS  := $(SOURCES:$(SRCDIR)/%.c=$(OBJDIR)/%.o)
+rm       = rm -f
+
+$(TARGET): $(OBJECTS)
+	@$(LINKER) $(OBJECTS) $(LFLAGS) -o $@
+
+$(OBJECTS):	$(OBJDIR)/%.o :	$(SRCDIR)/%.c
+	@$(CC) $(CFLAGS) -c $< -o $@
+
+all: $(BINDIR)/$(TARGET)
+
+bonus: all
 
 clean:
-	rm -f *.o
+	@$(rm) $(OBJECTS)
 
 fclean: clean
-	rm -rf $(NAME)
+	@$(rm) $(TARGET)
 
 re: fclean all
+
+.PHONY: all clean fclean re bonus
