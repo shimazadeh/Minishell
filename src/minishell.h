@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/23 17:19:45 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 00:32:49 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ typedef struct s_list
 	struct s_list	*next;
 }				t_list;
 
-extern t_list	*alloc_lst;
+extern t_list	*g_alloc_lst;
 
 typedef struct s_struct
 {
@@ -52,6 +52,14 @@ typedef struct s_struct
 
 # define BUFFER_SIZE 100
 
+//////////////////////////////////////////////////////////////////
+
+// minishell.c
+
+void	minishell(char	**envp);
+void	minishell_init_vars(t_minishell_vars v[1]);
+
+// 
 
 int		ft_pipe(char *str, t_list **envp_head, int last_exit_code);
 

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 16:25:55 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/22 23:12:13 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/23 21:59:59 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,8 @@ int	env(t_list **envp_head)
 	node = *envp_head;
 	while (node)
 	{
-		ft_dprintf(1, "%s\n", (char *)node->content);
+		if (ft_strchr((char *)node->content, '='))
+			ft_dprintf(1, "%s\n", (char *)node->content);
 		node = node->next;
 	}
 	return (EXIT_SUCCESS);
@@ -89,7 +90,6 @@ int	unset(char **vars, t_list **envp_head)
 {
 	t_list	*node;
 	t_list	*tmp;
-	char	*var2;
 	int		i;
 	int		ret;
 
@@ -108,12 +108,11 @@ int	unset(char **vars, t_list **envp_head)
 		}
 		else
 		{
-			var2 = ft_strjoin(vars[i], "=");
 			node = *envp_head;
 			while (node)
 			{
 				tmp = node->next;
-				if (!ft_strncmp(var2, (char *)node->content, ft_strlen(var2)))
+				if (!ft_strncmp(vars[i], (char *)node->content, ft_strlen(vars[i])))
 					ft_list_remove_node(envp_head, node);
 				node = tmp;
 			}
@@ -218,7 +217,15 @@ int	cd(char *dir, t_list **envp_head)
 				}
 				tmp = ft_strjoin(cd_paths[i], dir);
 				if (!access(tmp, F_OK))
+				{
 					curpath = ft_strdup(tmp);
+					ft_free(tmp);
+					ft_free(pwd_exp);
+					ret1 = cd(curpath, envp_head);
+					if (!ret1)
+						ret1 = pwd();
+					return (ret1);
+				}
 				ft_free(tmp);
 				i++;
 			}

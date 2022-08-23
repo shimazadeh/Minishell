@@ -1,28 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/10 18:56:33 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 00:32:49 by aguillar         ###   ########.fr       */
+/*   Created: 2022/08/24 00:18:40 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/24 00:33:25 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_exit(int exit_code, char *error_msg)
-{
-	int	fd;
+t_list	*g_alloc_lst = NULL;
 
-	fd = 1;
-	if (exit_code)
-		fd = 2;
-	if (error_msg)
-		ft_dprintf(fd, "%s", error_msg);
-	rl_clear_history();
-	if (g_alloc_lst)
-		ft_free_list_regular(g_alloc_lst);
-	exit(exit_code);
+int	main(int ac, char **av, char **envp)
+{
+	(void)av;
+	if (ac != 1)
+		ft_exit(EXIT_FAILURE,
+			"Exited in function: main\nExit due to: argument check fail\n");
+	minishell(envp);
+	return (0);
 }

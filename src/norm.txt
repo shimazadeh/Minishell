@@ -1,0 +1,13 @@
+algorithm.c
+algorithm_utils.c
+alloc_free.c
+buildins.c
+buildins_utils.c
+ft_dprintf.c
+ft_ll_itoa_base.c
+ft_split_custom.c
+ft_strnjoin.c
+ft_ull_itoa_base.c
+get_next_line_bonus.c
+handle_wildcards.c
+prompt.c

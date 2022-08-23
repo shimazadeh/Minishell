@@ -6,7 +6,7 @@
 #    By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/08/23 16:58:55 by aguillar          #+#    #+#              #
-#    Updated: 2022/08/23 17:23:08 by aguillar         ###   ########.fr        #
+#    Updated: 2022/08/23 20:53:40 by aguillar         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ LINKER   = gcc
 LFLAGS   = -L/usr/include -lreadline
 
 SRCDIR   = src
+
 OBJDIR   = obj
 
 SOURCES  := $(wildcard $(SRCDIR)/*.c)
@@ -34,7 +35,7 @@ $(TARGET): $(OBJECTS)
 $(OBJECTS):	$(OBJDIR)/%.o :	$(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
-all: $(BINDIR)/$(TARGET)
+all: $(TARGET)
 
 bonus: all
 
