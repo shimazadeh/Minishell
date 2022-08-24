@@ -6,106 +6,118 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 14:27:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 00:37:50 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 12:39:10 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
+void	algorithm_init_vars(t_aglorithm_vars v[1])
+{
+	v->pipex_ret = 0;
+	v->ret = 0;
+	v->tmp_str = NULL;
+	v->sep = NULL;
+	v->submod = NULL;
+	v->sep_head = NULL;
+	v->submod_head = NULL;
+}
 
 int	algorithm(char *str, t_list **envp_head, int last_exit_code)
 {
-	int 	i;
-	int 	j;
-	int		k;
-	int		pipex_ret;
-	int		ret;
-	char	*tmp_str;
-	t_list	*sep;
-	t_list	*submod;
- 	t_list	*sep_head;
- 	t_list	*submod_head;
+	t_aglorithm_vars	v[1];
+
+	algorithm_init_vars(v);
+	split_submod_and_sep(&str, &(v->submod_head), &(v->sep_head));
+	if (!v->sep_head)
+		return (algorithm_exit_condition_1(str, envp_head, last_exit_code, v));
+	ft_free_list(v->submod_head);
+	ft_free_list(v->sep_head);
+	ft_free(str);
+	return (algorithm_recursive(envp_head, last_exit_code, v));
+}
+
+int	algorithm_exit_condition_1(char *str, t_list **envp_head, \
+int last_exit_code, t_aglorithm_vars v[1])
+{
+	int	i;
+	int	j;
+	int	k;
 
 	i = 0;
 	j = 0;
 	k = 0;
-	pipex_ret = 0;
-	ret = 0;
-	tmp_str = NULL;
-	sep = NULL;
-	submod = NULL;
-	sep_head = NULL;
-	submod_head = NULL;
-	split_submod_and_sep(&str, &submod_head, &sep_head);
-	if (!sep_head)
+	while (str[i])
 	{
-		while (str[i])
+		if (str[i] == '\"' || str[i] == '\'')
 		{
-			if (str[i] == '\"' || str[i] == '\'')
-			{
-				k = go_to_closing_char(&str[i]);
-				i += k;
-				j += k;
-			}
-			if (str[i] != '(' && str[i] != ')')
-				j++;
-			i++;
+			k = go_to_closing_char(&str[i]);
+			i += k;
+			j += k;
 		}
-		tmp_str = str;
-		str = ft_alloc(sizeof(char) * (j + 1));
-		i = 0;
-		j = 0;
-		while (tmp_str[i])
-		{
-			if (tmp_str[i] == '\"' || tmp_str[i] == '\'')
-			{
-				k = go_to_closing_char(&tmp_str[i]);
-				while(k)
-				{
-					str[j] = tmp_str[i];
-					i++;
-					j++;
-					k--;
-				}
-			}
-			if (tmp_str[i] && tmp_str[i] != '(' && tmp_str[i] != ')')
-			{
-				str[j] = tmp_str[i];
-				j++;
-			}
-			i++;
-		}
-		str[j] = '\0';
-		ft_free(tmp_str);
-		pipex_ret = ft_pipe(str, envp_head, last_exit_code);
-		ft_free(str);
-		return (pipex_ret);
+		if (str[i] != '(' && str[i] != ')')
+			j++;
+		i++;
 	}
-	sep = sep_head;
-	submod = submod_head;
-	while (sep)
+	v->tmp_str = str;
+	str = ft_alloc(sizeof(char) * (j + 1));
+	return (algorithm_exit_condition_2(str, envp_head, last_exit_code, v));
+}
+
+int	algorithm_exit_condition_2(char *str, t_list **envp_head,
+int last_exit_code, t_aglorithm_vars v[1])
+{
+	int	i;
+	int	j;
+	int	k;
+
+	i = 0;
+	j = 0;
+	k = 0;
+	while (v->tmp_str[i])
 	{
-		ret = algorithm(ft_strdup((char *)submod->content), envp_head, last_exit_code);
-		if (submod_head != submod)
-			sep = sep->next;
-		submod = submod->next;
-		if (sep && *((char *)(sep->content)) == '1' && ret)
+		if (v->tmp_str[i] == '\"' || v->tmp_str[i] == '\'')
 		{
-			while (sep && *((char *)(sep->content)) == '1')
-			{
-				submod = submod->next;
-				sep = sep->next;
-			}
+			k = go_to_closing_char(&v->tmp_str[i]);
+			while (k--)
+				str[j++] = v->tmp_str[i++];
 		}
-		else if (sep && *((char *)(sep->content)) == '2' && !ret)
-		{
-			submod = submod->next;
-			sep = sep->next;
-		}
+		if (v->tmp_str[i] && v->tmp_str[i] != '(' && v->tmp_str[i] != ')')
+			str[j++] = v->tmp_str[i];
+		i++;
 	}
-	ft_free_list(submod_head);
-	ft_free_list(sep_head);
+	str[j] = '\0';
+	ft_free(v->tmp_str);
+	v->pipex_ret = ft_pipe(str, envp_head, last_exit_code);
 	ft_free(str);
-	return (ret);
+	return (v->pipex_ret);
+}
+
+int	algorithm_recursive(t_list **envp_head, int last_exit_code,
+t_aglorithm_vars v[1])
+{
+	v->sep = v->sep_head;
+	v->submod = v->submod_head;
+	while (v->sep)
+	{
+		v->ret = algorithm(ft_strdup((char *)v->submod->content),
+				envp_head, last_exit_code);
+		if (v->submod_head != v->submod)
+			v->sep = v->sep->next;
+		v->submod = v->submod->next;
+		if (v->sep && *((char *)(v->sep->content)) == '1' && v->ret)
+		{
+			while (v->sep && *((char *)(v->sep->content)) == '1')
+			{
+				v->submod = v->submod->next;
+				v->sep = v->sep->next;
+			}
+		}
+		else if (v->sep && *((char *)(v->sep->content)) == '2' && !v->ret)
+		{
+			v->submod = v->submod->next;
+			v->sep = v->sep->next;
+		}
+	}
+	return (v->ret);
 }

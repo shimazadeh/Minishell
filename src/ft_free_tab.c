@@ -1,26 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_exit_utils.c                                    :+:      :+:    :+:   */
+/*   ft_free_tab.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/10 19:04:38 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/10 19:04:48 by aguillar         ###   ########.fr       */
+/*   Created: 2022/08/24 13:22:16 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/24 13:22:27 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	ft_free_list_regular(t_list *list)
+void	ft_free_tab(char **tab)
 {
-	t_list	*tmp;
+	int	i;
 
-	while (list)
+	i = 0;
+	if (!tab)
+		return ;
+	while (tab[i])
 	{
-		tmp = list->next;
-		free(list->content);
-		free(list);
-		list = tmp;
+		ft_free(tab[i]);
+		i++;
 	}
+	ft_free(tab);
 }

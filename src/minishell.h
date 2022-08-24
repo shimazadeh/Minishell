@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 00:32:49 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 13:38:32 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ typedef struct s_struct
 	char				**cmd;
 	char				**outfiles;
 	int					fds[2];
-	int					tag;//tells you if the last infile is here_doc (1) or actual file (0)
+	int					tag;
 	int					wstatus;
 	pid_t				child;
 	struct s_struct		*next;
@@ -52,31 +52,78 @@ typedef struct s_struct
 
 # define BUFFER_SIZE 100
 
-//////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
 // minishell.c
+
+typedef struct s_minishell_vars
+{
+	int				last_exit_code;
+	char			*input;
+	char			*prompt;
+	t_list			*envp_head;
+}				t_minishell_vars;
 
 void	minishell(char	**envp);
 void	minishell_init_vars(t_minishell_vars v[1]);
 
-// 
+// minishell_utils.c
 
-int		ft_pipe(char *str, t_list **envp_head, int last_exit_code);
-
-int		str_is_only_spaces(char *str);
-int		go_to_closing_par(char *str);
-void	rm_outer_par(char **str_add);
-int		go_to_closing_char(char *str);
-void	split_submod_and_sep(char **str_add, t_list **submod_head, t_list **sep_head);
-int		algorithm(char *str, t_list **envp_head, int last_exit_code);
-
-void	tab_to_list(char **tab, t_list **lst_head);
 int		even_par_nbr(char *str);
+int		no_unclosed_quote(char *str);
+void	handle_ws(char **str_add);
+
+// algorithm.c
+
+typedef struct s_aglorithm_vars
+{
+	int				pipex_ret;
+	int				ret;
+	char			*tmp_str;
+	t_list			*sep;
+	t_list			*submod;
+ 	t_list			*sep_head;
+ 	t_list			*submod_head;
+}				t_aglorithm_vars;
+
+int		algorithm(char *str, t_list **envp_head, int last_exit_code);
+int		algorithm_exit_condition_1(char *str, t_list **envp_head, \
+int last_exit_code, t_aglorithm_vars v[1]);
+int		algorithm_exit_condition_2(char *str, t_list **envp_head,
+int last_exit_code, t_aglorithm_vars v[1]);
+int		algorithm_recursive(t_list **envp_head, int last_exit_code,
+t_aglorithm_vars v[1]);
+
+// algorithm_utils.c
+
+int		go_to_closing_char(char *str);
+void	rm_outer_par_1(char **str_add);
+void	rm_outer_par_2(int *i_add, int j, int flag, char *str);
+int		go_to_closing_par(char *str);
+int		str_is_only_spaces(char *str);
+
+// split_submod_and_sep.c
+
+typedef struct s_split_submod_and_sep_vars
+{
+	int				count;
+	int				i;
+	int				j;
+	char			*str;
+}				t_split_submod_and_sep_vars;
+
+void	split_submod_and_sep_1(char **str_add, t_list **submod_head, \
+t_list **sep_head);
+void	split_submod_and_sep_2(char **str_add, t_list **submod_head, \
+t_list **sep_head, t_split_submod_and_sep_vars v[1]);
+void	split_submod_and_sep_init_vars(t_split_submod_and_sep_vars v[1]);
+
+// garbage_collector.c
 
 void	*ft_alloc(int size);
 int		ft_free(void *to_free);
 
-t_list	*ft_lstnew_regular(void *content);
+// buildins.c
 
 int		buildins_dispatch(char **av, t_list **envp_head);
 int		cd(char *dir, t_list **envp_head);
@@ -85,6 +132,9 @@ int		unset(char **vars, t_list **envp_head);
 int		export(char **vars, t_list **envp_head);
 int		env(t_list **envp_head);
 int		pwd(void);
+
+
+// buildins_utils.c
 
 t_list	*old_var(char *var, t_list **envp_head);
 void	print_sorted_list(t_list **envp_head);
@@ -98,15 +148,11 @@ void	mask_prev_compo(char *mask, char *path, int i);
 char	*mask_result_str(char *mask, char *path);
 char	*ft_getcwd(void);
 
+// ft_exit.c
+
 void	ft_exit(int exit_code, char *error_msg);
 
-void	ft_free_list_regular(t_list *list);
-
-char	*get_next_line(int fd);
-char	*get_next_line_2(int fd, char **tab, t_list *first, t_list *last);
-t_list	*ft_expand_list(t_list *first, t_list *last, char *str, int size);
-char	*ft_join_contents(t_list *first);
-void	ft_free_list(t_list *list);
+// prompt.c
 
 void	get_prompt(char **prompt_add, t_list **envp_head);
 char	**set_prompt_elems(t_list **envp_head);
@@ -114,19 +160,7 @@ char	*get_user(t_list **envp_head);
 char	*get_pos(t_list **envp_head);
 char	*get_pwd(t_list **envp_head, char *user);
 
-void	free_tab_n(char **tab, int size);
-char	*ft_strstr(char *str, char *to_find);
-
-int		ft_dprintf(int fd, const char *str, ...);
-void	ft_dprint(va_list arg, char c, char **to_print_add);
-
-char	*ft_ll_itoa_base(long long int nb, char *base);
-char	*ft_ll_nbr_to_string(long long int nb, char *str, int nb_len, char *base);
-int		ft_ll_nb_len(long long int nb, int base_len);
-
-char	*ft_ull_itoa_base(unsigned long long nb, char *base);
-char	*ft_ull_nbr_to_string(unsigned long long int nb, char *str, int nb_len, char *base);
-int		ft_ull_nb_len(unsigned long long int nb, int base_len);
+// handle_widlcards.c
 
 void	handle_wildcards(char ***av_tab_add);
 void	expand_wc_node(t_list *node);
@@ -140,26 +174,56 @@ int		compatible_name(char *file, char *wc);
 int		next_char_index(char *str, char c);
 void	replace_node_by_sublist(t_list *node, t_list *sublist);
 
-void	ft_lstadd_back(t_list **alst, t_list *new);
-t_list	*ft_lstnew(void *content);
-t_list	*ft_lstlast(t_list *lst);
-int		ft_lstsize(t_list *lst);
+// ft_dprintf.c
 
-char	*ft_strchr(const char *s, int c);
-char	*ft_strjoin(char const *s1, char const *s2);
-char	*ft_strnjoin(char const *s1, char const *s2, int size);
-size_t	ft_strlen(const char *s);
-void	ft_putstr_fd(char *str, int fd);
+int		ft_dprintf(int fd, const char *str, ...);
+void	ft_dprint(va_list arg, char c, char **to_print_add);
+
+// get_next_line_bonus.c
+
+char	*get_next_line(int fd);
+char	*get_next_line_2(int fd, char **tab, t_list *first, t_list *last);
+
+// get_next_line_utils_bonus.c
+
+t_list	*ft_expand_list(t_list *first, t_list *last, char *str, int size);
+char	*ft_join_contents(t_list *first);
+
+// libft
+
 void	ft_bzero(void *s, size_t n);
-char	**ft_split(const char *str, char c);
+void	ft_free_list(t_list *list);
+void	ft_free_list_regular(t_list *list);
 void	ft_free_tab(char **tab);
+void	ft_free_tab_n(char **tab, int size);
+char	*ft_itoa(int n);
+char	*ft_ll_itoa_base(long long int nb, char *base);
+void	ft_lstadd_back(t_list **alst, t_list *new);
+t_list	*ft_lstlast(t_list *lst);
+t_list	*ft_lstnew(void *content);
+t_list	*ft_lstnew_regular(void *content);
+int		ft_lstsize(t_list *lst);
+void	ft_lst_to_tab(char ***tab_add, t_list **lst_head);
+void	ft_putstr_fd(char *str, int fd);
+char	**ft_split(const char *str, char c);
+char	**ft_split_custom(const char *str, char c, int flag);
+char	*ft_strchr(const char *s, int c);
+char	*ft_strdup(const char *src);
+char	*ft_strdup_range(char *str, int start, int end);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlen(const char *s);
 int		ft_strncmp(const char *s1, const char *s2, int n);
 char	*ft_strndup(char *s1, int j);
-char	*ft_strdup(const char	*src);
-char	*ft_itoa(int n);
+char	*ft_strnjoin(char const *s1, char const *s2, int size);
+char	*ft_strstr(char *str, char *to_find);
+char	*ft_ull_itoa_base(unsigned long long nb, char *base);
+void	ft_tab_to_list(char **tab, t_list **lst_head);
+
 
 
 ///**********shima's stuff***********///
+
+int		ft_pipe(char *str, t_list **envp_head, int last_exit_code);
 
 //libft modified functions
 void		structure_add_back(t_struct **lst, t_struct *new);
@@ -172,13 +236,11 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code);
 
 //parsing
 void		initialize_sc(t_struct **tab, char *str);
-char		*ft_strdup_range(char *str, int start, int end);
 int 		parse(char *str, t_struct *node);
 char		**parse_outfiles(char **str_add);
 char		**parse_infiles(char **str_add);
 int 		set_infiles_outfiles_cmds(t_struct **elements);
 int 		find_last_infile_type(char *str);
-char		**ft_split_custom(const char *str, char c, int flag);
 
 //execution
 int			execute(t_struct **elements, char **parsed_path, t_list **envp);
@@ -186,7 +248,6 @@ int			execute_function(t_struct *head, char **parsed_path, t_list **envp_head, i
 int	execute_pipe(t_struct **elements, char **parsed_path, t_list **envp);
 
 char		*file_access_check(char **files, int flag);
-void		lst_to_tab(char ***tab_add, t_list **lst_head);
 int			boolean_if_buildin(char **av);
 
 //finding paths

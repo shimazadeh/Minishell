@@ -6,19 +6,11 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 00:21:24 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 00:31:37 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 12:45:33 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-typedef struct s_minishell_vars
-{
-	int				last_exit_code;
-	char			*input;
-	char			*prompt;
-	t_list			*envp_head;
-}				t_minishell_vars;
 
 void	minishell_init_vars(t_minishell_vars *v)
 {
@@ -40,10 +32,11 @@ void	minishell(char	**envp)
 		v->input = readline(v->prompt);
 		if (v->input && *(v->input))
 		{
-			if (even_par_nbr(v->input))
+			if (even_par_nbr(v->input) && no_unclosed_quote(v->input))
 			{
 				add_history(v->input);
-				v->last_exit_code = algorithm(ft_strdupv(v->input),
+				handle_ws(&(v->input));
+				v->last_exit_code = algorithm(ft_strdup(v->input),
 						&(v->envp_head), v->last_exit_code);
 			}
 			else

@@ -1,27 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   alloc_free_utils.c                                 :+:      :+:    :+:   */
+/*   ft_free_tab_n.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/11/26 10:26:09 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/18 13:25:34 by aguillar         ###   ########.fr       */
+/*   Created: 2022/08/24 13:24:18 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/24 13:24:44 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_list	*ft_lstnew_regular(void *content)
+void	ft_free_tab_n(char **tab, int size)
 {
-	t_list	*new;
+	int	i;
 
-	if (!content)
-		return (NULL);
-	new = malloc(sizeof(t_list));
-	if (!new)
-		return (NULL);
-	new->content = content;
-	new->next = NULL;
-	return (new);
+	i = 0;
+	while (i < size)
+	{
+		if (tab[i])
+			ft_free(tab[i]);
+		i++;
+	}
+	ft_free(tab);
 }

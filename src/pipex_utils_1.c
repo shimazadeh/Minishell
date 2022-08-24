@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/23 17:19:11 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 13:34:10 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,29 +102,6 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 	else
 		exit_code = execute_pipe(elements, parsed_path, envp);
 	return (exit_code);
-}
-
-void	lst_to_tab(char ***tab_add, t_list **lst_head)
-{
-	char	**tab;
-	int		size;
-	int		i;
-	t_list	*node;
-
-	if (!lst_head || !tab_add)
-		ft_exit(EXIT_FAILURE, "Exited in function: lst_to_tab\nExit due to: argument check fail\n");
-	node = *lst_head;
-	size = ft_lstsize(node);
-	tab = ft_alloc(sizeof(char *) * (size + 1));
-	i = 0;
-	while (i < size)
-	{
-		tab[i] = ft_strdup((char *)node->content);
-		node = node->next;
-		i++;
-	}
-	tab[i] = NULL;
-	*tab_add = tab;
 }
 
 int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int flag)

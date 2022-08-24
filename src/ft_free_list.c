@@ -1,31 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_free_list.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/24 00:18:40 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 11:21:44 by aguillar         ###   ########.fr       */
+/*   Created: 2022/08/24 13:22:55 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/24 13:23:06 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// norm
-//print fn
-//exit fix
-// ws + unclosed auotes
-//tile expand
-
-t_list	*g_alloc_lst = NULL;
-
-int	main(int ac, char **av, char **envp)
+void	ft_free_list(t_list *list)
 {
-	(void)av;
-	if (ac != 1)
-		ft_exit(EXIT_FAILURE,
-			"Exited in function: main\nExit due to: argument check fail\n");
-	minishell(envp);
-	return (0);
+	t_list	*tmp;
+
+	while (list)
+	{
+		tmp = list->next;
+		ft_free(list->content);
+		ft_free(list);
+		list = tmp;
+	}
 }

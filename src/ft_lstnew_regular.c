@@ -1,49 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   prompt_utils.c                                     :+:      :+:    :+:   */
+/*   ft_lstnew_regular.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/10 18:57:47 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/10 19:02:10 by aguillar         ###   ########.fr       */
+/*   Created: 2021/11/26 10:26:09 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/24 13:30:00 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*ft_strstr(char *str, char *to_find)
+t_list	*ft_lstnew_regular(void *content)
 {
-	int	i;
-	int	j;
+	t_list	*new;
 
-	i = 0;
-	if (!to_find[i])
-		return (str);
-	while (str[i])
-	{
-		j = 0;
-		while (str[i + j] == to_find[j])
-		{
-			if (!to_find[j + 1])
-				return (&str[i]);
-			j++;
-		}
-		i++;
-	}
-	return (0);
-}
-
-void	free_tab_n(char **tab, int size)
-{
-	int	i;
-
-	i = 0;
-	while (i < size)
-	{
-		if (tab[i])
-			ft_free(tab[i]);
-		i++;
-	}
-	ft_free(tab);
+	if (!content)
+		return (NULL);
+	new = malloc(sizeof(t_list));
+	if (!new)
+		return (NULL);
+	new->content = content;
+	new->next = NULL;
+	return (new);
 }

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/22 22:00:47 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 13:34:59 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -364,6 +364,6 @@ void	handle_wildcards(char ***av_tab_add)
 	}
 	ft_free_tab(av_tab);
 	av_tab = NULL;
-	lst_to_tab(&av_tab, &av_lst);
+	ft_list_to_tab(&av_tab, &av_lst);
 	*av_tab_add = av_tab;
 }
