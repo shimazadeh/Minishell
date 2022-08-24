@@ -250,13 +250,16 @@ int 	number_of_delim(char *str, char delim, int flag);
 //execution
 int		execute(t_struct **elements, char **parsed_path, t_list **envp);
 int		execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size);
-int		execute_pipe(t_struct **elements, char **parsed_path, t_list **envp);
+int		ft_fork(t_struct **elements, char **parsed_path, t_list **envp);
+void	ft_dup2_infiles(t_struct *head, int *exit_code);
+void	ft_dup2_outfiles(t_struct *head, int *exit_code);
+void	ft_execute_cmd(t_struct *head, int *exit_code, char **parsed_path, t_list **envp_head);
 
 char	*file_access_check(char **files, int flag);
 int		boolean_if_buildin(char **av);
 
 //finding paths
-int		access_check(char **cmd, char **parsed_path);
+int		cmd_access_check(char **cmd, char **parsed_path);
 char	**extract_env_paths(char *find, t_list **envp_list);
 
 //here__doc handling

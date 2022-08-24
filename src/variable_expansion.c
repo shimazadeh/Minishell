@@ -34,7 +34,6 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 {
 	int i;
 	int j;
-	int k;
 	char *var_name;
 	char *var_exp;
 	char *str;
@@ -47,12 +46,8 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 	while(str[i])
 	{
 		if (str[i] && (str[i] == '\"' || str[i] == '\''))
-		{
-			k = go_to_closing_char(&str[i]);
-			if (k)
-				i += k + 1;
-		}
-		else if (str[i] && str[i] == '$' && str[i + 1] && str[i + 1] != ' ')
+			i += go_to_closing_char(&str[i]) + 1;
+		else if (str[i] && str[i] == '$' && str[i + 1] && str[i + 1] != ' ' && str[i + 1] != '\t')
 		{
 			i++;
 			j = i;
@@ -63,7 +58,7 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 			}
 			else if (str[i])
 			{
-				while(str[i] && (str[i] != ' ' && str[i] != '\n'))
+				while(str[i] && (str[i] != ' ' && str[i] != '\n'))//because of \n that is a possibility in here_doc I cnnot use save_next_word
 					i++;
 				var_name = ft_strdup_range(str, j, i);
 				find_env_var(var_name, envp_head, &var_exp);
@@ -72,6 +67,10 @@ int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code)
 			str = create_new_str(str, var_exp, j - 1, i);
 			i = 0;
 		}
+		// else if (str[i] && str[i] == '$' && str[i + 1] && (str[i + 1] == '\'' || str[i + 1] == '\"'))
+		// {
+		// 	i += go_to_closing_char(&str[i]) + 1;
+		// }
 		else
 			i++;
 	}

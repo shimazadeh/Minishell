@@ -57,7 +57,7 @@ int	write_to_file(int fd1, char *stop, char	*file_name, t_list **envp_head, int 
 	return (fd1);
 }
 
-int	access_check(char **cmd, char **parsed_path)
+int	cmd_access_check(char **cmd, char **parsed_path)
 {
 	int		i;
 	char	*path_iteri;

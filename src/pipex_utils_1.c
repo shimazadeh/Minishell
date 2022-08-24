@@ -33,6 +33,159 @@ int	boolean_if_buildin(char **av)
 	return (0);
 }
 
+char	*file_access_check(char **files, int flag) //0 for infiles, 1 for outfiles OTRUNC, 2 outfiles OAPPEND
+{
+	int i;
+	int fd;
+
+	i = 0;
+	while(files[i])
+	{
+		// dprintf(2, "file is %s\n", files[i]);
+		if (flag == 0)
+			fd = open(files[i], O_RDONLY);
+		else if (flag == 1)
+			fd = open(files[i], O_CREAT | O_RDWR | O_TRUNC, 0644);
+		else if (flag == 2)
+			fd = open(files[i], O_CREAT | O_RDWR | O_APPEND, 0644);
+		if (fd < 0)
+		{
+			if (access(files[i], F_OK) == -1)//no such file or directory
+				perror(files[i]);
+			else if (access(files[i], R_OK) == -1 || access(files[i], W_OK) == -1)//permission denied
+				perror(files[i]);
+			else//file doesnt exist
+				perror(files[i]);
+			close(fd);
+			return (NULL);
+		}
+		close(fd);
+		i++;
+	}
+	return (files[i - 1]);
+}
+
+void	ft_dup2_infiles(t_struct *head, int *exit_code)
+{
+	char *last_infile;
+
+	last_infile = NULL;
+	if (head->infiles && head->tag == 0)
+	{
+		last_infile = file_access_check(head->infiles, 0); //checks the access of all infiles, returns NULL on failure
+		if (!last_infile) // while on infile + perror if pb
+			*exit_code = 1;
+		else
+		{
+			head->fds[0] = open(last_infile, O_RDONLY);
+			// if (head->fds[0] != STDIN_FILENO)
+			// {
+				if (dup2(head->fds[0], STDIN_FILENO) < 0)
+					perror("dup2 stdin inside:");
+				close(head->fds[0]);
+			// }
+		}
+	}
+	else
+	{
+		if (head->fds[0] != STDIN_FILENO)
+		{
+			if (dup2(head->fds[0], STDIN_FILENO) < 0)
+				perror("dup2 stdin inside:");
+			close(head->fds[0]);
+		}
+	}
+}
+
+void	ft_dup2_outfiles(t_struct *head, int *exit_code)
+{
+	char *last_outfile;
+
+	last_outfile = NULL;
+	if (exit_code != 1 && head->outfiles)
+	{
+		last_outfile = file_access_check(head->outfiles, 1); //checks the access of all outfiles, returns NULL on failure
+		if (!last_outfile)
+			*exit_code = 1;
+		else
+		{
+			head->fds[1] = open(last_outfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
+			// if (head->fds[1]  != STDOUT_FILENO)
+			// {
+				if (dup2(head->fds[1], STDOUT_FILENO) < 0)
+					perror("dup2 stdout inside:");
+				close(head->fds[1]);
+			// }
+		}
+	}
+	else if (exit_code != 1)
+	{
+		if (head->fds[1] != STDOUT_FILENO)
+		{
+			if (dup2(head->fds[1], STDOUT_FILENO) < 0)
+				perror("dup2 stdout:");
+			close(head->fds[1]);
+		}
+	}
+}
+
+void	ft_execute_cmd(t_struct *head, int *exit_code, char **parsed_path, t_list **envp_head)
+{
+	char	**envp;
+	char	*path_iteri;
+	int		size;
+
+	size = 0;
+	envp = NULL;
+	path_iteri = NULL;
+	ft_lst_to_tab(&envp, envp_head);
+	if (boolean_if_buildin(head->cmd) == 1)
+		*exit_code = buildins_dispatch(head->cmd, envp_head);
+	else if (cmd_access_check(head->cmd, parsed_path) == 0)
+	{
+		while (*parsed_path && head->cmd[0])
+		{
+			size = ft_strlen(*parsed_path);
+			if (ft_strncmp(*parsed_path, *(head->cmd), size) != 0)
+				path_iteri = ft_strjoin(*parsed_path, *(head->cmd));
+			else
+				path_iteri = ft_strdup(*(head->cmd));
+			execve(path_iteri, head->cmd, envp);
+			(parsed_path)++;
+		}
+		*exit_code = 127;
+	}
+	ft_free_tab(envp);
+}
+
+int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int flag)
+{
+	char	*path_iteri;
+	int		size;
+	int		exit_code;
+	char	**envp;
+
+	size = 0;
+	exit_code = -1;
+	if (head->child < 0)
+		perror("Fork:");
+	else if (!head->child)
+	{
+		ft_dup2_infiles(head, &exit_code);
+		ft_dup2_outfiles(head, &exit_code);
+		if (exit_code != 1 && head->cmd)
+			ft_execute_cmd(head, &exit_code, parsed_path, envp_head);
+		if (flag == 1)//when forking and execve fails
+		{
+			ft_free_list(*envp_head);
+			ft_free_tab(parsed_path);
+			ft_free_sc(head);
+			ft_exit(exit_code, NULL);
+		}
+	}
+	return (exit_code);
+}
+
 int	buildins_execution(t_struct **elements, char **parsed_path, t_list **envp)
 {
 	t_struct	*copy;
@@ -54,7 +207,7 @@ int	buildins_execution(t_struct **elements, char **parsed_path, t_list **envp)
 	return (exit_code);
 }
 
-int	execute_pipe(t_struct **elements, char **parsed_path, t_list **envp)
+int	ft_fork(t_struct **elements, char **parsed_path, t_list **envp)
 {
 	int			pipefds[2];
 	t_struct	*copy;
@@ -89,139 +242,6 @@ int	execute_pipe(t_struct **elements, char **parsed_path, t_list **envp)
 	return (exit_code);
 }
 
-
-int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int flag)
-{
-	char	*path_iteri;
-	int		size;
-	char	*last_infile;
-	char	*last_outfile;
-	int		exit_code;
-	char	**envp;
-
-	size = 0;
-	exit_code = -1;
-	envp = NULL;
-	ft_lst_to_tab(&envp, envp_head);
-	if (head->child < 0)
-		perror("Fork:");
-	else if (!head->child)
-	{
-		if (head->infiles && head->tag == 0)
-		{
-			last_infile = file_access_check(head->infiles, 0); //checks the access of all infiles, returns NULL on failure
-			if (!last_infile) // while on infile + perror if pb
-				exit_code = 1;
-			else
-			{
-				head->fds[0] = open(last_infile, O_RDONLY);
-				if (head->fds[0] != STDIN_FILENO)
-				{
-					if (dup2(head->fds[0], STDIN_FILENO) < 0)
-						perror("dup2 stdin inside:");
-					close(head->fds[0]);
-				}
-			}
-		}
-		else
-		{
-			if (head->fds[0] != STDIN_FILENO)
-			{
-				if (dup2(head->fds[0], STDIN_FILENO) < 0)
-					perror("dup2 stdin inside:");
-				close(head->fds[0]);
-			}
-		}
-		if (exit_code != 1 && head->outfiles)
-		{
-			last_outfile = file_access_check(head->outfiles, 1); //checks the access of all infiles, returns NULL on failure
-			if (!last_outfile)
-				exit_code = 1;
-			else
-			{
-				head->fds[1] = open(last_outfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
-				if (head->fds[1]  != STDOUT_FILENO)
-				{
-					if (dup2(head->fds[1], STDOUT_FILENO) < 0)
-						perror("dup2 stdout inside:");
-					close(head->fds[1]);
-				}
-			}
-		}
-		else if (exit_code != 1)
-		{
-			if (head->fds[1] != STDOUT_FILENO)
-			{
-				if (dup2(head->fds[1], STDOUT_FILENO) < 0)
-					perror("dup2 stdout:");
-				close(head->fds[1]);
-			}
-		}
-		if (exit_code != 1 && head->cmd)
-		{
-			exit_code = buildins_dispatch(head->cmd, envp_head);
-			if (exit_code == 127)
-			{
-				if (access_check(head->cmd, parsed_path) == 0)
-				{
-					while (*parsed_path && head->cmd[0])
-					{
-						size = ft_strlen(*parsed_path);
-						if (ft_strncmp(*parsed_path, *(head->cmd), size) != 0)
-							path_iteri = ft_strjoin(*parsed_path, *(head->cmd));
-						else
-							path_iteri = ft_strdup(*(head->cmd));
-						execve(path_iteri, head->cmd, envp);
-						(parsed_path)++;
-					}
-					exit_code = 127;
-				}
-			}
-		}
-		ft_free_tab(envp);
-		if (flag == 1)
-		{
-			ft_free_list(*envp_head);
-			ft_free_tab(parsed_path);
-			ft_free_sc(head);
-			ft_exit(exit_code, NULL);
-		}
-	}
-	return (exit_code);
-}
-
-char	*file_access_check(char **files, int flag) //0 for infiles, 1 for outfiles OTRUNC, 2 outfiles OAPPEND
-{
-	int i;
-	int fd;
-
-	i = 0;
-	while(files[i])
-	{
-		// dprintf(2, "file is %s\n", files[i]);
-		if (flag == 0)
-			fd = open(files[i], O_RDONLY);
-		else if (flag == 1)
-			fd = open(files[i], O_CREAT | O_RDWR | O_TRUNC, 0644);
-		else if (flag == 2)
-			fd = open(files[i], O_CREAT | O_RDWR | O_APPEND, 0644);
-		if (fd < 0)
-		{
-			if (access(files[i], F_OK) == -1)//no such file or directory
-				perror(files[i]);
-			else if (access(files[i], R_OK) == -1 || access(files[i], W_OK) == -1)//permission denied
-				perror(files[i]);
-			else//file doesnt exist
-				perror(files[i]);
-			close(fd);
-			return (NULL);
-		}
-		close(fd);
-		i++;
-	}
-	return (files[i - 1]);
-}
-
 int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 {
 	t_struct	*copy;
@@ -233,7 +253,7 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 	if (structure_size(*elements) == 1 && boolean_if_buildin(copy->cmd) == 1)
 		exit_code = buildins_execution(elements, parsed_path, envp);
 	else
-		exit_code = execute_pipe(elements, parsed_path, envp);
+		exit_code = ft_fork(elements, parsed_path, envp);
 	return (exit_code);
 }
 

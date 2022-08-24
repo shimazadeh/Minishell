@@ -19,20 +19,18 @@ void	initialize_sc(t_struct **elements, char *str)
 	char		**tab;
 
 	i = 0;
-	// dprintf(2,"str before split%s\n", str);
 	tab = ft_split_custom(str, '|', 0);
 	while (tab[i])
 	{
-		// dprintf(2,"str intialization %s\n", tab[i]);
 		copy = ft_alloc(sizeof(t_struct));
 		copy->str = ft_strdup(tab[i]);
 		copy->cmd = NULL;
 		copy->infiles = NULL;
 		copy->outfiles = NULL;
 		copy->tag = 0;
-		copy->fds[0] = STDIN_FILENO;//new
-		copy->fds[1] = STDOUT_FILENO;//new
-		copy->wstatus = 0;//new
+		copy->fds[0] = STDIN_FILENO;
+		copy->fds[1] = STDOUT_FILENO;
+		copy->wstatus = 0;
 		copy->child = 0;
 		copy->next = NULL;
 		structure_add_back(elements, copy);
@@ -43,6 +41,18 @@ void	initialize_sc(t_struct **elements, char *str)
 	return ;
 }
 
+char	*create_path(char *path)
+{
+	char	*res;
+
+	if (path[ft_strlen(path) - 1] != '/')
+		res = ft_strjoin(path, "/");
+	else
+		res = ft_strdup(path);
+	ft_free(path);
+	return (res);
+}
+
 char	**extract_env_paths(char *find, t_list **envp_head)
 {
 	char	**paths;
@@ -50,34 +60,27 @@ char	**extract_env_paths(char *find, t_list **envp_head)
 	char	**tab_temp;
 	int		k;
 
-	k = 0;
-	temp = NULL;
+	k = -1;
 	paths = NULL;
 	tab_temp = NULL;
+	temp = NULL;
 	find_env_var(find, envp_head, &temp);
 	if (temp)
 	{
 		tab_temp = ft_split(temp, ':');
+		paths = ft_alloc(sizeof(char *) * (ft_strlen_tab(tab_temp) + 2));
 		ft_free(temp);
-		paths = ft_alloc(sizeof(char *) * (ft_strlen_tab(tab_temp) + 2));//the extra space is for adding pwd at the end
-		while (tab_temp[k])
-		{
-			if (tab_temp[k][ft_strlen(tab_temp[k]) - 1] != '/')
-				paths[k] = ft_strjoin(tab_temp[k], "/");
-			else
-				paths[k] = ft_strdup(tab_temp[k]);
-			k++;
-		}
+		while (tab_temp[++k])
+			path[k] = create_path(tab_temp[k]);
+	}
+	else
+	{
+		paths = ft_alloc(sizeof(char *) * 2);
+		k = 0;
 	}
 	temp = ft_getcwd();
-	if (temp[ft_strlen(temp) - 1] != '/')
-		paths[k] = ft_strjoin(temp, "/");
-	else
-		paths[k] = ft_strdup(temp);
-	k++;
-	paths[k] = NULL;
-	ft_free(temp);
-	ft_free_tab(tab_temp);
+	paths[k] = create_path(temp);
+	paths[++k] = NULL;
 	return (paths);
 }
 
@@ -91,6 +94,8 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 	if (!str)
 		return (0);
 	elements = NULL;
+	parsed_path = NULL;
+	heredoc_files = NULL;
 	exit_code = -1;
 	parsed_path = extract_env_paths("PATH", envp_head);
 	variable_expansion(&str, envp_head, last_exit_code);
@@ -102,7 +107,6 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 	ft_unlink(herdoc_files);
 	return (exit_code);
 }
-
 
 // int main(int ac, char **argv, char **envp)
 // {
