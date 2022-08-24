@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 16:48:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 23:23:01 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:40:35 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ int	ft_fill_tab_custom(t_split_custom_vars v[1])
 {
 	t_ft_fill_tab_custom_vars	w[1];
 
-	ft_fill_tab_custom_init_vars(v);
+	ft_fill_tab_custom_init_vars(w);
 	while (w->i < v->wc)
 	{
 		w->j = 0;

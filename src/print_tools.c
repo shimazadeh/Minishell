@@ -1,28 +1,44 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   print_tools.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/24 00:18:40 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:01:37 by aguillar         ###   ########.fr       */
+/*   Created: 2022/08/25 00:23:10 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/25 00:23:29 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-//exit fix
-// ws + unclosed auotes
-//tile expand
-
-t_list	*g_alloc_lst = NULL;
-
-int	main(int ac, char **av, char **envp)
+void	print_list(t_list *list)
 {
-	(void)av;
-	if (ac != 1)
-		ft_exit(EXIT_FAILURE, "main", "invalid number of argument");
-	minishell(envp);
-	return (0);
+	if (!list)
+	{
+		dprintf(2, "list is NULL\n");
+		return ;
+	}
+	while (list)
+	{
+		dprintf(2, "%s\n", (char *)list->content);
+		list = list->next;
+	}
+}
+
+void	print_tab(char **tab)
+{
+	int	i;
+
+	i = 0;
+	if (!tab)
+	{
+		dprintf(2, "tab is NULL\n");
+		return ;
+	}
+	while (tab[i])
+	{
+		dprintf(2, "%s\n", tab[i]);
+		i++;
+	}
 }
