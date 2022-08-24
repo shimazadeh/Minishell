@@ -6,82 +6,11 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 20:50:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/23 21:09:31 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 14:31:14 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-t_list	*old_var(char *var, t_list **envp_head)
-{
-	t_list	*old;
-	int		i;
-
-	if (!var || !envp_head)
-		ft_exit(EXIT_FAILURE, "Exited in function: old_var\nExit due to: argument check fail\n");
-	i = 0;
-	while (var[i] && var[i] != '=')
-		i++;
-	old = *envp_head;
-	while (old)
-	{
-		if (!strncmp((char *)old->content, var, i))
-			return (old);
-		old = old->next;
-	}
-	return (NULL);
-}
-
-void	print_sorted_list(t_list **envp_head)
-{
-	char	*tab;
-	int		size;
-	t_list	*node;
-
-	if (!envp_head)
-		ft_exit(EXIT_FAILURE, "Exited in function: print_sorted_list\nExit due to: argument check fail\n");
-	if (!*envp_head)
-		return ;
-	node = *envp_head;
-	size = ft_lstsize(node);
-	tab = ft_alloc(sizeof(char) * (size + 1));
-	ft_bzero(tab, sizeof(char) * (size + 1));
-	while (print_lowest_ascii(node, tab));
-
-}
-
-int	print_lowest_ascii(t_list *node, char *tab)
-{
-	int		i;
-	char	*lowest_ascii;
-	int		lowest_ascii_mask;
-
-	if (!node || !tab)
-		ft_exit(EXIT_FAILURE, "Exited in function: print_lowest_ascii\nExit due to: argument check fail\n");
-	i = 0;
-	while (tab[i] == '1')
-	{
-		i++;
-		node = node->next;
-	}
-	if (!node)
-		return (0);
-	lowest_ascii = (char *)node->content;
-	lowest_ascii_mask = i;
-	while (node)
-	{
-		if (!tab[i] && ft_strncmp(lowest_ascii, (char *)node->content, -1) >= 0)
-		{
-			lowest_ascii = (char *)node->content;
-			lowest_ascii_mask = i;
-		}
-		i++;
-		node = node->next;
-	}
-	tab[lowest_ascii_mask] = '1';
-	ft_dprintf(1, "export %s\n", lowest_ascii);
-	return (1);
-}
 
 int	ft_list_remove_node(t_list **lst_head, t_list *node)
 {
@@ -125,23 +54,7 @@ int	contains_invalid_char(char *str, char *id, int j)
 }
 
 
-void	print_tab_nl(char **tab, int nl)
-{
-	int	i;
 
-	i = 0;
-	if (!tab)
-		ft_exit(EXIT_FAILURE, "Exited in function: print_tab_nl\nExit due to: argument check fail\n");
-	while (tab[i])
-	{
-		ft_dprintf(1, "%s", tab[i]);
-		if (tab[i + 1])
-			ft_dprintf(1, " ", tab[i]);
-		i++;
-	}
-	if (nl)
-		ft_dprintf(1, "\n", tab[i]);
-}
 
 void	find_env_var(char *var_name, t_list **envp_head, char **var_exp_add)
 {

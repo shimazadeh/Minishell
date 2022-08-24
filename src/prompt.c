@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/24 16:06:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/22 01:42:22 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 17:37:04 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,8 @@ char	*get_pos(t_list **envp_head)
 	j = 0;
 	pos = NULL;
 	str = NULL;
-	while (node && ft_strncmp((char *)node->content, "SESSION_MANAGER=local/", 22))
+	while (node && ft_strncmp((char *)node->content,
+			"SESSION_MANAGER=local/", 22))
 		node = node->next;
 	if (!node)
 		return (NULL);
@@ -99,7 +100,7 @@ char	**set_prompt_elems(t_list **envp_head)
 	{
 		if (!prompt_elems[i])
 		{
-			free_tab_n(prompt_elems, 6);
+			ft_free_tab_n(prompt_elems, 6);
 			return (NULL);
 		}
 		i++;
@@ -132,5 +133,5 @@ void	get_prompt(char **prompt_add, t_list **envp_head)
 		i++;
 	}
 	*prompt_add = prompt;
-	free_tab_n(prompt_elems, 6);
+	ft_free_tab_n(prompt_elems, 6);
 }

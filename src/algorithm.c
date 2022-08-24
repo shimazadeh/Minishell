@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 14:27:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 12:39:10 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 17:43:25 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	algorithm(char *str, t_list **envp_head, int last_exit_code)
 	t_aglorithm_vars	v[1];
 
 	algorithm_init_vars(v);
-	split_submod_and_sep(&str, &(v->submod_head), &(v->sep_head));
+	split_submod_and_sep_1(&str, &(v->submod_head), &(v->sep_head));
 	if (!v->sep_head)
 		return (algorithm_exit_condition_1(str, envp_head, last_exit_code, v));
 	ft_free_list(v->submod_head);
