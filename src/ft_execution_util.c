@@ -17,15 +17,12 @@ int	cmd_access_check(char **cmd, char **parsed_path)
 	int		i;
 	char	*path_iteri;
 	DIR		*stream;
-	int		size;
 
-	size = 0;
-	i = 0;
+	i = -1;
 	stream = NULL;
-	while (parsed_path[i])
+	while (parsed_path[++i])
 	{
-		size = ft_strlen(parsed_path[i]);
-		if (cmd[0] && ft_strncmp(parsed_path[i], cmd[0], size) == 0)
+		if (ft_strncmp(parsed_path[i], cmd[0], ft_strlen(parsed_path[i])) == 0)
 		{
 			if (access(cmd[0], F_OK) == 0 && access(cmd[0], X_OK) == 0)
 				return (0);
@@ -36,50 +33,44 @@ int	cmd_access_check(char **cmd, char **parsed_path)
 			if (access(path_iteri, F_OK) == 0 && access(path_iteri, X_OK) == 0)
 			{
 				stream = opendir(path_iteri);
-				if (!stream)
-				{
-					if (errno == ENOTDIR)
-						return (ft_free(path_iteri), 0);
-				}
-				else
+				if (!stream && errno == ENOTDIR)
+					return (ft_free(path_iteri), 0);
+				else if (stream)
 					closedir(stream);
 			}
 			ft_free(path_iteri);
 		}
-		i++;
 	}
-	ft_dprintf(2, "%s: command not found\n", cmd[0]);
-	return (1);
+	return (ft_dprintf(2, "%s: command not found\n", cmd[0]), 1);
 }
 
-char	*file_access_check(char **files, int flag) //0 for infiles, 1 for outfiles OTRUNC, 2 outfiles OAPPEND
+char	*file_access_check(char **file, int flag)
 {
 	int	i;
 	int	fd;
 
 	i = -1;
-	while (files[++i])
+	while (file[++i])
 	{
 		if (flag == 0)
-			fd = open(files[i], O_RDONLY);
+			fd = open(file[i], O_RDONLY);
 		else if (flag == 1)
-			fd = open(files[i], O_CREAT | O_RDWR | O_TRUNC, 0644);
+			fd = open(file[i], O_CREAT | O_RDWR | O_TRUNC, 0644);
 		else if (flag == 2)
-			fd = open(files[i], O_CREAT | O_RDWR | O_APPEND, 0644);
+			fd = open(file[i], O_CREAT | O_RDWR | O_APPEND, 0644);
 		if (fd < 0)
 		{
-			if (access(files[i], F_OK) == -1)
-				perror(files[i]);
-			else if (access(files[i], R_OK) == -1
-				|| access(files[i], W_OK) == -1)
-				perror(files[i]);
+			if (access(file[i], F_OK) == -1)
+				perror(file[i]);
+			else if (access(file[i], R_OK) == -1 || access(file[i], W_OK) == -1)
+				perror(file[i]);
 			else
-				perror(files[i]);
+				perror(file[i]);
 			return (close(fd), NULL);
 		}
 		close(fd);
 	}
-	return (files[i - 1]);
+	return (file[i - 1]);
 }
 
 void	ft_dup2_infiles(t_struct *head, int *exit_code)
@@ -95,12 +86,9 @@ void	ft_dup2_infiles(t_struct *head, int *exit_code)
 		else
 		{
 			head->fds[0] = open(last_infile, O_RDONLY);
-			// if (head->fds[0] != STDIN_FILENO)
-			// {
 			if (dup2(head->fds[0], STDIN_FILENO) < 0)
 				perror("dup2 stdin inside:");
 			close(head->fds[0]);
-			// }
 		}
 	}
 	else
@@ -127,12 +115,9 @@ void	ft_dup2_outfiles(t_struct *head, int *exit_code)
 		else
 		{
 			head->fds[1] = open(last_outfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
-			// if (head->fds[1]  != STDOUT_FILENO)
-			// {
 			if (dup2(head->fds[1], STDOUT_FILENO) < 0)
 				perror("dup2 stdout inside:");
 			close(head->fds[1]);
-			// }
 		}
 	}
 	else if (*exit_code != 1)
@@ -146,7 +131,7 @@ void	ft_dup2_outfiles(t_struct *head, int *exit_code)
 	}
 }
 
-void	ft_execute_cmd(t_struct *head, int *exit_code, char **path, t_list **envp_head)
+void	ft_execute_cmd(t_struct *head, int *ec, char **path, t_list **envp_head)
 {
 	char	**envp;
 	char	*path_iteri;
@@ -157,7 +142,7 @@ void	ft_execute_cmd(t_struct *head, int *exit_code, char **path, t_list **envp_h
 	path_iteri = NULL;
 	ft_lst_to_tab(&envp, envp_head);
 	if (boolean_if_buildin(head->cmd) == 1)
-		*exit_code = buildins_dispatch(head->cmd, envp_head);
+		*ec = buildins_dispatch(head->cmd, envp_head);
 	else if (cmd_access_check(head->cmd, path) == 0)
 	{
 		while (*path && head->cmd[0])
@@ -170,7 +155,7 @@ void	ft_execute_cmd(t_struct *head, int *exit_code, char **path, t_list **envp_h
 			execve(path_iteri, head->cmd, envp);
 			(path)++;
 		}
-		*exit_code = 127;
+		*ec = 127;
 	}
 	ft_free_tab(envp);
 }

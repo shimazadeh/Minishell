@@ -45,12 +45,12 @@ int	save_the_next_word(char **str_add, int i, char **dest, int to_clean)
 
 	str = *str_add;
 	end = ' ';
+	to_clean--;
 	while (str[i] && str[i] == ' ')
 		i++;
 	if (str[i] == '\'' || str[i] == '\"')
 	{
 		end = str[i];
-		str[i] = ' ';
 		i++;
 	}
 	start = i;
@@ -59,12 +59,8 @@ int	save_the_next_word(char **str_add, int i, char **dest, int to_clean)
 	*dest = ft_strdup_range(str, start, i);
 	if (str[i] == end)
 		str[i] = ' ';
-	start--;
-	while (to_clean < i)
-	{
+	while (++to_clean < i)
 		str[to_clean] = ' ';
-		to_clean++;
-	}
 	*str_add = str;
 	return (i);
 }
@@ -78,26 +74,22 @@ char	**parse_infiles(char **str_add)
 	int			k;
 
 	i = 0;
-	k = 0;
+	k = -1;
 	str = *str_add;
 	dest_size = number_of_delim(str, '<', 0);
 	if (!dest_size)
 		return (NULL);
-	dest = (char **)ft_alloc(sizeof(char *) * (dest_size + 1));
+	dest = ft_alloc(sizeof(char *) * (dest_size + 1));
 	while (str[i])
 	{
-		dprintf(2, "str[i] is %c\n", str[i]);
 		if (str[i] == '\"' || str[i] == '\'')
 			i = i + go_to_closing_char(&str[i]) + 1;
-		else if (str[i] && str[i] == '<' && str[i + 1] != '<')
-		{
-			i = save_the_next_word(&str, i + 1, &dest[k], i);
-			k++;
-		}
+		else if (str[i] && str[i + 1] && str[i] == '<' && str[i + 1] != '<')
+			i = save_the_next_word(&str, i + 1, &dest[++k], i);
 		else
 			i++;
 	}
-	dest[k] = '\0';
+	dest[++k] = '\0';
 	*str_add = str;
 	return (dest);
 }
@@ -111,28 +103,24 @@ char	**parse_outfiles(char **str_add)
 	int			k;
 
 	i = 0;
-	k = 0;
+	k = -1;
 	str = *str_add;
 	dest_size = number_of_delim(str, '>', 1);
 	if (!dest_size)
 		return (NULL);
-	dest = (char **) ft_alloc(sizeof(char *) * (dest_size + 1));
+	dest = ft_alloc(sizeof(char *) * (dest_size + 1));
 	while (str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
 			i = i + go_to_closing_char(&str[i]) + 1;
-		else if (str[i] && str[i] == '>')
-		{
-			if (str[i + 1] != '>')
-				i = save_the_next_word(&str, i + 1, &dest[k], i);
-			else if (str[i + 1] == '>')
-				i = save_the_next_word(&str, i + 2, &dest[k], i);
-			k++;
-		}
+		else if (str[i] && str[i] == '>' && str[i + 1] && str[i + 1] != '>')
+			i = save_the_next_word(&str, i + 1, &dest[++k], i);
+		else if (str[i] && str[i] == '>' && str[i + 1] && str[i + 1] == '>')
+			i = save_the_next_word(&str, i + 2, &dest[++k], i);
 		else
 			i++;
 	}
-	dest[k] = '\0';
+	dest[++k] = '\0';
 	*str_add = str;
 	return (dest);
 }
