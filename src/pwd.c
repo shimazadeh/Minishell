@@ -1,44 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell_utils.c                                  :+:      :+:    :+:   */
+/*   pwd.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/24 12:43:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 19:57:13 by aguillar         ###   ########.fr       */
+/*   Created: 2022/08/24 13:54:56 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/24 13:55:09 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	even_par_nbr(char *str)
+int	pwd(void)
 {
-	int	i;
-	int	par;
+	char	*pwd;
 
-	i = 0;
-	par = 0;
-	while (str[i])
+	pwd = ft_getcwd();
+	if (pwd)
 	{
-		if (str[i] == '(')
-			par++;
-		if (str[i] == ')')
-			par--;
-		i++;
+		ft_dprintf(1, "%s\n", pwd);
+		ft_free(pwd);
+		return (EXIT_SUCCESS);
 	}
-	if (par)
-		return (0);
-	return (1);
-}
-
-int	no_unclosed_quote(char *str)
-{
-	(void)str;
-	return (1);
-}
-
-void	handle_ws(char **str_add)
-{
-	(void)str_add;
+	return (EXIT_FAILURE);
 }

@@ -1,44 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell_utils.c                                  :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/24 12:43:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 19:57:13 by aguillar         ###   ########.fr       */
+/*   Created: 2022/08/24 13:55:57 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/24 13:56:04 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	even_par_nbr(char *str)
+int	env(t_list **envp_head)
 {
-	int	i;
-	int	par;
+	t_list	*node;
 
-	i = 0;
-	par = 0;
-	while (str[i])
+	if (!envp_head || !*envp_head)
+		ft_exit(EXIT_FAILURE, "Exited in function: env\nExit due to: argument check fail\n");
+	node = *envp_head;
+	while (node)
 	{
-		if (str[i] == '(')
-			par++;
-		if (str[i] == ')')
-			par--;
-		i++;
+		if (ft_strchr((char *)node->content, '='))
+			ft_dprintf(1, "%s\n", (char *)node->content);
+		node = node->next;
 	}
-	if (par)
-		return (0);
-	return (1);
-}
-
-int	no_unclosed_quote(char *str)
-{
-	(void)str;
-	return (1);
-}
-
-void	handle_ws(char **str_add)
-{
-	(void)str_add;
+	return (EXIT_SUCCESS);
 }

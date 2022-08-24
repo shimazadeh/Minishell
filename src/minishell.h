@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 13:44:55 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 19:52:51 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ typedef struct s_split_submod_and_sep_vars
 
 void	split_submod_and_sep_1(char **str_add, t_list **submod_head, \
 t_list **sep_head);
-void	split_submod_and_sep_2(char **str_add, t_list **submod_head, \
+void	split_submod_and_sep_2(t_list **submod_head, \
 t_list **sep_head, t_split_submod_and_sep_vars v[1]);
 void	split_submod_and_sep_init_vars(t_split_submod_and_sep_vars v[1]);
 
@@ -123,30 +123,104 @@ void	split_submod_and_sep_init_vars(t_split_submod_and_sep_vars v[1]);
 void	*ft_alloc(int size);
 int		ft_free(void *to_free);
 
-// buildins.c
+// buildins_dispatch.c
 
 int		buildins_dispatch(char **av, t_list **envp_head);
+
+// cd.c
+
 int		cd(char *dir, t_list **envp_head);
-int		echo(char **av);
-int		unset(char **vars, t_list **envp_head);
-int		export(char **vars, t_list **envp_head);
-int		env(t_list **envp_head);
-int		pwd(void);
+void	cd_no_arg(char **dir_add,t_list **envp_head);
+int		cd_hyphen(t_list **envp_head);
+void	cd_curpath_no_abs_path(char **curpath_add, char *pwd_exp);
+int		cd_to_export(char *curpath, char *pwd_exp, t_list **envp_head);
 
+// cd_no_path_1.c
 
-// buildins_utils.c
+int		cd_no_path_check(char *dir);
+void	cd_no_path(int **cd_no_path_ret_add, char *dir, \
+char **curpath_add, t_list **envp_head);
+void	cd_no_path_no_cdpath_exp(char *dir, char **curpath_add);
 
-t_list	*old_var(char *var, t_list **envp_head);
-void	print_sorted_list(t_list **envp_head);
-int		print_lowest_ascii(t_list *node, char *tab);
-int		ft_list_remove_node(t_list **lst_head, t_list *node);
-int		contains_invalid_char(char *str, char *id, int j);
-void	print_tab_nl(char **tab, int nl);
-void	find_env_var(char *var_name, t_list **envp_head, char **var_exp_add);
+// cd_no_path_2.c
+
+typedef struct s_cd_no_path_cdpath_exp_vars
+{
+	char				*curpath;
+	char				*tmp;
+	char				**cd_paths;
+	int					*cd_no_path_ret;
+
+}				t_cd_no_path_cdpath_exp_vars;
+
+void	cd_no_path_cdpath_exp_init_vars(t_cd_no_path_cdpath_exp_vars v[1], \
+char *cdpath_exp);
+void	cd_no_path_cdpath_exp(int **cd_no_path_ret_add, \
+char *cdpath_exp, char *dir, t_list **envp_head);
+void	handle_valid_cdpath(t_cd_no_path_cdpath_exp_vars v[1], \
+t_list **envp_head);
+
+// cd_get_canon_curpath_mask.c
+
+typedef struct s_cd_curpath_is_dot_vars
+{
+	char	*prev_compo;
+	char	*prev_compo_path;
+}				t_cd_curpath_is_dot_vars;
+
+int		cd_get_canon_curpath_mask(char **mask_add, char *curpath);
+void	cd_init_mask(char **mask_add, char *curpath, int *i_add);
+void	cd_curpath_is_dot_init_vars(t_cd_curpath_is_dot_vars v[1], \
+int *j_add, int *i_add);
+int		cd_curpath_is_dot(char *curpath, char *mask, int *j_add);
+
+// cd_utils.c
+
 void	prev_compo_2dot_or_root(char *path, char *mask, int i, char **prev_compo_add, char **prev_compo_path_add);
 void	mask_prev_compo(char *mask, char *path, int i);
 char	*mask_result_str(char *mask, char *path);
-char	*ft_getcwd(void);
+
+// echo.c
+
+int		echo(char **av);
+
+// echo_utils.c
+
+void	print_tab_nl(char **tab, int nl);
+
+// env.c
+
+int		env(t_list **envp_head);
+
+// export.c
+
+int		export(char **vars, t_list **envp_head);
+int		export_no_arg(t_list **envp_head);
+int		export_arg(int i, int ret, char **vars, t_list **envp_head);
+
+// export_utils.c
+
+void	print_sorted_list(t_list **envp_head);
+int		print_lowest_ascii(int i, int lowest_ascii_mask, t_list *node, char *tab);
+t_list	*old_var(char *var, t_list **envp_head);
+
+// pwd.c
+
+int		pwd(void);
+
+// unset.c
+
+int		unset(char **vars, t_list **envp_head);
+
+// unset_utils.c
+
+int		ft_list_remove_node(t_list **lst_head, t_list *node);
+
+// utils.c
+
+int		contains_invalid_char(char *str, char *id, int j); //
+void	find_env_var(char *var_name, t_list **envp_head, char **var_exp_add);
+char	*ft_getcwd(void); //
 
 // ft_exit.c
 

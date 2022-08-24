@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/24 16:06:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/22 01:42:22 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 17:37:04 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,8 @@ char	*get_pos(t_list **envp_head)
 	j = 0;
 	pos = NULL;
 	str = NULL;
-	while (node && ft_strncmp((char *)node->content, "SESSION_MANAGER=local/", 22))
+	while (node && ft_strncmp((char *)node->content,
+			"SESSION_MANAGER=local/", 22))
 		node = node->next;
 	if (!node)
 		return (NULL);

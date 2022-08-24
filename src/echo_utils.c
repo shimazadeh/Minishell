@@ -1,44 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell_utils.c                                  :+:      :+:    :+:   */
+/*   echo_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/08/24 12:43:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 19:57:13 by aguillar         ###   ########.fr       */
+/*   Created: 2022/08/24 14:31:00 by aguillar          #+#    #+#             */
+/*   Updated: 2022/08/24 14:31:07 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	even_par_nbr(char *str)
+void	print_tab_nl(char **tab, int nl)
 {
 	int	i;
-	int	par;
 
 	i = 0;
-	par = 0;
-	while (str[i])
+	if (!tab)
+		ft_exit(EXIT_FAILURE, "Exited in function: print_tab_nl\nExit due to: argument check fail\n");
+	while (tab[i])
 	{
-		if (str[i] == '(')
-			par++;
-		if (str[i] == ')')
-			par--;
+		ft_dprintf(1, "%s", tab[i]);
+		if (tab[i + 1])
+			ft_dprintf(1, " ", tab[i]);
 		i++;
 	}
-	if (par)
-		return (0);
-	return (1);
-}
-
-int	no_unclosed_quote(char *str)
-{
-	(void)str;
-	return (1);
-}
-
-void	handle_ws(char **str_add)
-{
-	(void)str_add;
+	if (nl)
+		ft_dprintf(1, "\n", tab[i]);
 }
