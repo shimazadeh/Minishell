@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 00:21:24 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 12:45:33 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 13:44:34 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	minishell(char	**envp)
 	t_minishell_vars	v[1];
 
 	minishell_init_vars(v);
-	tab_to_list(envp, &(v->envp_head));
+	ft_tab_to_lst(envp, &(v->envp_head));
 	while (1)
 	{
 		get_prompt(&(v->prompt), &(v->envp_head));

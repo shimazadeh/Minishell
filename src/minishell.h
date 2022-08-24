@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 13:38:32 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 13:44:55 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -217,7 +217,7 @@ char	*ft_strndup(char *s1, int j);
 char	*ft_strnjoin(char const *s1, char const *s2, int size);
 char	*ft_strstr(char *str, char *to_find);
 char	*ft_ull_itoa_base(unsigned long long nb, char *base);
-void	ft_tab_to_list(char **tab, t_list **lst_head);
+void	ft_tab_to_lst(char **tab, t_list **lst_head);
 
 
 

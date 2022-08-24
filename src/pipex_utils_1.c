@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/24 13:34:10 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 13:40:53 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,7 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 	size = 0;
 	exit_code = -1;
 	envp = NULL;
-	lst_to_tab(&envp, envp_head);
+	ft_lst_to_tab(&envp, envp_head);
 	if (head->child < 0)
 		perror("Fork:");
 	else if (!head->child)
