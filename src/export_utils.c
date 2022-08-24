@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:16:52 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 14:27:04 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:52:42 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	print_sorted_list(t_list **envp_head)
 	tab = NULL;
 	node = NULL;
 	if (!envp_head)
-		ft_exit(EXIT_FAILURE, "Exited in function: print_sorted_list\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "print_sorted_list", "argument check fail");
 	if (!*envp_head)
 		return ;
 	i = 1;
@@ -42,7 +42,7 @@ int	print_lowest_ascii(int i, int lowest_ascii_mask, t_list *node, char *tab)
 
 	lowest_ascii = NULL;
 	if (!node || !tab)
-		ft_exit(EXIT_FAILURE, "Exited in function: print_lowest_ascii\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "print_lowest_ascii", "argument check fail");
 	i = -1;
 	while (tab[++i] == '1')
 		node = node->next;
@@ -71,7 +71,7 @@ t_list	*old_var(char *var, t_list **envp_head)
 	int		i;
 
 	if (!var || !envp_head)
-		ft_exit(EXIT_FAILURE, "Exited in function: old_var\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "old_var", "argument check fail");
 	i = 0;
 	while (var[i] && var[i] != '=')
 		i++;

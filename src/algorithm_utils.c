@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:02:30 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:33:21 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:49:20 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,7 @@ int	go_to_closing_par(char *str)
 	count = 0;
 	i = 0;
 	if (!str)
-		ft_exit(EXIT_FAILURE, "Exited in function: go_to_closing_char\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "go_to_closing_char", "argument check fail");
 	count = 1;
 	i = 1;
 	while (str[i])
@@ -104,7 +104,7 @@ int	str_is_only_spaces(char *str)
 
 	i = 0;
 	if (!str)
-		ft_exit(EXIT_FAILURE, "Exited in function: str_is_only_spaces\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "str_is_only_spaces", "argument check fail");
 	while (str[i])
 	{
 		if (str[i] != ' ')

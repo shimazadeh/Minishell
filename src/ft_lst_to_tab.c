@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:34:26 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 13:44:21 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:51:30 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_lst_to_tab(char ***tab_add, t_list **lst_head)
 	t_list	*node;
 
 	if (!lst_head || !tab_add)
-		ft_exit(EXIT_FAILURE, "Exited in function: lst_to_tab\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "lst_to_tab", "argument check fail");
 	node = *lst_head;
 	size = ft_lstsize(node);
 	tab = ft_alloc(sizeof(char *) * (size + 1));

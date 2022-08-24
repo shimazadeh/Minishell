@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:33:09 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 21:36:45 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:55:53 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	unset(char **vars, t_list **envp_head)
 	i = 0;
 	unset_init_vars(v);
 	if (!envp_head || !vars)
-		ft_exit(EXIT_FAILURE, "Exited in function: unset\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "unset", "argument check fail");
 	if (!vars[0] || !*envp_head)
 		return (v->ret);
 	i = 0;

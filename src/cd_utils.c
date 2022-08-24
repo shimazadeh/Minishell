@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 21:38:31 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 21:51:51 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:50:40 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ t_cd_curpath_is_dot_vars	v[1])
 	prev_compo = NULL;
 	prev_compo_path = NULL;
 	if (!path || *path != '/' || !mask || !*mask || !v)
-		ft_exit(EXIT_FAILURE, "Exited in function: prev_compo_2dot_or_root\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "prev_compo_2dot_or_root", "argument check fail");
 	while (!mask[i] || path[i] != '/')
 		i--;
 	if (!i)
