@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/20 23:02:34 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 23:06:58 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 21:57:29 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,18 +31,10 @@ char	*ft_strnjoin(char const *s1, char const *s2, int size)
 	str = (char *)ft_alloc(sizeof(char) * (len + 1));
 	if (!str)
 		return (NULL);
-	while (s1 && s1[i] && size > 0)
-	{
-		str[i] = s1[i];
-		i++;
-		size--;
-	}
-	while (s2 && s2[j] && size > 0)
-	{
-		str[i + j] = s2[j];
-		j++;
-		size--;
-	}
+	while (s1 && s1[i] && size-- > 0)
+		str[i] = s1[i++];
+	while (s2 && s2[j] && size-- > 0)
+		str[i + j] = s2[j++];
 	str[i] = 0;
 	return (str);
 }

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/01 14:13:12 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 22:57:37 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 23:25:45 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,19 +55,13 @@ t_list	*ft_expand_list(t_list *first, t_list *last, char *str, int size)
 	{
 		new->content = ft_strjoin(0, str);
 		if (!new->content)
-		{
-			ft_free_list(first);
-			return (NULL);
-		}
+			return (ft_free_list(first), NULL);
 	}
 	else
 	{
 		new->content = ft_alloc(sizeof(char) * (size + 1));
 		if (!new->content)
-		{
-			ft_free_list(first);
-			return (NULL);
-		}
+			return (ft_free_list(first), NULL);
 	}
 	if (last)
 		last->next = new;

@@ -6,112 +6,27 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:32:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 19:12:57 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 21:28:06 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	cd_no_arg(char **dir_add,t_list **envp_head)
+void	cd_init_vars(t_cd_vars v[1])
 {
-	char	*dir;
-	char	*home_exp;
-
-	dir = NULL;
-	home_exp = NULL;
-	find_env_var("HOME", envp_head, &home_exp);
-	if (home_exp)
-	{
-		dir = ft_strdup(home_exp);
-		ft_free(home_exp);
-	}
-	else
-		dir = ft_getcwd();
-	if (dir)
-		*dir_add = dir;
-}
-
-int	cd_hyphen(t_list **envp_head)
-{
-	int		ret;
-	char	*oldpwd_exp;
-
-	ret = 0;
-	oldpwd_exp = NULL;
-	find_env_var("OLDPWD", envp_head, &oldpwd_exp);
-	if (!oldpwd_exp)
-	{
-		dprintf(2, "bash: cd: OLDPWD not set\n");
-		return (EXIT_FAILURE);
-	}
-	ret = cd(oldpwd_exp, envp_head);
-	ft_free(oldpwd_exp);
-	if (!ret)
-		return (pwd());
-	return (ret);
-}
-
-void	cd_curpath_no_abs_path(char **curpath_add, char *pwd_exp)
-{
-	char	*curpath;
-	char	*tmp;
-
-	curpath = NULL;
-	tmp = NULL;
-	curpath = *curpath_add;
-	if ((pwd_exp[ft_strlen(pwd_exp) - 1] != '/'))
-	{
-		tmp = ft_strdup(pwd_exp);
-		pwd_exp = ft_strjoin(tmp, "/");
-		ft_free(tmp);
-	}
-	tmp = curpath;
-	curpath = (ft_strjoin(pwd_exp, tmp));
-	ft_free(tmp);
-	*curpath_add = curpath;
-}
-
-int	cd_to_export(char *curpath, char *pwd_exp, t_list **envp_head)
-{
-	int		ret1;
-	int		ret2;
-	char	**to_export;
-
-	ret1 = 0;
-	ret2 = 0;
-	to_export = NULL;
-	to_export = ft_alloc(sizeof(char *) * 2);
-	to_export[0] = ft_strjoin("PWD=", curpath);
-	to_export[1] = NULL;
-	ft_free(curpath);
-	ret1 = export(to_export, envp_head);
-	ft_free(to_export);
-	to_export = ft_alloc(sizeof(char *) * 2);
-	to_export[0] = ft_strjoin("OLDPWD=", pwd_exp);
-	to_export[1] = NULL;
-	ft_free(pwd_exp);
-	ret2 = export(to_export, envp_head);
-	ft_free(to_export);
-	if (!ret2)
-		return (ret1);
-	return (ret2);
+	v->ret = 0;
+	v->cd_no_path_ret = NULL;
+	v->curpath = NULL;
+	v->mask = NULL;
+	v->pwd_exp = NULL;
+	v->tmp = NULL;
 }
 
 int	cd(char *dir, t_list **envp_head)
 {
-	int		ret;
-	int		*cd_no_path_ret;
-	char	*curpath;
-	char	*mask;
-	char	*pwd_exp;
-	char	*tmp;
+	t_cd_vars	v[1];
 
-	ret = 0;
-	cd_no_path_ret = NULL;
-	curpath = NULL;
-	mask = NULL;
-	pwd_exp = NULL;
-	tmp = NULL;
+	cd_init_vars(v);
 	if (!envp_head)
 		ft_exit(EXIT_FAILURE, "Exited in function: cd\nExit due to: argument check fail\n");
 	if (!dir)
@@ -120,31 +35,41 @@ int	cd(char *dir, t_list **envp_head)
 		return (cd_hyphen(envp_head));
 	else if (cd_no_path_check(dir))
 	{
-		cd_no_path(&cd_no_path_ret, dir, &curpath, envp_head);
-		if (cd_no_path_ret && cd_no_path_ret[0])
+		cd_no_path(&(v->cd_no_path_ret), dir, &(v->curpath), envp_head);
+		if (v->cd_no_path_ret && v->cd_no_path_ret[0])
 		{
-			ret = cd_no_path_ret[1];
-			ft_free(cd_no_path_ret);
-			return (ret);
+			v->ret = v->cd_no_path_ret[1];
+			ft_free(v->cd_no_path_ret);
+			return (v->ret);
 		}
 	}
-	if (!curpath)
-		curpath = ft_strdup(dir);
+	cd_path_to_curpath(dir, v);
+	return (cd_canon_and_exec(envp_head, v));
+}
+
+void	cd_path_to_curpath(char *dir, t_cd_vars *v)
+{
+	if (!v->curpath)
+		v->curpath = ft_strdup(dir);
 	ft_free(dir);
-	pwd_exp = ft_getcwd();
-	if (curpath[0] != '/')
-		cd_curpath_no_abs_path(&curpath, pwd_exp);
-	if (!cd_get_canon_curpath_mask(&mask, curpath))
+	v->pwd_exp = ft_getcwd();
+	if (v->curpath[0] != '/')
+		cd_curpath_no_abs_path(&(v->curpath), v->pwd_exp);
+}
+
+int	cd_canon_and_exec(t_list **envp_head, t_cd_vars *v)
+{
+	if (!cd_get_canon_curpath_mask(&(v->mask), v->curpath))
 		return (EXIT_FAILURE);
-	tmp = curpath;
-	curpath = mask_result_str(mask, tmp);
-	ft_free(tmp);
-	ft_free(mask);
-	if (chdir(curpath) == -1)
+	v->tmp = v->curpath;
+	v->curpath = mask_result_str(v->mask, v->tmp);
+	ft_free(v->tmp);
+	ft_free(v->mask);
+	if (chdir(v->curpath) == -1)
 	{
-		ft_free(curpath);
-		ft_free(pwd_exp);
+		ft_free(v->curpath);
+		ft_free(v->pwd_exp);
 		return (1);
 	}
-	return (cd_to_export(curpath, pwd_exp, envp_head));
+	return (cd_to_export(v->curpath, v->pwd_exp, envp_head));
 }
