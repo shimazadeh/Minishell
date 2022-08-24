@@ -32,3 +32,24 @@ int	buildins_dispatch(char **av, t_list **envp_head)
 		ft_exit(EXIT_SUCCESS, NULL);
 	return (127);
 }
+
+int	boolean_if_buildin(char **av)
+{
+	if (!av || !av[0])
+		return (-1);
+	if (!ft_strncmp(av[0], "echo", 5))
+		return (1);
+	if (!ft_strncmp(av[0], "cd", 3) && (!av[1] || (av[1] && !av[2])))
+		return (1);
+	if (!ft_strncmp(av[0], "pwd", 4))
+		return (1);
+	if (!ft_strncmp(av[0], "export", 7))
+		return (1);
+	if (!ft_strncmp(av[0], "unset", 6))
+		return (1);
+	if (!ft_strncmp(av[0], "env", 4) && !av[1])
+		return (1);
+	if (!ft_strncmp(av[0], "exit", 5))
+		return (1);
+	return (0);
+}

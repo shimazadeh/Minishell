@@ -96,19 +96,17 @@ char	**parse_infiles(char **str_add)
 
 char	**parse_outfiles(char **str_add)
 {
-	int			dest_size;
 	char		**dest;
 	char		*str;
 	int			i;
 	int			k;
 
 	i = 0;
-	k = -1;
 	str = *str_add;
-	dest_size = number_of_delim(str, '>', 1);
-	if (!dest_size)
+	k = -1;
+	if (!number_of_delim(str, '>', 1))
 		return (NULL);
-	dest = ft_alloc(sizeof(char *) * (dest_size + 1));
+	dest = ft_alloc(sizeof(char *) * (number_of_delim(str, '>', 1) + 1));
 	while (str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')

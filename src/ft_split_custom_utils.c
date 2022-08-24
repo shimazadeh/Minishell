@@ -42,11 +42,9 @@ int	ft_wl_custom(char *str, char c, int flag)
 {
 	int	i;
 	int	wl;
-	int	gtcc;
 
 	i = 0;
 	wl = 0;
-	gtcc = 0;
 	while (str[i] && (str[i] == c))
 		i++;
 	while (str[i] && (str[i] != c))

@@ -53,6 +53,7 @@ int	set_last_infile_type(t_struct *head, char **file_names, int *loc, int size)
 		copy = copy->next;
 		i++;
 	}
+	ft_free(loc);
 	return (0);
 }
 
@@ -118,7 +119,6 @@ char	**store_heredoc_stops(char **str_add, int **loc_add, int size)
 char	**ft_here_doc(char **str_add, t_struct **elements, t_list **envp, int exit)
 {
 	int		i;
-	int		*fds;
 	char	**file_names;
 	char	**stop;
 	int		size;
@@ -132,17 +132,13 @@ char	**ft_here_doc(char **str_add, t_struct **elements, t_list **envp, int exit)
 	if (size == 0)
 		return (NULL);
 	stop = store_heredoc_stops(&str, &loc, size);
-	fds = ft_alloc(sizeof(int) * size);
 	file_names = fancy_name_generator(size);
 	if (file_names == NULL)
 		file_names = default_name_generator(size);
 	while (stop[++i])
-		fds[i] = write_to_file(stop[i], file_names[i], envp, exit);
+		write_to_file(stop[i], file_names[i], envp, exit);
 	ft_free(stop[i]);
 	set_last_infile_type(*elements, file_names, loc, size);
-	ft_free_tab(stop);
-	ft_free(fds);
-	ft_free(loc);
 	*str_add = str;
 	return (file_names);
 }

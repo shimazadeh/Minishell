@@ -319,7 +319,7 @@ typedef struct s_get_new_path_list_vars
 	char			*wc_str;
 	t_list			*file_lst;
 	t_list			*new_path_lst;
-	
+
 }				t_get_new_path_list_vars;
 
 void	get_new_path_list_init_vars(char *path, t_list *file_lst, \
@@ -363,12 +363,9 @@ void	ft_dprint(va_list arg, char c, char **to_print_add);
 
 void ft_dprint_1(va_list arg, char c, char **to_print_add, \
 t_ft_dprint_vars v[1]);
-void ft_dprint_2(va_list arg, char c, char **to_print_add, \
-t_ft_dprint_vars v[1]);
-void ft_dprint_3(va_list arg, char c, char **to_print_add, \
-t_ft_dprint_vars v[1]);
-void ft_dprint_4(va_list arg, char c, char **to_print_add, \
-t_ft_dprint_vars v[1]);
+void ft_dprint_2(va_list arg, char c, t_ft_dprint_vars v[1]);
+void ft_dprint_3(va_list arg, char c, t_ft_dprint_vars v[1]);
+void ft_dprint_4(va_list arg, char c, t_ft_dprint_vars v[1]);
 
 // get_next_line_bonus.c
 
@@ -460,7 +457,7 @@ int			structure_size(t_struct *lst);
 
 //variable expansion
 
-int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code);
+int		variable_expansion(char **str_add, t_list **envp_head, int last_exit_code);
 
 //parsing
 void	initialize_sc(t_struct **tab, char *str);
@@ -480,12 +477,12 @@ int		ft_fork(t_struct **elements, char **parsed_path, t_list **envp);
 void	ft_dup2_infiles(t_struct *head, int *exit_code);
 void	ft_dup2_outfiles(t_struct *head, int *exit_code);
 void	ft_execute_cmd(t_struct *head, int *exit_code, char **parsed_path, t_list **envp_head);
-
-char		*file_access_check(char **files, int flag);
-int			boolean_if_buildin(char **av);
+char	*file_access_check(char **files, int flag);
+int		boolean_if_buildin(char **av);
+int		cmd_access_check(char **cmd, char **parsed_path);
+int		ft_waitpid(t_struct **elements);
 
 //finding paths
-int		cmd_access_check(char **cmd, char **parsed_path);
 char	**extract_env_paths(char *find, t_list **envp_list);
 
 //here__doc handling
@@ -502,6 +499,7 @@ int		write_to_file(char *stop, char	*file_name, t_list **envp_head, int last_exi
 //custom free functions
 void		ft_free_sc(t_struct *lst);
 
+int ft_strlen_tab(char **tab);
 
 
 void	print_tab(char **tab);

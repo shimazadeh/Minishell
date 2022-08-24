@@ -79,7 +79,7 @@ char	**extract_env_paths(char *find, t_list **envp_head)
 	char	**tab_temp;
 	int		k;
 
-	k = -1;
+	k = 0;
 	paths = NULL;
 	tab_temp = NULL;
 	temp = NULL;
@@ -89,14 +89,12 @@ char	**extract_env_paths(char *find, t_list **envp_head)
 		tab_temp = ft_split(temp, ':');
 		paths = ft_alloc(sizeof(char *) * (ft_strlen_tab(tab_temp) + 2));
 		ft_free(temp);
+		k = -1;
 		while (tab_temp[++k])
 			paths[k] = create_path(tab_temp[k]);
 	}
 	else
-	{
 		paths = ft_alloc(sizeof(char *) * 2);
-		k = 0;
-	}
 	temp = ft_getcwd();
 	paths[k] = create_path(temp);
 	paths[++k] = NULL;
@@ -116,7 +114,6 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 	parsed_path = NULL;
 	herdoc_files = NULL;
 	exit_code = -1;
-
 	create_structure(&elements, str);
 	parsed_path = extract_env_paths("PATH", envp_head);
 	variable_expansion(&str, envp_head, last_exit_code);
