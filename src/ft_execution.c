@@ -12,27 +12,6 @@
 
 #include "minishell.h"
 
-int	boolean_if_buildin(char **av)
-{
-	if (!av || !av[0])
-		return (-1);
-	if (!ft_strncmp(av[0], "echo", 5))
-		return (1);
-	if (!ft_strncmp(av[0], "cd", 3) && (!av[1] || (av[1] && !av[2])))
-		return (1);
-	if (!ft_strncmp(av[0], "pwd", 4))
-		return (1);
-	if (!ft_strncmp(av[0], "export", 7))
-		return (1);
-	if (!ft_strncmp(av[0], "unset", 6))
-		return (1);
-	if (!ft_strncmp(av[0], "env", 4) && !av[1])
-		return (1);
-	if (!ft_strncmp(av[0], "exit", 5))
-		return (1);
-	return (0);
-}
-
 int	execute_function(t_struct *head, char **path, t_list **envp_head, int flag)
 {
 	int		exit_code;
@@ -78,6 +57,22 @@ int	buildins_execution(t_struct **elements, char **parsed_path, t_list **envp)
 	return (exit_code);
 }
 
+int	ft_waitpid(t_struct **elements)
+{
+	t_struct	*copy;
+	int			exit_code;
+
+	exit_code = -1;
+	copy = *elements;
+	while (copy)
+	{
+		waitpid(copy->child, &(copy->wstatus), 0);
+		copy = copy->next;
+	}
+	exit_code = (0xff00 & structure_last(*elements)->wstatus) >> 8;
+	return (exit_code);
+}
+
 int	ft_fork(t_struct **elements, char **parsed_path, t_list **envp)
 {
 	int			pipefds[2];
@@ -103,13 +98,7 @@ int	ft_fork(t_struct **elements, char **parsed_path, t_list **envp)
 			close(copy->fds[0]);
 		copy = copy->next;
 	}
-	copy = *elements;
-	while (copy)
-	{
-		waitpid(copy->child, &(copy->wstatus), 0);
-		copy = copy->next;
-	}
-	exit_code = (0xff00 & structure_last(*elements)->wstatus) >> 8;
+	exit_code = ft_waitpid(elements);
 	return (exit_code);
 }
 

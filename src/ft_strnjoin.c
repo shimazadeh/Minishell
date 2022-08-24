@@ -19,8 +19,8 @@ char	*ft_strnjoin(char const *s1, char const *s2, int size)
 	int		len;
 	char	*str;
 
-	i = 0;
-	j = 0;
+	i = -1;
+	j = -1;
 	len = 0;
 	str = NULL;
 	if (size < 0)
@@ -31,10 +31,10 @@ char	*ft_strnjoin(char const *s1, char const *s2, int size)
 	str = (char *)ft_alloc(sizeof(char) * (len + 1));
 	if (!str)
 		return (NULL);
-	while (s1 && s1[i] && size-- > 0)
-		str[i] = s1[i++];
-	while (s2 && s2[j] && size-- > 0)
-		str[i + j] = s2[j++];
+	while (s1 && s1[++i] && size-- > 0)
+		str[i] = s1[i];
+	while (s2 && s2[++j] && size-- > 0)
+		str[i + j] = s2[j];
 	str[i] = 0;
 	return (str);
 }

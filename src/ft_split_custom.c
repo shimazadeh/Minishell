@@ -53,7 +53,7 @@ int	ft_fill_tab_custom(t_split_custom_vars v[1])
 {
 	t_ft_fill_tab_custom_vars	w[1];
 
-	ft_fill_tab_custom_init_vars(v);
+	ft_fill_tab_custom_init_vars(w);
 	while (w->i < v->wc)
 	{
 		w->j = 0;

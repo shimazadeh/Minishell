@@ -96,6 +96,7 @@ int	write_to_file(char *stop, char	*file, t_list **envp, int last_exit_code)
 		gnl = get_next_line(0);
 	}
 	ft_free(gnl);
+	ft_free(stop);
 	close(fd1);
 	return (fd1);
 }

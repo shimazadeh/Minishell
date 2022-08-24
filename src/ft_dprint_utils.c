@@ -36,11 +36,10 @@ t_ft_dprint_vars v[1])
 			v->to_print = ft_strjoin(v->char_tmp, "(null)");
 	}
 	else
-		ft_dprint_2(arg, c, to_print_add, v);
+		ft_dprint_2(arg, c, v);
 }
 
-void	ft_dprint_2(va_list arg, char c, char **to_print_add, \
-t_ft_dprint_vars v[1])
+void	ft_dprint_2(va_list arg, char c, t_ft_dprint_vars v[1])
 {
 	if (c == 'p')
 	{
@@ -62,11 +61,10 @@ t_ft_dprint_vars v[1])
 		ft_free(v->char_tmp);
 	}
 	else
-		ft_dprint_3(arg, c, to_print_add, v);
+		ft_dprint_3(arg, c, v);
 }
 
-void	ft_dprint_3(va_list arg, char c, char **to_print_add, \
-t_ft_dprint_vars v[1])
+void	ft_dprint_3(va_list arg, char c, t_ft_dprint_vars v[1])
 {
 	if (c == 'u')
 	{
@@ -85,11 +83,10 @@ t_ft_dprint_vars v[1])
 		ft_free(v->char_tmp);
 	}
 	else
-		ft_dprint_4(arg, c, to_print_add, v);
+		ft_dprint_4(arg, c, v);
 }
 
-void	ft_dprint_4(va_list arg, char c, char **to_print_add, \
-t_ft_dprint_vars v[1])
+void	ft_dprint_4(va_list arg, char c, t_ft_dprint_vars v[1])
 {
 	if (c == 'X')
 	{
