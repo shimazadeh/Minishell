@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 00:37:38 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 21:56:14 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:41:27 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ t_list **sep_head)
 
 	split_submod_and_sep_init_vars(v);
 	if (!str_add || !*str_add || !submod_head || !sep_head)
-		ft_exit(EXIT_FAILURE, "Exited in function: split_submod_and_sep\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "split_submod_and_sep", "argument check fail");
 	rm_outer_par_1(str_add);
 	v->str = *str_add;
 	split_submod_and_sep_2(submod_head, sep_head, v);

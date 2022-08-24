@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:02:30 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 13:01:04 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:33:21 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	go_to_closing_char(char *str)
 	c = 0;
 	i = 0;
 	if (!str)
-		ft_exit(EXIT_FAILURE, NULL);
+		ft_exit(EXIT_FAILURE, "go_to_closing_char", "argument check fail");
 	c = *str;
 	i = 1;
 	while (str[i] && str[i] != c)
@@ -40,7 +40,7 @@ void	rm_outer_par_1(char **str_add)
 	str = NULL;
 	tmp = NULL;
 	if (!str_add || !*str_add)
-		ft_exit(EXIT_FAILURE, "Exited in function: rm_outer_par\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "rm_outer_par", "argument check fail");
 	str = *str_add;
 	rm_outer_par_2(&i, 0, 1, str);
 	tmp = ft_strdup(&str[i]);

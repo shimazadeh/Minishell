@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 00:14:33 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:42:29 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ void	minishell_init_vars(t_minishell_vars v[1]);
 int		even_par_nbr(char *str);
 int		no_unclosed_quote(char *str);
 void	handle_ws(char **str_add);
-
+void	handle_ws_get_str_size(int *size_add, char *str);
+void	handle_ws_fill_str(char *str, char *new_str);
 // algorithm.c
 
 typedef struct s_aglorithm_vars
@@ -261,7 +262,7 @@ char	*ft_getcwd(void); //
 
 // ft_exit.c
 
-void	ft_exit(int exit_code, char *error_msg);
+void	ft_exit(int exit_code, char *fn_name, char *error_msg);
 
 // prompt.c
 
@@ -275,14 +276,38 @@ char	*get_pwd(t_list **envp_head, char *user);
 
 void	handle_wildcards(char ***av_tab_add);
 void	expand_wc_node(t_list *node);
+void	replace_node_by_sublist(t_list *node, t_list *sublist);
+
+// handle_wildcards_utils.c
+
 void	trim_extra_wc(char	*str, char **path_add);
+void	get_str_size(int i, int j, int *j_add, char *str);
+void	fill_str(int i, int j, char *str, char *path);
 void	get_opendir_path(char *path, char **opendir_path_add);
+
+// get_sublist.c
+
+typedef struct s_get_sublist_vars
+{
+	char			*new_opendir_path;
+	char			*new_path;
+	char 			*opendir_path;
+	char 			*path;
+	char			*wc;
+	t_list			*file_lst;
+	t_list			*new_path_lst;
+	t_list			**sublist;
+}				t_get_sublist_vars;
+
+void	get_sublist_init_vars(t_list **sublist, char *path, \
+char *opendir_path, t_get_sublist_vars v[1]);
 void	get_sublist(t_list **sublist, char *path, char *opendir_path);
+void	get_sublist_recursive(t_get_sublist_vars v[1]);
+
+// get_file_list.c
+
 void	get_file_list(char *path, t_list **file_lst_add);
 int		read_dir_content(struct dirent **dir_content_add, DIR *stream);
-int		compatible_name(char *file, char *wc);
-int		next_char_index(char *str, char c);
-void	replace_node_by_sublist(t_list *node, t_list *sublist);
 
 // get_new_path_list.c
 
@@ -413,6 +438,11 @@ char	*ft_strnjoin(char const *s1, char const *s2, int size);
 char	*ft_strstr(char *str, char *to_find);
 char	*ft_ull_itoa_base(unsigned long long nb, char *base);
 void	ft_tab_to_lst(char **tab, t_list **lst_head);
+
+// print_tools.c
+
+void	print_list(t_list *list);
+void	print_tab(char **tab);
 
 
 
