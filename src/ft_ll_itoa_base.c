@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 22:02:31 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 13:17:06 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 21:54:22 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,8 @@ static int	ft_ll_nb_len(long long int nb, int base_len)
 	return (i);
 }
 
-static char	*ft_ll_nbr_to_string(long long int nb, char *str, int nb_len, char *base)
+static char	*ft_ll_nbr_to_string(long long int nb, \
+char *str, int nb_len, char *base)
 {
 	int						base_len;
 	long long int			nb1;

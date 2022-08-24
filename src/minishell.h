@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 19:52:51 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 00:14:33 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,6 +122,7 @@ void	split_submod_and_sep_init_vars(t_split_submod_and_sep_vars v[1]);
 
 void	*ft_alloc(int size);
 int		ft_free(void *to_free);
+int		free_node(t_list *prev, t_list *current);
 
 // buildins_dispatch.c
 
@@ -129,11 +130,28 @@ int		buildins_dispatch(char **av, t_list **envp_head);
 
 // cd.c
 
+typedef struct s_cd_vars
+{
+	int				ret;
+	int				*cd_no_path_ret;
+	char			*curpath;
+	char			*mask;
+	char			*pwd_exp;
+	char			*tmp;
+}				t_cd_vars;
+
+void	cd_init_vars(t_cd_vars v[1]);
 int		cd(char *dir, t_list **envp_head);
+void	cd_path_to_curpath(char *dir, t_cd_vars *v);
+int		cd_canon_and_exec(t_list **envp_head, t_cd_vars *v);
+
+// cd_no_arg.c
+
 void	cd_no_arg(char **dir_add,t_list **envp_head);
+
+// cd_hyphen.c
+
 int		cd_hyphen(t_list **envp_head);
-void	cd_curpath_no_abs_path(char **curpath_add, char *pwd_exp);
-int		cd_to_export(char *curpath, char *pwd_exp, t_list **envp_head);
 
 // cd_no_path_1.c
 
@@ -160,6 +178,10 @@ char *cdpath_exp, char *dir, t_list **envp_head);
 void	handle_valid_cdpath(t_cd_no_path_cdpath_exp_vars v[1], \
 t_list **envp_head);
 
+// cd_curpath_no_abs_path.c
+
+void	cd_curpath_no_abs_path(char **curpath_add, char *pwd_exp);
+
 // cd_get_canon_curpath_mask.c
 
 typedef struct s_cd_curpath_is_dot_vars
@@ -174,9 +196,14 @@ void	cd_curpath_is_dot_init_vars(t_cd_curpath_is_dot_vars v[1], \
 int *j_add, int *i_add);
 int		cd_curpath_is_dot(char *curpath, char *mask, int *j_add);
 
+// cd_to_export.c
+
+int		cd_to_export(char *curpath, char *pwd_exp, t_list **envp_head);
+
 // cd_utils.c
 
-void	prev_compo_2dot_or_root(char *path, char *mask, int i, char **prev_compo_add, char **prev_compo_path_add);
+void	prev_compo_2dot_or_root(char *path, char *mask, int i, \
+t_cd_curpath_is_dot_vars v[1]);
 void	mask_prev_compo(char *mask, char *path, int i);
 char	*mask_result_str(char *mask, char *path);
 
@@ -210,7 +237,17 @@ int		pwd(void);
 
 // unset.c
 
+typedef struct s_unset_vars
+{
+	t_list			*node;
+	t_list			*tmp;
+	int				i;
+	int				ret;
+}				t_unset_vars;
+
+void	unset_init_vars(t_unset_vars v[1]);
 int		unset(char **vars, t_list **envp_head);
+void	unset_exec(int i, char **vars, t_list **envp_head, t_unset_vars v[1]);
 
 // unset_utils.c
 
@@ -243,15 +280,70 @@ void	get_opendir_path(char *path, char **opendir_path_add);
 void	get_sublist(t_list **sublist, char *path, char *opendir_path);
 void	get_file_list(char *path, t_list **file_lst_add);
 int		read_dir_content(struct dirent **dir_content_add, DIR *stream);
-void	get_new_path_list(char *path, t_list *file_lst, t_list **new_path_lst_add);
 int		compatible_name(char *file, char *wc);
 int		next_char_index(char *str, char c);
 void	replace_node_by_sublist(t_list *node, t_list *sublist);
 
+// get_new_path_list.c
+
+typedef struct s_get_new_path_list_vars
+{
+	char 			*path;
+	char			*path_start;
+	char			*path_end;
+	char			*wc_str;
+	t_list			*file_lst;
+	t_list			*new_path_lst;
+	
+}				t_get_new_path_list_vars;
+
+void	get_new_path_list_init_vars(char *path, t_list *file_lst, \
+t_get_new_path_list_vars v[1]);
+void	get_new_path_list(char *path, t_list *file_lst, \
+t_list **new_path_lst_add);
+void	fill_new_path_list(int i, int j, t_get_new_path_list_vars v[1]);
+
+// get_new_path_list_utils.c
+
+typedef struct s_compatible_name_vars
+{
+	char			*file;
+	char			*wc;
+}				t_compatible_name_vars;
+
+int		next_char_index(char *str, char c);
+int		compatible_name(char *file, char *wc);
+int		compatible_name_init(int *i_add, int *j_add, int *k_add, \
+t_compatible_name_vars v[1]);
+void	compatible_name_loop(int *i_add, int *j_add, int *k_add, \
+t_compatible_name_vars v[1]);
+
 // ft_dprintf.c
 
+typedef struct s_ft_dprint_vars
+{
+	char					char_var[1];
+	char					*str_var;
+	unsigned long long int	ulli_var;
+	long long int			lli_var;
+	char					*char_tmp;
+	char					*to_print;
+}				t_ft_dprint_vars;
+
+void	ft_dprint_init_vars(char **to_print_add, t_ft_dprint_vars v[1]);
 int		ft_dprintf(int fd, const char *str, ...);
 void	ft_dprint(va_list arg, char c, char **to_print_add);
+
+// ft_dprint_utils.c
+
+void ft_dprint_1(va_list arg, char c, char **to_print_add, \
+t_ft_dprint_vars v[1]);
+void ft_dprint_2(va_list arg, char c, char **to_print_add, \
+t_ft_dprint_vars v[1]);
+void ft_dprint_3(va_list arg, char c, char **to_print_add, \
+t_ft_dprint_vars v[1]);
+void ft_dprint_4(va_list arg, char c, char **to_print_add, \
+t_ft_dprint_vars v[1]);
 
 // get_next_line_bonus.c
 
@@ -262,6 +354,39 @@ char	*get_next_line_2(int fd, char **tab, t_list *first, t_list *last);
 
 t_list	*ft_expand_list(t_list *first, t_list *last, char *str, int size);
 char	*ft_join_contents(t_list *first);
+
+// ft_split_cutom.c
+
+typedef struct s_ft_split_custom_vars
+{
+	char			c;
+	int				flag;
+	int				wc;
+	const char		*str;
+	char			**tab;
+}				t_split_custom_vars;
+
+typedef struct s_ft_fill_tab_custom_vars
+{
+	int				gtcc;
+	int				i;
+	int				j;
+	int				k;
+}				t_ft_fill_tab_custom_vars;
+
+void	ft_split_custom_init_vars(const char *str, char c, int flag, \
+t_split_custom_vars v[1]);
+char	**ft_split_custom(const char *str, char c, int flag);
+void	ft_fill_tab_custom_init_vars(t_ft_fill_tab_custom_vars w[1]);
+int		ft_fill_tab_custom(t_split_custom_vars v[1]);
+
+// ft_split_custom_utils.c
+
+int		ft_wc_custom(char *str, char c);
+int		ft_wl_custom(char *str, char c, int flag);
+void	ft_get_wl(char *str, int *i_add, int *wl_add, int flag);
+void	ft_get_tab(t_split_custom_vars v[1], t_ft_fill_tab_custom_vars w[1]);
+
 
 // libft
 
@@ -280,7 +405,6 @@ int		ft_lstsize(t_list *lst);
 void	ft_lst_to_tab(char ***tab_add, t_list **lst_head);
 void	ft_putstr_fd(char *str, int fd);
 char	**ft_split(const char *str, char c);
-char	**ft_split_custom(const char *str, char c, int flag);
 char	*ft_strchr(const char *s, int c);
 char	*ft_strdup(const char *src);
 char	*ft_strdup_range(char *str, int start, int end);
@@ -296,9 +420,6 @@ void	ft_tab_to_lst(char **tab, t_list **lst_head);
 
 
 ///**********shima's stuff***********///
-int ft_strlen_tab(char **tab);
-
-
 
 int		ft_pipe(char *str, t_list **envp_head, int last_exit_code);
 
@@ -309,7 +430,7 @@ int			structure_size(t_struct *lst);
 
 //variable expansion
 
-int		variable_expansion(char **str_add, t_list **envp_head, int last_exit_code);
+int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code);
 
 //parsing
 void	initialize_sc(t_struct **tab, char *str);
@@ -330,8 +451,8 @@ void	ft_dup2_infiles(t_struct *head, int *exit_code);
 void	ft_dup2_outfiles(t_struct *head, int *exit_code);
 void	ft_execute_cmd(t_struct *head, int *exit_code, char **parsed_path, t_list **envp_head);
 
-char	*file_access_check(char **files, int flag);
-int		boolean_if_buildin(char **av);
+char		*file_access_check(char **files, int flag);
+int			boolean_if_buildin(char **av);
 
 //finding paths
 int		cmd_access_check(char **cmd, char **parsed_path);
@@ -349,8 +470,14 @@ void	ft_unlink(char **file_names);
 int		write_to_file(char *stop, char	*file_name, t_list **envp_head, int last_exit_code);
 
 //custom free functions
-void	ft_free_sc(t_struct *lst);
+void		ft_free_sc(t_struct *lst);
+
+
+
 void	print_tab(char **tab);
 void	print_list(t_list *list);
+
+
+
 
 #endif

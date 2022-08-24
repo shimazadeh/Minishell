@@ -6,139 +6,66 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/25 16:48:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/20 19:09:03 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 23:23:01 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int	ft_wc_custom(char *str, char c)
+void	ft_split_custom_init_vars(const char *str, char c, int flag, \
+t_split_custom_vars v[1])
 {
-	int	i;
-	int	wc;
-
-	i = 0;
-	wc = 0;
-	while (str[i])
-	{
-		while (str[i] && (str[i] == c))
-			i++;
-		if (str[i] && (str[i] != c))
-		{
-			wc++;
-			while (str[i] && (str[i] != c))
-			{
-				if (str[i] && (str[i] == '\"' || str[i] == '\''))
-					i += go_to_closing_char((char *)&str[i]) + 1;
-				else
-					i++;
-			}
-		}
-	}
-	return (wc);
+	v->c = 0;
+	v->flag = 0;
+	v->wc = 0;
+	v->str = NULL;
+	v->tab = NULL;
+	v->c = c;
+	v->flag = flag;
+	v->str = str;
 }
 
-static int	ft_wl_custom(char *str, char c, int flag)
+char	**ft_split_custom(const char *str, char c, int flag)
 {
-	int	i;
-	int	wl;
-	int	gtcc;
+	t_split_custom_vars	v[1];
 
-	i = 0;
-	wl = 0;
-	gtcc = 0;
-	while (str[i] && (str[i] == c))
-		i++;
-	while (str[i] && (str[i] != c))
-	{
-		if (str[i] && (str[i] == '\"' || str[i] == '\''))
-		{
-			gtcc = go_to_closing_char((char *)&str[i]);
-			i += gtcc + 1;
-			wl += gtcc + 1;
-			if (flag)
-				wl -= 2;
-		}
-		else
-		{
-			wl++;
-			i++;
-		}
-	}
-	return (wl);
-}
-
-static int	ft_fill_tab_custom(char **tab, int wc, const char *str, char c, int flag)
-{
-	int	i;
-	int	j;
-	int	k;
-	int	gtcc;
-
-	i = 0;
-	k = 0;
-	gtcc = 0;
-	while (i < wc)
-	{
-		j = 0;
-		tab[i] = ft_alloc(sizeof(char) * (ft_wl_custom((char *)&str[k], c, flag) + 1));
-		while (str[k] && (str[k] == c))
-			k++;
-		while (str[k] && (str[k] != c))
-		{
-			if (str[k] && (str[k] == '\"' || str[k] == '\''))
-			{
-				gtcc = go_to_closing_char((char *)&str[k]);
-				// dprintf(2, "str[k]: %c\n",str[k]);
-				if (flag)
-					k++;
-				while ((gtcc - flag * 2) >= 0)
-				{
-					// dprintf(2, "str[k]: %c\n",str[k]);
-					tab[i][j++] = str[k++];
-					gtcc--;
-				}
-				if (flag)
-					k++;
-			}
-			else
-				tab[i][j++] = str[k++];
-		}
-		tab[i][j] = '\0';
-		i++;
-	}
-	tab[i] = 0;
-	return (1);
-}
-
-char	**ft_split_custom(const char *str, char c, int flag)//flag of 1 is to supress the "" ''
-{
-	char	**tab;
-	int		wc;
-
+	ft_split_custom_init_vars(str, c, flag, v);
 	if (!str)
 		return (0);
-	wc = ft_wc_custom((char *)str, c);
-	tab = ft_alloc(sizeof(char *) * (wc + 1));
-	if (!tab)
+	v->wc = ft_wc_custom((char *)v->str, v->c);
+	v->tab = ft_alloc(sizeof(char *) * (v->wc + 1));
+	if (!v->tab)
 		return (0);
-	if (!ft_fill_tab_custom(tab, wc, str, c, flag))
+	if (!ft_fill_tab_custom(v))
 		return (0);
-	return (tab);
+	return (v->tab);
 }
 
+void	ft_fill_tab_custom_init_vars(t_ft_fill_tab_custom_vars w[1])
+{
+	w->gtcc = 0;
+	w->i = 0;
+	w->j = 0;
+	w->k = 0;
+}
 
-// int	main(int ac, char **av)
-// {
-// 	char **tab;
-// 	int		i;
+int	ft_fill_tab_custom(t_split_custom_vars v[1])
+{
+	t_ft_fill_tab_custom_vars	w[1];
 
-// 	i = 0;
-// 	tab = ft_split_custom("cat \"<infile1 \"| ls |\"cat |cat|ls >outfile", '|');
-// 	while(tab[i])
-// 	{
-// 		printf(">>>%s<<<\n", tab[i]);
-// 		i++;
-// 	}
-// 	return (0);
-// }
+	ft_fill_tab_custom_init_vars(v);
+	while (w->i < v->wc)
+	{
+		w->j = 0;
+		v->tab[w->i] = ft_alloc(sizeof(char)
+				* (ft_wl_custom((char *)&(v->str)[w->k], v->c, v->flag) + 1));
+		while (v->str[w->k] && (v->str[w->k] == v->c))
+			w->k++;
+		while (v->str[w->k] && (v->str[w->k] != v->c))
+			ft_get_tab(v, w);
+		v->tab[w->i][w->j] = '\0';
+		w->i++;
+	}
+	v->tab[w->i] = 0;
+	return (1);
+}

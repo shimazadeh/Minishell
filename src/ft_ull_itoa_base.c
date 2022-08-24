@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 22:02:31 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 13:18:55 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 22:28:50 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,8 @@ static int	ft_ull_nb_len(unsigned long long int nb, int base_len)
 	return (i);
 }
 
-static char	*ft_ull_nbr_to_string(unsigned long long int nb, char *str, int nb_len, char *base)
+static char	*ft_ull_nbr_to_string(unsigned long long int nb, \
+char *str, int nb_len, char *base)
 {
 	int						base_len;
 
@@ -57,6 +58,5 @@ char	*ft_ull_itoa_base(unsigned long long nb, char *base)
 	else
 		str = ft_ull_nbr_to_string(nb, str, nb_len, base);
 	str[nb_len] = '\0';
-//	printf(">>>>>>>>>>>>>>>>>%s\n", str);
 	return (str);
 }

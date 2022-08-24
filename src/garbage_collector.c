@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:53:45 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 13:38:24 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 22:36:05 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,17 +42,20 @@ int	ft_free(void *to_free)
 	while (current)
 	{
 		if (current->content == to_free)
-		{
-			if (current == g_alloc_lst)
-				g_alloc_lst = current->next;
-			prev->next = current->next;
-			free(current->content);
-			free(current);
-			current = prev->next;
-			return (1);
-		}
+			return (free_node(prev, current));
 		current = current->next;
 		prev = prev->next;
 	}
 	return (0);
+}
+
+int	free_node(t_list *prev, t_list *current)
+{
+	if (current == g_alloc_lst)
+		g_alloc_lst = current->next;
+	prev->next = current->next;
+	free(current->content);
+	free(current);
+	current = prev->next;
+	return (1);
 }

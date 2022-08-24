@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 13:45:38 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/24 23:51:49 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,118 +59,6 @@ void	replace_node_by_sublist(t_list *node, t_list *sublist)
 	node->next = sublist->next;
 	sublist = ft_lstlast(sublist);
 	sublist->next = tmp;
-}
-
-int	next_char_index(char *str, char c)
-{
-	int	i;
-
-	i = 0;
-	if (!str || !*str)
-		return (0);
-	while (str[i] && str[i] != c)
-		i++;
-	if (!str[i])
-		return (i + 1);
-	return (i);
-}
-
-int	compatible_name(char *file, char *wc)
-{
-	int	i;
-	int	j;
-	int	k;
-
-	i = 0;
-	j = 1;
-	k = 0;
-	if (!file || !wc)
-		return (0);
-	if (file[0] == '.' && wc[0] != '.')
-		return (0);
-	if (wc[0] != '*')
-	{
-		k = next_char_index(wc, '*');
-		if (ft_strncmp(wc, file, k))
-			return (0);
-		else
-		{
-			i = k;
-			j = k + 1;
-		}
-	}
-	while (file[i])
-	{
-		k = next_char_index(&wc[j], '*');
-		if (wc[j] && !ft_strncmp(&file[i], &wc[j], k))
-		{
-			j += k - 1;
-			i += k - 1;
-			if (wc[j])
-				j += 2;
-			if (file[i])
-				i++;
-		}
-		else
-			i++;
-	}
-	if (!wc[j])
-		return (1);
-	return(0);
-}
-
-void	get_new_path_list(char *path, t_list *file_lst, t_list **new_path_lst_add)
-{
-	char	*content;
-	char	*path_start;
-	char	*path_end;
-	char	*tmp;
-	char	*wc_str;
-	int		i;
-	int		j;
-	t_list	*new;
-	t_list	*new_path_lst;
-
-	content = NULL;
-	path_start = NULL;
-	path_end = NULL;
-	tmp = NULL;
-	wc_str = NULL;
-	i = 0;
-	j = 0;
-	new = NULL;
-	new_path_lst = NULL;
-	if (!new_path_lst_add)
-		ft_exit(EXIT_FAILURE, "Exited in function: get_new_path_list\nExit due to: argument check fail\n");
-	if (!path || !file_lst)
-		return ;
-	while (path[i] && path[i] != '*')
-		i++;
-	while (i > 0 && path[i - 1] != '/')
-		i--;
-	j = i;
-	while (path[j] && path[j] != '/')
-		j++;
-	path_start = ft_strndup(path, i);
-	path_end = ft_strdup(&path[j]);
-	wc_str = ft_strndup(&path[i], j - i);
-	while (file_lst)
-	{
-		if (compatible_name((char *)file_lst->content, wc_str))
-		{
-			content = ft_strjoin(path_start, (char *)file_lst->content);
-			tmp = content;
-			content = ft_strjoin(tmp, path_end);
-			ft_free(tmp);
-			new = ft_lstnew(content);
-			ft_lstadd_back(&new_path_lst, new);
-		}
-		file_lst = file_lst->next;
-	}
-	ft_free(path_start);
-	ft_free(path_end);
-	ft_free(wc_str);
-	*new_path_lst_add = new_path_lst;
 }
 
 int	read_dir_content(struct dirent **dir_content_add, DIR *stream)
