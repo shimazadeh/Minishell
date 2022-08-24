@@ -28,13 +28,13 @@ t_list **sep_head)
 	split_submod_and_sep_init_vars(v);
 	if (!str_add || !*str_add || !submod_head || !sep_head)
 		ft_exit(EXIT_FAILURE, "Exited in function: split_submod_and_sep\nExit due to: argument check fail\n");
-	rm_outer_par(str_add);
+	rm_outer_par_1(str_add);
 	v->str = *str_add;
-	split_submod_and_sep_2(str_add, submod_head, sep_head, v)
+	split_submod_and_sep_2(str_add, submod_head, sep_head, v);
 }
 
 void	split_submod_and_sep_2(char **str_add, t_list **submod_head, \
-t_list **sep_head, t_split_submod_and_sep_vars *v[1])
+t_list **sep_head, t_split_submod_and_sep_vars v[1])
 {
 	while (v->str[v->i])
 	{

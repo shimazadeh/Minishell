@@ -12,13 +12,13 @@
 
 #include "minishell.h"
 
-int find_last_infile_type(char *str)//returns 0 if the last infile is an actual file, 1 if here_doc
+int	find_last_infile_type(char *str)
 {
-	int i;
-	int flag;
+	int	i;
+	int	flag;
 
 	i = 0;
-	while(str[i])
+	while (str[i])
 	{
 		if (str[i] == '<' && str[i + 1] == '<')
 		{
@@ -32,59 +32,38 @@ int find_last_infile_type(char *str)//returns 0 if the last infile is an actual 
 	return (flag);
 }
 
-char	**default_name_generator(int size)
+int	set_last_infile_type(t_struct *head, char **file_names, int *loc, int size)
 {
-	int	i;
-	char **file_names;
+	t_struct	*copy;
+	int			i;
+	int			j;
 
 	i = 0;
-	file_names = ft_alloc(sizeof(char *) * (size + 1));
-	while (i < size)
+	j = 0;
+	copy = head;
+	while (copy)
 	{
-		file_names[i] = ft_strjoin("here_doc_", ft_itoa(i));
+		if (loc[j] == i && find_last_infile_type(copy->str) == 1)
+		{
+			while (j < size - 1)
+				j++;
+			copy->fds[0] = open(file_names[j], O_RDONLY, 0777);
+			copy->tag = 1;//indicates that the last infile is a heredoc type
+		}
+		copy = copy->next;
 		i++;
 	}
-	file_names[i] = NULL;
-	return (file_names);
+	return (0);
 }
 
-char	**fancy_name_generator(int size)
+int	number_of_here_doc(char *str)
 {
 	int	i;
-	int	fd;
-	char	*buf;
-	char	*tmp;
-	char	**file_names;
-
-	if (size == 0)
-		return (NULL);
-	file_names = ft_alloc(sizeof(char *) * (size + 1));
-	fd = open("/dev/urandom", O_RDONLY);
-	if (fd < 0)
-		return (NULL);
-	i = 0;
-	while (i < size)
-	{
-		buf = get_next_line(fd);
-		tmp = ft_strdup_range(buf, 0 , 8);
-		file_names[i] = ft_strjoin(".", tmp);
-		ft_free(tmp);
-		ft_free(buf);
-		i++;
-	}
-	file_names[size] = NULL;
-	close(fd);
-	return (file_names);
-}
-
-int number_of_here_doc(char *str)
-{
-	int i;
-	int count;
+	int	count;
 
 	count = 0;
 	i = 0;
-	while(str[i])
+	while (str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
 			i += go_to_closing_char((char *)&str[i]) + 1;
@@ -99,123 +78,68 @@ int number_of_here_doc(char *str)
 	return (count);
 }
 
-char **check_for_here_doc(char *str, int **loc_add)
+char	**store_heredoc_stops(char **str_add, int **loc_add, int size)
 {
-	int i;
-	int start;
-	int loc_pipe;
-	char **stop;
-	int size;
-	int k;
-	char *tmp;
-	int *loc;
-	char end;
+	int		i;
+	int		loc_pipe;
+	char	**stop;
+	int		k;
+	char	*tmp;
+	int		*loc;
+	char	*str;
 
 	i = 0;
-	end =' ';
 	loc_pipe = 0;
 	k = 0;
-	size = number_of_here_doc(str);
-	if (size == 0)
-		return (0);
+	str = *str_add;
 	stop = ft_alloc(sizeof(char *) * (size + 1));
 	loc = ft_alloc(sizeof(int) * (size));
-	while(str[i])
+	while (str[i])
 	{
 		if (str[i] == '|')
 			loc_pipe++;
 		if (k < size && str[i] == '<' && str[i + 1] == '<')
 		{
-			i = i + 2;
-			while(str[i] && str[i] == ' ')
-				i++;
-			if (str[i] && (str[i] == '\"' || str[i] == '\''))
-			{
-				end = str[i];
-				i++;
-			}
-			start = i;
-			while (str[i] && str[i] != end && str[i] != '<' && str[i] != '>' && str[i] != '|')
-				i++;
-			tmp = ft_strdup_range(str, start, i);
-			// dprintf(2, "tmp is %s\n", tmp);
+			i = save_the_next_word(&str, i + 2, &tmp, i);
 			stop[k] = ft_strjoin(tmp, "\n");
 			ft_free(tmp);
 			loc[k] = loc_pipe;
 			k++;
-			end = ' ';
 		}
 		else
 			i++;
 	}
 	stop[k] = '\0';
 	*loc_add = loc;
+	*str_add = str;
 	return (stop);
 }
 
-char	**handle_here_doc(char *str, t_struct **elements, t_list **envp_head, int last_exit_code)
+char	**ft_here_doc(char *str, t_struct **elements, t_list **envp, int exit)
 {
-	int 	i;
-	int 	j;
-	int 	*fds;
-	char 	**file_names;
-	char 	**stop;
-	int 	size;
-	t_struct *copy;
-	int	 	*loc;
+	int		i;
+	int		*fds;
+	char	**file_names;
+	char	**stop;
+	int		size;
+	int		*loc;
 
 	loc = NULL;
+	i = -1;
 	size = number_of_here_doc(str);
 	if (size == 0)
 		return (NULL);
-	stop = check_for_here_doc(str, &loc);
+	stop = store_heredoc_stops(&str, &loc, size);
 	fds = ft_alloc(sizeof(int) * size);
 	file_names = fancy_name_generator(size);
 	if (file_names == NULL)
 		file_names = default_name_generator(size);
-	i = 0;
-	while(stop[i])
-	{
-		// dprintf(2, "stop[i] is %s, filename is %s\n", stop[i], file_names[i]);
-		write_to_file(fds[i], stop[i], file_names[i], envp_head, last_exit_code);
-		i++;
-	}
+	while (stop[++i])
+		write_to_file(fds[i], stop[i], file_names[i], envp, exit);
 	ft_free(stop[i]);
-	copy = *elements;
-	i = 0;
-	j = 0;
-	while(copy)
-	{
-		if (loc[j] == i && find_last_infile_type(copy->str) == 1)//if the last infile in the string is here_doc then set the fd
-		{
-			while (j < size - 1)
-				j++;
-			// dprintf(2, "j is %d\n", j);
-			copy->fds[0] = open(file_names[j], O_RDONLY, 0777);
-			// copy->fds[0] = fds[j];
-			copy->tag = 1;//indicates that the last infile is a heredoc type
-		}
-		copy = copy->next;
-		i++;
-	}
+	set_last_infile_type(*elements, file_names, loc, size);
 	ft_free_tab(stop);
 	ft_free(fds);
 	ft_free(loc);
-	return(file_names);
-}
-
-void	ft_unlink(char **file_names)
-{
-	int i;
-
-	i = 0;
-	if (!file_names || !*file_names)
-		return ;
-	while(file_names && file_names[i])
-	{
-		unlink(file_names[i]);
-		i++;
-	}
-	ft_free_tab(file_names);
-	return ;
+	return (file_names);
 }

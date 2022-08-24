@@ -99,7 +99,7 @@ char	**set_prompt_elems(t_list **envp_head)
 	{
 		if (!prompt_elems[i])
 		{
-			free_tab_n(prompt_elems, 6);
+			ft_free_tab_n(prompt_elems, 6);
 			return (NULL);
 		}
 		i++;
@@ -132,5 +132,5 @@ void	get_prompt(char **prompt_add, t_list **envp_head)
 		i++;
 	}
 	*prompt_add = prompt;
-	free_tab_n(prompt_elems, 6);
+	ft_free_tab_n(prompt_elems, 6);
 }

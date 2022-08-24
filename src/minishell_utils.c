@@ -32,12 +32,12 @@ int	even_par_nbr(char *str)
 	return (1);
 }
 
-int	no_unclosed_quote(char *str)
-{
-	//lol;
-}
+// int	no_unclosed_quote(char *str)
+// {
+// 	//lol;
+// }
 
-void	handle_ws(char **str_add)
-{
-	//relol;
-}
+// void	handle_ws(char **str_add)
+// {
+// 	//relol;
+// }
