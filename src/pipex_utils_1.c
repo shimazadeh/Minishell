@@ -89,20 +89,6 @@ int	execute_pipe(t_struct **elements, char **parsed_path, t_list **envp)
 	return (exit_code);
 }
 
-int	execute(t_struct **elements, char **parsed_path, t_list **envp)
-{
-	t_struct	*copy;
-	int			exit_code;
-
-	exit_code = -1;
-	set_infiles_outfiles_cmds(elements);
-	copy = *elements;
-	if (structure_size(*elements) == 1 && boolean_if_buildin(copy->cmd) == 1)
-		exit_code = buildins_execution(elements, parsed_path, envp);
-	else
-		exit_code = execute_pipe(elements, parsed_path, envp);
-	return (exit_code);
-}
 
 int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int flag)
 {
@@ -204,47 +190,6 @@ int	execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int
 	return (exit_code);
 }
 
-char	**extract_env_paths(char *find, t_list **envp_head)
-{
-	char	**paths;
-	char	*temp;
-	char	**tab_temp;
-	int		j;
-	int		k;
-
-	j = 0;
-	k = 0;
-	temp = NULL;
-	paths = NULL;
-	tab_temp = NULL;
-	find_env_var(find, envp_head, &temp);
-	if (temp)
-	{
-		tab_temp = ft_split(temp, ':');
-		while (tab_temp[j])
-			j++;
-		paths = ft_alloc(sizeof(char *) * (j + 2));//the extra space is for adding pwd at the end
-		j = 0;
-		while (tab_temp[k])
-		{
-			if (tab_temp[k][ft_strlen(tab_temp[k]) - 1] != '/')
-				paths[j] = ft_strjoin(tab_temp[k], "/");
-			else
-				paths[j] = ft_strdup(tab_temp[k]);
-			ft_free(tab_temp[k]);
-			k++;
-			j++;
-		}
-		ft_free(temp);
-	}
-	paths[j] = ft_getcwd();
-	if (paths[j][ft_strlen(paths[j]) - 1] != '/')
-		paths[j] = ft_strjoin(paths[j], "/");
-	j++;
-	paths[j] = NULL;
-	return (paths);
-}
-
 char	*file_access_check(char **files, int flag) //0 for infiles, 1 for outfiles OTRUNC, 2 outfiles OAPPEND
 {
 	int i;
@@ -277,6 +222,20 @@ char	*file_access_check(char **files, int flag) //0 for infiles, 1 for outfiles 
 	return (files[i - 1]);
 }
 
+int	execute(t_struct **elements, char **parsed_path, t_list **envp)
+{
+	t_struct	*copy;
+	int			exit_code;
+
+	exit_code = -1;
+	set_infiles_outfiles_cmds(elements);
+	copy = *elements;
+	if (structure_size(*elements) == 1 && boolean_if_buildin(copy->cmd) == 1)
+		exit_code = buildins_execution(elements, parsed_path, envp);
+	else
+		exit_code = execute_pipe(elements, parsed_path, envp);
+	return (exit_code);
+}
 
 // int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 // {
