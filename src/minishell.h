@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 00:12:10 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 00:14:33 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -433,33 +433,41 @@ int			structure_size(t_struct *lst);
 int	variable_expansion(char **str_add, t_list **envp_head, int last_exit_code);
 
 //parsing
-void		initialize_sc(t_struct **tab, char *str);
-int 		parse(char *str, t_struct *node);
-char		**parse_outfiles(char **str_add);
-char		**parse_infiles(char **str_add);
-int 		set_infiles_outfiles_cmds(t_struct **elements);
-int 		find_last_infile_type(char *str);
+void	initialize_sc(t_struct **tab, char *str);
+void	assign_str_to_struct(t_struct **elements, char *str);
+int 	parse(char *str, t_struct *node);
+char	**parse_outfiles(char **str_add);
+char	**parse_infiles(char **str_add);
+int 	set_infiles_outfiles_cmds(t_struct **elements);
+int 	find_last_infile_type(char *str);
+int 	save_the_next_word(char **str_add, int i, char **dest, int to_clean);
+int 	number_of_delim(char *str, char delim, int flag);
 
 //execution
-int			execute(t_struct **elements, char **parsed_path, t_list **envp);
-int			execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size);
-int	execute_pipe(t_struct **elements, char **parsed_path, t_list **envp);
+int		execute(t_struct **elements, char **parsed_path, t_list **envp);
+int		execute_function(t_struct *head, char **parsed_path, t_list **envp_head, int sc_size);
+int		ft_fork(t_struct **elements, char **parsed_path, t_list **envp);
+void	ft_dup2_infiles(t_struct *head, int *exit_code);
+void	ft_dup2_outfiles(t_struct *head, int *exit_code);
+void	ft_execute_cmd(t_struct *head, int *exit_code, char **parsed_path, t_list **envp_head);
 
 char		*file_access_check(char **files, int flag);
 int			boolean_if_buildin(char **av);
 
 //finding paths
-int			access_check(char **cmd, char **parsed_path);
-char		**extract_env_paths(char *find, t_list **envp_list);
+int		cmd_access_check(char **cmd, char **parsed_path);
+char	**extract_env_paths(char *find, t_list **envp_list);
 
 //here__doc handling
-char 		**check_for_here_doc(char *str, int **loc);
-int 		number_of_here_doc(char *str);
-int			write_to_file(int fd1, char *stop, char	*file_name, t_list **envp_head, int last_exit_code);
-char		**handle_here_doc(char *str, t_struct **elements, t_list **envp_head, int last_exit_code);
-char		**fancy_name_generator(int size);
-char		**default_name_generator(int size);
-void		ft_unlink(char **file_names);
+char	**ft_here_doc(char **str, t_struct **elements, t_list **envp, int exit);
+char	**store_heredoc_stops(char **str_add, int **loc_add, int size);
+char	**default_name_generator(int size);
+char	**fancy_name_generator(int size);
+int		number_of_here_doc(char *str);
+int		set_last_infile_type(t_struct *head, char **files, int *loc, int size);
+int		find_last_infile_type(char *str);
+void	ft_unlink(char **file_names);
+int		write_to_file(char *stop, char	*file_name, t_list **envp_head, int last_exit_code);
 
 //custom free functions
 void		ft_free_sc(t_struct *lst);

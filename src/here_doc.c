@@ -23,10 +23,10 @@ int	find_last_infile_type(char *str)
 		if (str[i] == '<' && str[i + 1] == '<')
 		{
 			i++;
-			flag = 1;//its a here_doc
+			flag = 1;
 		}
 		else if (str[i] == '<' && str[i + 1] != '<')
-			flag = 0;//its an infile
+			flag = 0;
 		i++;
 	}
 	return (flag);
@@ -48,7 +48,7 @@ int	set_last_infile_type(t_struct *head, char **file_names, int *loc, int size)
 			while (j < size - 1)
 				j++;
 			copy->fds[0] = open(file_names[j], O_RDONLY, 0777);
-			copy->tag = 1;//indicates that the last infile is a heredoc type
+			copy->tag = 1;
 		}
 		copy = copy->next;
 		i++;
@@ -115,7 +115,7 @@ char	**store_heredoc_stops(char **str_add, int **loc_add, int size)
 	return (stop);
 }
 
-char	**ft_here_doc(char *str, t_struct **elements, t_list **envp, int exit)
+char	**ft_here_doc(char **str_add, t_struct **elements, t_list **envp, int exit)
 {
 	int		i;
 	int		*fds;
@@ -123,7 +123,9 @@ char	**ft_here_doc(char *str, t_struct **elements, t_list **envp, int exit)
 	char	**stop;
 	int		size;
 	int		*loc;
+	char	*str;
 
+	str = *str_add;
 	loc = NULL;
 	i = -1;
 	size = number_of_here_doc(str);
@@ -135,11 +137,12 @@ char	**ft_here_doc(char *str, t_struct **elements, t_list **envp, int exit)
 	if (file_names == NULL)
 		file_names = default_name_generator(size);
 	while (stop[++i])
-		write_to_file(fds[i], stop[i], file_names[i], envp, exit);
+		fds[i] = write_to_file(stop[i], file_names[i], envp, exit);
 	ft_free(stop[i]);
 	set_last_infile_type(*elements, file_names, loc, size);
 	ft_free_tab(stop);
 	ft_free(fds);
 	ft_free(loc);
+	*str_add = str;
 	return (file_names);
 }
