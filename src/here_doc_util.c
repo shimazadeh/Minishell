@@ -72,3 +72,30 @@ char	**fancy_name_generator(int size)
 	close(fd);
 	return (file_names);
 }
+
+int	write_to_file(char *stop, char	*file, t_list **envp, int last_exit_code)
+{
+	char	*gnl;
+	int		fd1;
+
+	fd1 = open(file, O_CREAT | O_RDWR, 0777);
+	if (fd1 < 0)
+		return (ft_dprintf(2, "error with creating here_doc\n"), -1);
+	write(1, "> ", 2);
+	gnl = get_next_line(0);
+	while (gnl && ft_strncmp(gnl, stop, ft_strlen(stop) + 1) != 0)
+	{
+		variable_expansion(&gnl, envp, last_exit_code);
+		if (write(fd1, gnl, ft_strlen(gnl)) < 0)
+		{
+			perror("write:");
+			return (-1);
+		}
+		ft_free(gnl);
+		write(1, "> ", 2);
+		gnl = get_next_line(0);
+	}
+	ft_free(gnl);
+	close(fd1);
+	return (fd1);
+}

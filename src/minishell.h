@@ -313,6 +313,7 @@ int		variable_expansion(char **str_add, t_list **envp_head, int last_exit_code);
 
 //parsing
 void	initialize_sc(t_struct **tab, char *str);
+void	assign_str_to_struct(t_struct **elements, char *str);
 int 	parse(char *str, t_struct *node);
 char	**parse_outfiles(char **str_add);
 char	**parse_infiles(char **str_add);
@@ -337,7 +338,7 @@ int		cmd_access_check(char **cmd, char **parsed_path);
 char	**extract_env_paths(char *find, t_list **envp_list);
 
 //here__doc handling
-char	**ft_here_doc(char *str, t_struct **elements, t_list **envp, int exit);
+char	**ft_here_doc(char **str, t_struct **elements, t_list **envp, int exit);
 char	**store_heredoc_stops(char **str_add, int **loc_add, int size);
 char	**default_name_generator(int size);
 char	**fancy_name_generator(int size);
@@ -345,7 +346,7 @@ int		number_of_here_doc(char *str);
 int		set_last_infile_type(t_struct *head, char **files, int *loc, int size);
 int		find_last_infile_type(char *str);
 void	ft_unlink(char **file_names);
-int		write_to_file(int fd1, char *stop, char	*file_name, t_list **envp_head, int last_exit_code);
+int		write_to_file(char *stop, char	*file_name, t_list **envp_head, int last_exit_code);
 
 //custom free functions
 void	ft_free_sc(t_struct *lst);

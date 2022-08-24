@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-void	initialize_sc(t_struct **elements, char *str)
+void	create_structure(t_struct **elements, char *str)
 {
 	t_struct	*copy;
 	int			i;
@@ -34,6 +34,25 @@ void	initialize_sc(t_struct **elements, char *str)
 		copy->child = 0;
 		copy->next = NULL;
 		structure_add_back(elements, copy);
+		i++;
+		copy = copy->next;
+	}
+	ft_free_tab(tab);
+	return ;
+}
+
+void	assign_str_to_struct(t_struct **elements, char *str)
+{
+	t_struct	*copy;
+	int			i;
+	char		**tab;
+
+	i = 0;
+	copy = *elements;
+	tab = ft_split_custom(str, '|', 0);
+	while (tab[i] && copy)
+	{
+		copy->str = ft_strdup(tab[i]);
 		i++;
 		copy = copy->next;
 	}
@@ -71,7 +90,7 @@ char	**extract_env_paths(char *find, t_list **envp_head)
 		paths = ft_alloc(sizeof(char *) * (ft_strlen_tab(tab_temp) + 2));
 		ft_free(temp);
 		while (tab_temp[++k])
-			path[k] = create_path(tab_temp[k]);
+			paths[k] = create_path(tab_temp[k]);
 	}
 	else
 	{
@@ -95,12 +114,14 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 		return (0);
 	elements = NULL;
 	parsed_path = NULL;
-	heredoc_files = NULL;
+	herdoc_files = NULL;
 	exit_code = -1;
+
+	create_structure(&elements, str);
 	parsed_path = extract_env_paths("PATH", envp_head);
 	variable_expansion(&str, envp_head, last_exit_code);
-	initialize_sc(&elements, str);
-	herdoc_files = ft_here_doc(str, &elements, envp_head, last_exit_code);
+	herdoc_files = ft_here_doc(&str, &elements, envp_head, last_exit_code);
+	assign_str_to_struct(&elements, str);
 	exit_code = execute(&elements, parsed_path, envp_head);
 	ft_free_sc(elements);
 	ft_free_tab(parsed_path);
