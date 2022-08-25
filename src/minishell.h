@@ -485,6 +485,28 @@ int		ft_waitpid(t_struct **elements);
 //finding paths
 char	**extract_env_paths(char *find, t_list **envp_list);
 
+
+typedef struct s_ft_here_doc
+{
+	char	**file_names;
+	char	**stop;
+	int		*loc;
+	char	*str;
+}				t_ft_here_doc;
+
+
+typedef struct s_ft_here_doc_util
+{
+	int		loc_pipe;
+	char	**stop;
+	char	*tmp;
+	int		*loc;
+	char	*str;
+}				s_ft_here_doc_util;
+
+void	initialize_heredoc_util_var(s_ft_here_doc_util *v);
+void	initialize_heredoc_var(s_ft_here_doc *v);
+
 //here__doc handling
 char	**ft_here_doc(char **str, t_struct **elements, t_list **envp, int exit);
 char	**store_heredoc_stops(char **str_add, int **loc_add, int size);
