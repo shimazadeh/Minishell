@@ -78,5 +78,6 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 		opendir_path = ft_strnjoin("./", path, i + 2);
 	else
 		opendir_path = ft_strndup(path, i);
+	// dprintf(2, "path %s\n", opendir_path);
 	*opendir_path_add = opendir_path;
 }

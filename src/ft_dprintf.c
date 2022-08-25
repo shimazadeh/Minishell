@@ -36,15 +36,16 @@ int	ft_dprintf(int fd, const char *str, ...)
 	va_start(arg, str);
 	while (str[i])
 	{
-		if (str[i++] == '%')
-			ft_dprint(arg, str[i++], &to_print);
+		if (str[i] == '%')
+			ft_dprint(arg, str[++i], &to_print);
 		else
 		{
-			char_add[0] = str[i++];
+			char_add[0] = str[i];
 			tmp = to_print;
 			to_print = ft_strjoin(tmp, char_add);
 			ft_free(tmp);
 		}
+		i++;
 	}
 	va_end(arg);
 	ft_putstr_fd(to_print, fd);

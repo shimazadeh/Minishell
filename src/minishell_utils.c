@@ -28,7 +28,10 @@ int	even_par_nbr(char *str)
 		i++;
 	}
 	if (par)
+	{
+		ft_dprintf(2, "Error: input contains odd number of parentheses!\n");
 		return (0);
+	}
 	return (1);
 }
 
@@ -47,7 +50,7 @@ int	no_unclosed_quote(char *str)
 			if (!j)
 			{
 				ft_dprintf(2, \
-					"Error\nQuote '%c' at index %d is unclosed\n", &str[i], i);
+					"Error: quote '%c' at index %d is unclosed!\n", str[i], i);
 				return (0);
 			}
 			i += j;
@@ -77,14 +80,22 @@ void	handle_ws(char **str_add)
 
 void	handle_ws_get_str_size(int *size_add, char *str)
 {
+	int	gtcc;
 	int	i;
 	int	size;
 
+	gtcc = 0;
 	i = 0;
 	size = 0;
 	while (str[i])
 	{
-		if (str[i] == ' ' || str[i] == '\t')
+		if (str[i] == '\'' || str[i] == '\"')
+		{
+			gtcc = go_to_closing_char(&str[i]);
+			i += gtcc + 1;
+			size += gtcc + 1;
+		}
+		else if (str[i] == ' ' || str[i] == '\t')
 		{
 			size += 1;
 			while (str[i] == ' ' || str[i] == '\t')
@@ -101,14 +112,22 @@ void	handle_ws_get_str_size(int *size_add, char *str)
 
 void	handle_ws_fill_str(char *str, char *new_str)
 {
+	int		gtcc;
 	int		i;
 	int		j;
 
+	gtcc = 0;
 	i = 0;
 	j = 0;
 	while (str[i])
 	{
-		if (str[i] == ' ' || str[i] == '\t')
+		if (str[i] == '\'' || str[i] == '\"')
+		{
+			gtcc = go_to_closing_char(&str[i]);
+			while (gtcc-- >= 0)
+				new_str[j++] = str[i++];
+		}
+		else if (str[i] == ' ' || str[i] == '\t')
 		{
 			new_str[j] = ' ';
 			j++;

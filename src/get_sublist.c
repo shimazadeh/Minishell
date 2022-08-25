@@ -34,7 +34,7 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 
 	if (!sublist || !opendir_path || !*opendir_path || !path || !*path)
 		ft_exit(EXIT_FAILURE, "get_sublist", "argument check fail");
-	get_sublist_init_vars(v->sublist, v->path, v->opendir_path, v);
+	get_sublist_init_vars(sublist, path, opendir_path, v);
 	v->wc = ft_strchr(v->path, '*');
 	if (!v->wc)
 		ft_lstadd_back(v->sublist, ft_lstnew(v->path));
@@ -44,11 +44,10 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 
 void	get_sublist_recursive(t_get_sublist_vars v[1])
 {
-	get_sublist_recursive(v);
-	get_file_list(v->opendir_path, &v->file_lst);
+	get_file_list(v->opendir_path, &(v->file_lst));
 	if (!v->file_lst)
 		return ;
-	get_new_path_list(v->path, v->file_lst, &v->new_path_lst);
+	get_new_path_list(v->path, v->file_lst, &(v->new_path_lst));
 	ft_free_list(v->file_lst);
 	if (!v->new_path_lst)
 		return ;
