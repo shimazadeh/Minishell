@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:31:00 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 14:31:07 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:53:05 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	print_tab_nl(char **tab, int nl)
 
 	i = 0;
 	if (!tab)
-		ft_exit(EXIT_FAILURE, "Exited in function: print_tab_nl\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "print_tab_nl", "argument check fail");
 	while (tab[i])
 	{
 		ft_dprintf(1, "%s", tab[i]);

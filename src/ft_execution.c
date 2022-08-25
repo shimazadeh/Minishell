@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_execution.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 21:17:18 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/24 21:17:20 by shabibol         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:57:28 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	execute_function(t_struct *head, char **path, t_list **envp_head, int flag)
 			ft_free_list(*envp_head);
 			ft_free_tab(path);
 			ft_free_sc(head);
-			ft_exit(exit_code, NULL);
+			ft_exit(exit_code, NULL, NULL);
 		}
 	}
 	return (exit_code);

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:32:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 21:28:06 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:53:57 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	cd(char *dir, t_list **envp_head)
 
 	cd_init_vars(v);
 	if (!envp_head)
-		ft_exit(EXIT_FAILURE, "Exited in function: cd\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "cd", "argument check fail");
 	if (!dir)
 		cd_no_arg(&dir, envp_head);
 	else if (!ft_strncmp(dir, "-", 2))

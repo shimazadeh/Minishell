@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:56:40 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 17:35:55 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:57:47 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int	export(char **vars, t_list **envp_head)
 {
 	if (!envp_head || !vars)
-		ft_exit(EXIT_FAILURE, "Exited in function: export\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "export", "argument check fail");
 	if (!vars[0])
 		return (export_no_arg(envp_head));
 	return (export_arg(0, 0, vars, envp_head));

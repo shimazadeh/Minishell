@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 23:45:50 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 23:50:12 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:53:32 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ t_list **new_path_lst_add)
 	i = 0;
 	j = 0;
 	if (!new_path_lst_add)
-		ft_exit(EXIT_FAILURE, "Exited in function: get_new_path_list\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "get_new_path_list", "argument check fail");
 	get_new_path_list_init_vars(path, file_lst, v);
 	if (!v->path || !v->file_lst)
 		return ;

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/19 15:43:13 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 00:33:20 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:56:40 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	expand_wc_node(t_list *node)
 	opendir_path = NULL;
 	path = NULL;
 	if (!node || !(char *)node->content || !*((char *)node->content))
-		ft_exit(EXIT_FAILURE, "Exited in function: expand_wc_node\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "expand_wc_node", "argument check fail");
 	trim_extra_wc((char *)node->content, &path);
 	get_opendir_path(path, &opendir_path);
 	get_sublist(&sublist, path, opendir_path);
@@ -57,7 +57,7 @@ void	handle_wildcards(char ***av_tab_add)
 	node = NULL;
 	av_tab = NULL;
 	if (!av_tab_add)
-		ft_exit(EXIT_FAILURE, "Exited in function: handle_wildcards\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "handle_wildcards", "argument check fail");
 	if (!*av_tab_add || !**av_tab_add)
 		return ;
 	av_tab = *av_tab_add;

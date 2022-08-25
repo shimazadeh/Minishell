@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 00:20:00 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 00:33:26 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/25 01:55:32 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	trim_extra_wc(char	*str, char **path_add)
 	i = 0;
 	path = NULL;
 	if (!path_add)
-		ft_exit(EXIT_FAILURE, "Exited in function: trim_extra_wc\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "trim_extra_wc", "argument check fail");
 	if (!str)
 		return ;
 	get_str_size(0, 0, &i, str);
@@ -68,7 +68,7 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 	i = 0;
 	opendir_path = NULL;
 	if (!path || !*path || !opendir_path_add)
-		ft_exit(EXIT_FAILURE, "Exited in function: get_opendir_path\nExit due to: argument check fail\n");
+		ft_exit(EXIT_FAILURE, "get_opendir_path", "argument check fail");
 	while (path[i] && path[i] != '*')
 		i++;
 	while (i > 0 && path[i] != '/')
