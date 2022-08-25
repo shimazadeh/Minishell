@@ -492,6 +492,7 @@ typedef struct s_ft_here_doc
 	char	**stop;
 	int		*loc;
 	char	*str;
+	int		*fds;
 }				t_ft_here_doc;
 
 
@@ -502,10 +503,10 @@ typedef struct s_ft_here_doc_util
 	char	*tmp;
 	int		*loc;
 	char	*str;
-}				s_ft_here_doc_util;
+}				t_ft_here_doc_util;
 
-void	initialize_heredoc_util_var(s_ft_here_doc_util *v);
-void	initialize_heredoc_var(s_ft_here_doc *v);
+void	initialize_heredoc_util_var(t_ft_here_doc_util *v);
+void	initialize_heredoc_var(t_ft_here_doc *v);
 
 //here__doc handling
 char	**ft_here_doc(char **str, t_struct **elements, t_list **envp, int exit);
@@ -513,7 +514,7 @@ char	**store_heredoc_stops(char **str_add, int **loc_add, int size);
 char	**default_name_generator(int size);
 char	**fancy_name_generator(int size);
 int		number_of_here_doc(char *str);
-int		set_last_infile_type(t_struct *head, char **files, int *loc, int size);
+int		set_last_infile_type(t_struct **elements, char **files, int *loc, int size);
 int		find_last_infile_type(char *str);
 void	ft_unlink(char **file_names);
 int		write_to_file(char *stop, char	*file_name, t_list **envp_head, int last_exit_code);

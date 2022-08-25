@@ -100,3 +100,23 @@ int	write_to_file(char *stop, char	*file, t_list **envp, int last_exit_code)
 	close(fd1);
 	return (fd1);
 }
+
+int	find_last_infile_type(char *str)
+{
+	int	i;
+	int	flag;
+
+	i = 0;
+	while (str[i])
+	{
+		if (str[i] == '<' && str[i + 1] == '<')
+		{
+			i++;
+			flag = 1;
+		}
+		else if (str[i] == '<' && str[i + 1] != '<')
+			flag = 0;
+		i++;
+	}
+	return (flag);
+}
