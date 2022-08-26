@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:02:30 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/26 22:14:02 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 22:55:50 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,7 +108,7 @@ int	str_is_only_spaces(char *str)
 		ft_exit(EXIT_FAILURE, "str_is_only_spaces", "argument check fail");
 	while (str[i])
 	{
-		if (str[i] != ' ' || str[i] != '\t')
+		if (str[i] != ' ' && str[i] != '\t')
 			return (0);
 		i++;
 	}

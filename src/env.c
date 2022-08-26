@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:55:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:41:04 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 23:34:00 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,10 @@ int	env(t_list **envp_head)
 {
 	t_list	*node;
 
-	if (!envp_head || !*envp_head)
+	if (!envp_head)
 		ft_exit(EXIT_FAILURE, "env", "argument check fail");
+	if (!*envp_head)
+		return (0);
 	node = *envp_head;
 	while (node)
 	{

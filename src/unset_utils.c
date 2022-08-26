@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 21:40:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 21:40:17 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 23:42:50 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	ft_list_remove_node(t_list **lst_head, t_list *node)
 		if (current == node)
 		{
 			if (current == *lst_head)
-				*lst_head = current;
+				*lst_head = current->next;
 			prev->next = current->next;
 			ft_free(current->content);
 			ft_free(current);
