@@ -39,9 +39,6 @@ void	minishell(char	**envp)
 				v->last_exit_code = algorithm(ft_strdup(v->input),
 						&(v->envp_head), v->last_exit_code);
 			}
-			else
-				ft_dprintf(2,
-					"Error\nInput contains odd number of parentheses!\n");
 		}
 		ft_free(v->input);
 		ft_free(v->prompt);

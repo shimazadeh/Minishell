@@ -105,16 +105,22 @@ void	ft_dup2_infiles(t_struct *head, int *exit_code)
 void	ft_dup2_outfiles(t_struct *head, int *exit_code)
 {
 	char	*last_outfile;
+	int		mode;
 
 	last_outfile = NULL;
+	mode = 0;
 	if (*exit_code != 1 && head->outfiles)
 	{
-		last_outfile = file_access_check(head->outfiles, 1);
+		mode = head->outfile_modes[ft_strlen_tab(head->outfiles) - 1];
+		last_outfile = file_access_check(head->outfiles, mode);
 		if (!last_outfile)
 			*exit_code = 1;
 		else
 		{
-			head->fds[1] = open(last_outfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
+			if (mode == 1)
+				head->fds[1] = open(last_outfile, O_CREAT | O_RDWR | O_TRUNC, 0644);
+			else if (mode == 2)
+				head->fds[1] = open(last_outfile, O_CREAT | O_RDWR | O_APPEND, 0644);
 			if (dup2(head->fds[1], STDOUT_FILENO) < 0)
 				perror("dup2 stdout inside:");
 			close(head->fds[1]);

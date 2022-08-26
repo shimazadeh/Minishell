@@ -27,6 +27,7 @@ void	create_structure(t_struct **elements, char *str)
 		copy->cmd = NULL;
 		copy->infiles = NULL;
 		copy->outfiles = NULL;
+		copy->outfile_modes = 0;
 		copy->tag = 0;
 		copy->fds[0] = STDIN_FILENO;
 		copy->fds[1] = STDOUT_FILENO;

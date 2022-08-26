@@ -35,6 +35,6 @@ char	*ft_strnjoin(char const *s1, char const *s2, int size)
 		str[i] = s1[i];
 	while (s2 && s2[++j] && size-- > 0)
 		str[i + j] = s2[j];
-	str[i] = 0;
+	str[i + j] = '\0';
 	return (str);
 }
