@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   ft_pipe.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:38:31 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/20 22:59:29 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 21:57:54 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,6 +99,7 @@ char	**extract_env_paths(char *find, t_list **envp_head)
 	temp = ft_getcwd();
 	paths[k] = create_path(temp);
 	paths[++k] = NULL;
+	ft_free(temp);
 	return (paths);
 }
 

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 00:17:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:42:49 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 22:20:31 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void	get_sublist_recursive(t_get_sublist_vars v[1])
 	ft_free_list(v->file_lst);
 	if (!v->new_path_lst)
 		return ;
-	while(v->new_path_lst)
+	while (v->new_path_lst)
 	{
 		v->new_path = ft_strdup((char *)v->new_path_lst->content);
 		get_opendir_path(v->new_path, &v->new_opendir_path);

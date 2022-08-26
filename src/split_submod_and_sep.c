@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 00:37:38 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:41:27 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 21:07:40 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,16 +44,16 @@ t_list **sep_head, t_split_submod_and_sep_vars v[1])
 			v->count++;
 		else if (v->str[v->i] == ')')
 			v->count--;
-		if (v->count == 0 && (ft_strncmp(&(v->str[v->i]), " || ", 4) == 0
-				|| ft_strncmp(&(v->str[v->i]), " && ", 4) == 0))
+		if (v->count == 0 && (ft_strncmp(&(v->str[v->i]), "||", 2) == 0
+				|| ft_strncmp(&(v->str[v->i]), "&&", 2) == 0))
 		{
-			if (ft_strncmp(&(v->str[v->i]), " || ", 4) == 0)
+			if (ft_strncmp(&(v->str[v->i]), "||", 2) == 0)
 				ft_lstadd_back(sep_head, ft_lstnew(ft_strdup("2")));
-			else if (ft_strncmp(&(v->str[v->i]), " && ", 4) == 0)
+			else if (ft_strncmp(&(v->str[v->i]), "&&", 2) == 0)
 				ft_lstadd_back(sep_head, ft_lstnew(ft_strdup("1")));
 			ft_lstadd_back(submod_head,
 				ft_lstnew(ft_strndup(&(v->str[v->j]), v->i - v->j)));
-			v->i += 3;
+			v->i++;
 			v->j = v->i + 1;
 		}
 		else if (v->count == 0 && !v->str[v->i + 1] && *submod_head)

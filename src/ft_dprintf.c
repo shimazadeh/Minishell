@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/12/09 22:59:24 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 22:27:52 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 22:36:35 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,11 @@ int	ft_dprintf(int fd, const char *str, ...)
 	char	*tmp;
 	char	char_add[1];
 
-	i = 0;
+	i = -1;
 	to_print = NULL;
 	tmp = NULL;
 	va_start(arg, str);
-	while (str[i])
+	while (str[++i])
 	{
 		if (str[i] == '%')
 			ft_dprint(arg, str[++i], &to_print);
@@ -45,7 +45,6 @@ int	ft_dprintf(int fd, const char *str, ...)
 			to_print = ft_strjoin(tmp, char_add);
 			ft_free(tmp);
 		}
-		i++;
 	}
 	va_end(arg);
 	ft_putstr_fd(to_print, fd);

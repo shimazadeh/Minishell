@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:02:30 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:49:20 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 22:14:02 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,9 +43,10 @@ void	rm_outer_par_1(char **str_add)
 		ft_exit(EXIT_FAILURE, "rm_outer_par", "argument check fail");
 	str = *str_add;
 	rm_outer_par_2(&i, 0, 1, str);
-	tmp = ft_strdup(&str[i]);
-	*str_add = tmp;
-	ft_free(str);
+	tmp = str;
+	tmp = ft_strdup(&tmp[i]);
+	ft_free(tmp);
+	*str_add = str;
 }
 
 void	rm_outer_par_2(int *i_add, int j, int flag, char *str)
@@ -57,9 +58,9 @@ void	rm_outer_par_2(int *i_add, int j, int flag, char *str)
 	{
 		if (str[i] == ' ')
 			i++;
-		if (str[i] == '(')
+		else if (str[i] == '(')
 		{
-			j = go_to_closing_par(&str[i]);
+			j = i + go_to_closing_par(&str[i]);
 			if (j && str_is_only_spaces(&str[j + 1]))
 			{
 				i++;
@@ -107,7 +108,7 @@ int	str_is_only_spaces(char *str)
 		ft_exit(EXIT_FAILURE, "str_is_only_spaces", "argument check fail");
 	while (str[i])
 	{
-		if (str[i] != ' ')
+		if (str[i] != ' ' || str[i] != '\t')
 			return (0);
 		i++;
 	}

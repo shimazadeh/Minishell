@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:56:33 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 00:58:09 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 21:48:32 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	ft_exit(int exit_code, char *fn_name, char *error_msg)
 	if (error_msg)
 		ft_dprintf(fd, "Exit due to: %s\n", error_msg);
 	rl_clear_history();
-	if (g_alloc_lst)
-		ft_free_list_regular(g_alloc_lst);
+/*	if (g_alloc_lst)
+		ft_free_list_regular(g_alloc_lst);*/
 	exit(exit_code);
 }

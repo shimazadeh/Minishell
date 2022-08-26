@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 12:43:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:38:16 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 22:40:17 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,11 +101,8 @@ void	handle_ws_get_str_size(int *size_add, char *str)
 			while (str[i] == ' ' || str[i] == '\t')
 				i++;
 		}
-		else
-		{
-			i++;
+		else if (i++)
 			size++;
-		}
 	}
 	*size_add = size;
 }
@@ -135,10 +132,6 @@ void	handle_ws_fill_str(char *str, char *new_str)
 				i++;
 		}
 		else
-		{
-			new_str[j] = str[i];
-			i++;
-			j++;
-		}
+			new_str[j++] = str[i++];
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/14 14:27:04 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 17:43:25 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 21:13:23 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,16 +25,21 @@ void	algorithm_init_vars(t_aglorithm_vars v[1])
 
 int	algorithm(char *str, t_list **envp_head, int last_exit_code)
 {
+	int					ret;
 	t_aglorithm_vars	v[1];
 
+	ret = 0;
 	algorithm_init_vars(v);
 	split_submod_and_sep_1(&str, &(v->submod_head), &(v->sep_head));
 	if (!v->sep_head)
-		return (algorithm_exit_condition_1(str, envp_head, last_exit_code, v));
-	ft_free_list(v->submod_head);
-	ft_free_list(v->sep_head);
+		ret = algorithm_exit_condition_1(str, envp_head, last_exit_code, v);
+	else
+		ret = algorithm_recursive(envp_head, last_exit_code, v);
 	ft_free(str);
-	return (algorithm_recursive(envp_head, last_exit_code, v));
+	ft_free(v->tmp_str);
+	ft_free_list(v->sep_head);
+	ft_free_list(v->submod_head);
+	return (ret);
 }
 
 int	algorithm_exit_condition_1(char *str, t_list **envp_head, \
@@ -55,7 +60,7 @@ int last_exit_code, t_aglorithm_vars v[1])
 			i += k;
 			j += k;
 		}
-		if (str[i] != '(' && str[i] != ')')
+		if (str[i] && str[i] != '(' && str[i] != ')')
 			j++;
 		i++;
 	}
@@ -87,9 +92,7 @@ int last_exit_code, t_aglorithm_vars v[1])
 		i++;
 	}
 	str[j] = '\0';
-	ft_free(v->tmp_str);
 	v->pipex_ret = ft_pipe(str, envp_head, last_exit_code);
-	ft_free(str);
 	return (v->pipex_ret);
 }
 

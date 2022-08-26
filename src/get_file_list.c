@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 00:20:51 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:43:31 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 22:38:10 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,6 @@ void	get_file_list(char *opendir_path, t_list **file_lst_add)
 	}
 	closedir(stream);
 	if (!file_lst)
-		return;
-	*file_lst_add = file_lst; 
+		return ;
+	*file_lst_add = file_lst;
 }

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 00:20:00 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:55:32 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/26 22:16:17 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,5 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 		opendir_path = ft_strnjoin("./", path, i + 2);
 	else
 		opendir_path = ft_strndup(path, i);
-	// dprintf(2, "path %s\n", opendir_path);
 	*opendir_path_add = opendir_path;
 }
