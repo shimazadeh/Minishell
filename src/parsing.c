@@ -65,7 +65,7 @@ int	save_the_next_word(char **str_add, int i, char **dest, int to_clean)
 	return (i);
 }
 
-char	**parse_infiles(char **str_add)
+char	**parse_infiles(char **str_add, t_struct *head)
 {
 	int			dest_size;
 	char		**dest;
@@ -80,12 +80,16 @@ char	**parse_infiles(char **str_add)
 	if (!dest_size)
 		return (NULL);
 	dest = ft_alloc(sizeof(char *) * (dest_size + 1));
+	head->infile_modes = ft_alloc(sizeof(int) * dest_size);
 	while (str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
 			i = i + go_to_closing_char(&str[i]) + 1;
 		else if (str[i] && str[i + 1] && str[i] == '<' && str[i + 1] != '<')
+		{
 			i = save_the_next_word(&str, i + 1, &dest[++k], i);
+			head->infile_modes[k] = 0;
+		}
 		else
 			i++;
 	}
@@ -100,14 +104,16 @@ char	**parse_outfiles(char **str_add, t_struct *head)
 	char		*str;
 	int			i;
 	int			k;
+	int			size;
 
 	i = 0;
 	str = *str_add;
 	k = -1;
-	if (!number_of_delim(str, '>', 1))
+	size = number_of_delim(str, '>', 1);
+	if (!size)
 		return (NULL);
-	dest = ft_alloc(sizeof(char *) * (number_of_delim(str, '>', 1) + 1));
-	head->outfile_modes = ft_alloc(sizeof(int) * number_of_delim(str, '>', 1));
+	dest = ft_alloc(sizeof(char *) * (size + 1));
+	head->outfile_modes = ft_alloc(sizeof(int) * size);
 	while (str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
@@ -115,12 +121,12 @@ char	**parse_outfiles(char **str_add, t_struct *head)
 		else if (str[i] && str[i] == '>' && str[i + 1] && str[i + 1] != '>')
 		{
 			i = save_the_next_word(&str, i + 1, &dest[++k], i);
-			head->outfile_modes[k] = 1;//o_trunc
+			head->outfile_modes[k] = 1;
 		}
 		else if (str[i] && str[i] == '>' && str[i + 1] && str[i + 1] == '>')
 		{
 			i = save_the_next_word(&str, i + 2, &dest[++k], i);
-			head->outfile_modes[k] = 2;//append mode
+			head->outfile_modes[k] = 2;
 		}
 		else
 			i++;
@@ -137,14 +143,9 @@ int	set_infiles_outfiles_cmds(t_struct **elements)
 	copy = *elements;
 	while (copy)
 	{
-		// dprintf(2, "str is: %s\n", copy->str);
-		copy->infiles = parse_infiles(&copy->str);
-		// dprintf(2, "str in parsing before split/infile: %s\n", copy->str);
+		copy->infiles = parse_infiles(&copy->str, copy);
 		copy->outfiles = parse_outfiles(&copy->str, copy);
-		// dprintf(2, "str in parsing before split/outfile: %s\n", copy->str);
-		// dprintf(2, "str is : --%s--\n", copy->str);
 		copy->cmd = ft_split_custom(copy->str, ' ', 1);
-		// print_tab(copy->cmd);
 		handle_wildcards(&copy->cmd);
 		copy = copy->next;
 	}
