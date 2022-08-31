@@ -57,16 +57,13 @@ int	file_access_check(char **file, int *file_modes)
 			fd = open(file[i], O_CREAT | O_RDWR | O_TRUNC, 0644);
 		else if (file_modes[i] == 2)
 			fd = open(file[i], O_CREAT | O_RDWR | O_APPEND, 0644);
-		if (fd < 0)
-		{
-			if (access(file[i], F_OK) == -1)
-				perror(file[i]);
-			else if (access(file[i], R_OK) == -1 || access(file[i], W_OK) == -1)
-				perror(file[i]);
-			else
-				perror(file[i]);
-			return (close(fd), 0);
-		}
+		if (fd < 0 && access(file[i], F_OK) == -1)
+			return (perror(file[i]), close(fd), 0);
+		else if (fd < 0 && (access(file[i], R_OK) == -1
+				|| access(file[i], W_OK) == -1))
+			return (perror(file[i]), close(fd), 0);
+		else if (fd < 0)
+			return (perror(file[i]), close(fd), 0);
 	}
 	return (fd);
 }

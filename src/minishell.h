@@ -470,9 +470,9 @@ int to_continue);
 void		initialize_sc(t_struct **tab, char *str);
 void		assign_str_to_struct(t_struct **elements, char *str);
 int			parse(char *str, t_struct *node);
-char		**parse_outfiles(char **str_add, t_struct *head);
-char		**parse_infiles(char **str_add, t_struct *head);
-int			set_infiles_outfiles_cmds(t_struct **elements);
+void		parse_outfiles(char **str_add, t_struct *head);
+void		parse_infiles(char **str_add, t_struct *head);
+void		set_infiles_outfiles_cmds(t_struct **elements);
 int			find_last_infile_type(char *str);
 int			save_the_next_word(char **str_add, int i, \
 char **dest, int to_clean);

@@ -117,7 +117,6 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 	create_structure(&elements, str);
 	parsed_path = extract_env_paths("PATH", envp_head);
 	str = variable_expansion(&str, envp_head, last_exit_code);
-	dprintf(2, "str after expansion: %s\n", str);
 	herdoc_files = ft_here_doc(&str, &elements, envp_head, last_exit_code);
 	assign_str_to_struct(&elements, str);
 	exit_code = execute(&elements, parsed_path, envp_head);
