@@ -43,6 +43,7 @@ typedef struct s_struct
 	char				**cmd;
 	char				**outfiles;
 	int					*outfile_modes;
+	int					*infile_modes;
 	int					fds[2];
 	int					tag;
 	int					wstatus;
@@ -461,16 +462,19 @@ int			structure_size(t_struct *lst);
 
 //variable expansion
 
-int			variable_expansion(char **str_add, t_list **envp_head, \
-int last_exit_code);
+char		*variable_expansion(char **str_ad, t_list **envp_head, int last_ec);
+char		*expand_variable(char *str, int i, int last_ec, t_list **envp_head);
+int			boolean_ending_char(char c, char *end);
+char		*create_new_str(char *str, char *to_add, int to_break, \
+int to_continue);
 
 //parsing
 void		initialize_sc(t_struct **tab, char *str);
 void		assign_str_to_struct(t_struct **elements, char *str);
 int			parse(char *str, t_struct *node);
-char		**parse_outfiles(char **str_add, t_struct *head);
-char		**parse_infiles(char **str_add);
-int			set_infiles_outfiles_cmds(t_struct **elements);
+void		parse_outfiles(char **str_add, t_struct *head);
+void		parse_infiles(char **str_add, t_struct *head);
+void		set_infiles_outfiles_cmds(t_struct **elements);
 int			find_last_infile_type(char *str);
 int			save_the_next_word(char **str_add, int i, \
 char **dest, int to_clean);
@@ -485,7 +489,8 @@ void		ft_dup2_infiles(t_struct *head, int *exit_code);
 void		ft_dup2_outfiles(t_struct *head, int *exit_code);
 void		ft_execute_cmd(t_struct *head, int *exit_code, \
 char **parsed_path, t_list **envp_head);
-char		*file_access_check(char **files, int flag);
+// char		*file_access_check(char **files, int flag);
+int			file_access_check(char **file, int *file_modes);
 int			boolean_if_buildin(char **av);
 int			cmd_access_check(char **cmd, char **parsed_path);
 int			ft_waitpid(t_struct **elements);
@@ -493,6 +498,7 @@ int			ft_waitpid(t_struct **elements);
 //finding paths
 char		**extract_env_paths(char *find, t_list **envp_list);
 
+//here_doc handling
 typedef struct s_ft_here_doc
 {
 	char	**file_names;
@@ -503,8 +509,6 @@ typedef struct s_ft_here_doc
 }				t_ft_here_doc;
 
 void		initialize_heredoc_var(t_ft_here_doc *v);
-
-//here__doc handling
 char		**ft_here_doc(char **str, t_struct **elements, \
 t_list **envp, int exit);
 char		**store_heredoc_stops(char **str_add, int size);

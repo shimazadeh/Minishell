@@ -18,9 +18,9 @@ void	create_structure(t_struct **elements, char *str)
 	int			i;
 	char		**tab;
 
-	i = 0;
+	i = -1;
 	tab = ft_split_custom(str, '|', 0);
-	while (tab[i])
+	while (tab[++i])
 	{
 		copy = ft_alloc(sizeof(t_struct));
 		copy->str = ft_strdup(tab[i]);
@@ -28,6 +28,7 @@ void	create_structure(t_struct **elements, char *str)
 		copy->infiles = NULL;
 		copy->outfiles = NULL;
 		copy->outfile_modes = 0;
+		copy->infile_modes = 0;
 		copy->tag = 0;
 		copy->fds[0] = STDIN_FILENO;
 		copy->fds[1] = STDOUT_FILENO;
@@ -35,11 +36,9 @@ void	create_structure(t_struct **elements, char *str)
 		copy->child = 0;
 		copy->next = NULL;
 		structure_add_back(elements, copy);
-		i++;
 		copy = copy->next;
 	}
 	ft_free_tab(tab);
-	return ;
 }
 
 void	assign_str_to_struct(t_struct **elements, char *str)
@@ -99,8 +98,7 @@ char	**extract_env_paths(char *find, t_list **envp_head)
 	temp = ft_getcwd();
 	paths[k] = create_path(temp);
 	paths[++k] = NULL;
-	ft_free(temp);
-	return (paths);
+	return (ft_free(temp), paths);
 }
 
 int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
@@ -118,7 +116,7 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 	exit_code = -1;
 	create_structure(&elements, str);
 	parsed_path = extract_env_paths("PATH", envp_head);
-	variable_expansion(&str, envp_head, last_exit_code);
+	str = variable_expansion(&str, envp_head, last_exit_code);
 	herdoc_files = ft_here_doc(&str, &elements, envp_head, last_exit_code);
 	assign_str_to_struct(&elements, str);
 	exit_code = execute(&elements, parsed_path, envp_head);
