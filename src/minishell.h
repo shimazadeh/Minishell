@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/26 22:34:49 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/29 17:01:47 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,9 @@ int			cd_curpath_is_dot(char *curpath, char *mask, int *j_add);
 
 // cd_to_export.c
 
-int			cd_to_export(char *curpath, char *pwd_exp, t_list **envp_head);
+int			cd_to_export_1(char *curpath, char *pwd_exp, t_list **envp_head);
+int			cd_to_export_2(char ***to_export_add, t_list **envp_head, \
+char *var_name, char *var_exp);
 
 // cd_utils.c
 
@@ -257,10 +259,10 @@ t_unset_vars v[1]);
 
 int			ft_list_remove_node(t_list **lst_head, t_list *node);
 
-// utils.c
+// buildins_utils.c
 
 int			contains_invalid_char(char *str, char *id, int j);
-void		find_env_var(char *var_name, t_list **envp_head, \
+int			find_env_var(char *var_name, t_list **envp_head, \
 char **var_exp_add);
 char		*ft_getcwd(void);
 

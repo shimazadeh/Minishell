@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:32:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:53:57 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/08/29 17:23:55 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,5 @@ int	cd_canon_and_exec(t_list **envp_head, t_cd_vars *v)
 		ft_free(v->pwd_exp);
 		return (1);
 	}
-	return (cd_to_export(v->curpath, v->pwd_exp, envp_head));
+	return (cd_to_export_1(v->curpath, v->pwd_exp, envp_head));
 }
