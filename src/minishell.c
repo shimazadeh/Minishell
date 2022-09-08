@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 00:21:24 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/26 22:54:00 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/08 21:55:58 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,32 +26,38 @@ void	minishell(char	**envp)
 	char				*tmp;
 
 	minishell_init_vars(v);
+	tmp = NULL;
 	ft_tab_to_lst(envp, &(v->envp_head));
 	while (1)
 	{
-		signal(SIGINT, handle_signal);
-		signal(SIGQUIT, handle_signal);
-		get_prompt(&(v->prompt), &(v->envp_head));
-		tmp = readline(v->prompt);
-		v->input = ft_strdup(tmp);
-		free(tmp);
-		if (v->input && *(v->input))
-		{
-			if (!str_is_only_spaces(v->input))
-				add_history(v->input);
-			if (even_par_nbr(v->input) && no_unclosed_quote(v->input))
-			{
-				handle_ws(&(v->input));
-				v->last_exit_code = algorithm(ft_strdup(v->input),
-						&(v->envp_head), v->last_exit_code);
-			}
-		}
-		else if (!v->input)
-		{
-			write(1, "exit\n", 5);
-			ft_exit(0, NULL, NULL);
-		}
-		ft_free(v->input);
-		ft_free(v->prompt);
+		minishell_loop(v, tmp);
 	}
+}
+
+void	minishell_loop(t_minishell_vars *v, char *tmp)
+{
+	signal(SIGINT, handle_signal);
+	signal(SIGQUIT, handle_signal);
+	get_prompt(&(v->prompt), &(v->envp_head));
+	tmp = readline(v->prompt);
+	v->input = ft_strdup(tmp);
+	free(tmp);
+	if (v->input && *(v->input))
+	{
+		if (!str_is_only_spaces(v->input))
+			add_history(v->input);
+		if (even_par_nbr(v->input) && no_unclosed_quote(v->input))
+		{
+			handle_ws(&(v->input));
+			v->last_exit_code = algorithm(ft_strdup(v->input),
+					&(v->envp_head), v->last_exit_code);
+		}
+	}
+	else if (!v->input)
+	{
+		write(1, "exit\n", 5);
+		ft_exit(0, NULL, NULL);
+	}
+	ft_free(v->input);
+	ft_free(v->prompt);
 }
