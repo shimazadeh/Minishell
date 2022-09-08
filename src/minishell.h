@@ -516,6 +516,14 @@ typedef struct s_ft_here_doc
 	int		*fds;
 }				t_ft_here_doc;
 
+typedef struct s_wtf_vars
+{
+	char		*gnl;
+	int			fd1;
+	char		*stop_new;
+	int			stdin;
+}				t_wtf_vars;
+
 void		initialize_heredoc_var(t_ft_here_doc *v);
 char		**ft_here_doc(char **str, t_struct **elements, \
 t_list **envp, int exit);
@@ -530,9 +538,12 @@ int			find_last_infile_type(char *str);
 void		ft_unlink(char **file_names);
 int			write_to_file(char *stop, char	*file_name, \
 t_list **envp_head, int last_exit_code);
+int			write_to_file_2(t_wtf_vars v[1], char *stop);
 int			pass_the_next_word(char *str);
 char		*variable_expansion_hd(char **str_add, \
 t_list **envp_head, int last_ec);
+char		*ft_readline(void);
+void		init_wtf_vars(t_wtf_vars v[1], char *stop, char	*file);
 
 //signals
 void		handle_signal(int signum);
