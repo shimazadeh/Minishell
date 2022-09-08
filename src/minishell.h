@@ -34,8 +34,6 @@ typedef struct s_list
 	struct s_list	*next;
 }				t_list;
 
-// extern t_list	*g_alloc_lst;
-
 typedef struct s_global
 {
 	int				sig_flag;
@@ -498,6 +496,7 @@ void		ft_dup2_infiles(t_struct *head, int *exit_code);
 void		ft_dup2_outfiles(t_struct *head, int *exit_code);
 void		ft_execute_cmd(t_struct *head, int *exit_code, \
 char **parsed_path, t_list **envp_head);
+
 // char		*file_access_check(char **files, int flag);
 int			file_access_check(char **file, int *file_modes);
 int			boolean_if_buildin(char **av);

@@ -23,6 +23,8 @@ int	set_last_infile_type(t_struct **elements, char **file, int *loc, int size)
 	j = 0;
 	tmp = 0;
 	copy = *elements;
+	if (g_var->sig_flag)
+		return (1);
 	while (copy)
 	{
 		if (loc[j] == i && find_last_infile_type(copy->str) == 1)
@@ -36,8 +38,7 @@ int	set_last_infile_type(t_struct **elements, char **file, int *loc, int size)
 		copy = copy->next;
 		i++;
 	}
-	ft_free(loc);
-	return (0);
+	return (ft_free(loc), 0);
 }
 
 char	**store_heredoc_stops(char **str_add, int size)
