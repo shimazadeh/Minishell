@@ -117,37 +117,14 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 	create_structure(&elements, str);
 	parsed_path = extract_env_paths("PATH", envp_head);
 	str = variable_expansion(&str, envp_head, last_exit_code);
+	signal(SIGINT, handle_signal_pipe);
+	signal(SIGQUIT, handle_signal_pipe);
 	herdoc_files = ft_here_doc(&str, &elements, envp_head, last_exit_code);
 	assign_str_to_struct(&elements, str);
-	exit_code = execute(&elements, parsed_path, envp_head);
+	if (g_var->sig_flag == 0)
+		exit_code = execute(&elements, parsed_path, envp_head);
+	else
+		exit_code = 130;
 	ft_free_sc(elements);
-	ft_free_tab(parsed_path);
-	ft_unlink(herdoc_files);
-	return (exit_code);
+	return (ft_free_tab(parsed_path), ft_unlink(herdoc_files), exit_code);
 }
-
-// int main(int ac, char **argv, char **envp)
-// {
-// 	char		**parsed_path;
-// 	t_struct	*elements;
-// 	int			exit_code;
-// 	char		*str;
-// 	int 		last_exit_code;
-// 	(void)ac;
-// 	(void)argv;
-// 	t_list *envp_head;
-
-// 	last_exit_code = 0;
-// 	envp_head = NULL;
-// 	tab_to_list(envp, &envp_head);
-// 	str = argv[1];//gets the entire string from Adri's algo
-// 	elements = NULL;
-// 	parsed_path = extract_env_paths("PATH", &envp_head);//this will change
-// 	initialize_sc(&elements, str);
-// 	variable_expansion(&str, &envp_head, last_exit_code);
-// 	execute(&elements, parsed_path, &envp_head, str);
-// 	exit_code = (0xff00 & structure_last(elements)->wstatus) >> 8;
-// 	ft_free_sc(elements);
-// 	ft_free_tab(parsed_path);
-// 	return (exit_code);
-// }

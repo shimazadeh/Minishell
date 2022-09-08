@@ -34,7 +34,15 @@ typedef struct s_list
 	struct s_list	*next;
 }				t_list;
 
-extern t_list	*g_alloc_lst;
+// extern t_list	*g_alloc_lst;
+
+typedef struct s_global
+{
+	int				sig_flag;
+	t_list			*g_alloc_lst;
+}				t_global;
+
+extern t_global	*g_var;
 
 typedef struct s_struct
 {
@@ -48,6 +56,7 @@ typedef struct s_struct
 	int					tag;
 	int					wstatus;
 	pid_t				child;
+	int					sig;
 	struct s_struct		*next;
 
 }				t_struct;
@@ -523,6 +532,11 @@ void		ft_unlink(char **file_names);
 int			write_to_file(char *stop, char	*file_name, \
 t_list **envp_head, int last_exit_code);
 int			pass_the_next_word(char *str);
+
+//signals
+void		handle_signal(int signum);
+void		handle_signal_pipe(int signum);
+
 //custom free functions
 void		ft_free_sc(t_struct *lst);
 int			ft_strlen_tab(char **tab);

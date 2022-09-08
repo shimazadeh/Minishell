@@ -92,6 +92,7 @@ int last_exit_code, t_aglorithm_vars v[1])
 		i++;
 	}
 	str[j] = '\0';
+	g_var->sig_flag = 0;
 	v->pipex_ret = ft_pipe(str, envp_head, last_exit_code);
 	return (v->pipex_ret);
 }

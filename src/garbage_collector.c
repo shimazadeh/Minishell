@@ -23,7 +23,7 @@ void	*ft_alloc(int size)
 	new = ft_lstnew_regular(alloc);
 	if (!new)
 		ft_exit(errno, "ft_alloc", "malloc fail");
-	ft_lstadd_back(&g_alloc_lst, new);
+	ft_lstadd_back(&g_var->g_alloc_lst, new);
 	return (alloc);
 }
 
@@ -35,10 +35,10 @@ int	ft_free(void *to_free)
 
 	if (!to_free)
 		return (0);
-	new_first->next = g_alloc_lst;
+	new_first->next = g_var->g_alloc_lst;
 	new_first->content = NULL;
 	prev = new_first;
-	current = g_alloc_lst;
+	current = g_var->g_alloc_lst;
 	while (current)
 	{
 		if (current->content == to_free)
@@ -51,8 +51,8 @@ int	ft_free(void *to_free)
 
 int	free_node(t_list *prev, t_list *current)
 {
-	if (current == g_alloc_lst)
-		g_alloc_lst = current->next;
+	if (current == g_var->g_alloc_lst)
+		g_var->g_alloc_lst = current->next;
 	prev->next = current->next;
 	free(current->content);
 	free(current);

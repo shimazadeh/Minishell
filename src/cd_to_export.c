@@ -42,7 +42,7 @@ char *var_name, char *var_exp)
 	char	*null_add;
 	char	**to_export;
 	char	*var_name_eq;
-	
+
 	null_add = NULL;
 	to_export = NULL;
 	var_name_eq = NULL;

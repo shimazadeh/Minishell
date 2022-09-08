@@ -20,23 +20,10 @@ void	minishell_init_vars(t_minishell_vars *v)
 	v->envp_head = NULL;
 }
 
-void	handle_signal(int signum)
-{
-	if (signum == SIGINT)
-	{
-		write(1, "\n", 1);
-		rl_on_new_line();
-		rl_replace_line("", 0);
-		rl_redisplay();
-	}
-	else if (signum == SIGQUIT)
-		return ;
-	return ;
-}
-
 void	minishell(char	**envp)
 {
 	t_minishell_vars	v[1];
+	char				*tmp;
 
 	minishell_init_vars(v);
 	ft_tab_to_lst(envp, &(v->envp_head));
@@ -45,7 +32,9 @@ void	minishell(char	**envp)
 		signal(SIGINT, handle_signal);
 		signal(SIGQUIT, handle_signal);
 		get_prompt(&(v->prompt), &(v->envp_head));
-		v->input = readline(v->prompt);
+		tmp = readline(v->prompt);
+		v->input = ft_strdup(tmp);
+		free(tmp);
 		if (v->input && *(v->input))
 		{
 			if (!str_is_only_spaces(v->input))
@@ -59,7 +48,7 @@ void	minishell(char	**envp)
 		}
 		else if (!v->input)
 		{
-			write(1, "exit", 4);
+			write(1, "exit\n", 5);
 			ft_exit(0, NULL, NULL);
 		}
 		ft_free(v->input);

@@ -70,7 +70,6 @@ void	handle_wildcards(char ***av_tab_add)
 			expand_wc_node(node);
 		node = node->next;
 	}
-	ft_free_tab(av_tab);
 	ft_lst_to_tab(&av_tab, &av_lst);
 	ft_free_list(av_lst);
 	*av_tab_add = av_tab;

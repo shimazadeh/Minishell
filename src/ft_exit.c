@@ -24,7 +24,7 @@ void	ft_exit(int exit_code, char *fn_name, char *error_msg)
 	if (error_msg)
 		ft_dprintf(fd, "Exit due to: %s\n", error_msg);
 	rl_clear_history();
-/*	if (g_alloc_lst)
-		ft_free_list_regular(g_alloc_lst);*/
+	if (g_var->g_alloc_lst)
+		ft_free_list_regular(g_var->g_alloc_lst);
 	exit(exit_code);
 }

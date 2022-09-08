@@ -46,20 +46,16 @@ char	**store_heredoc_stops(char **str_add, int size)
 	int		k;
 	char	**stop;
 	char	*str;
-	char	*tmp;
 
 	i = 0;
 	k = 0;
 	str = *str_add;
-	tmp = NULL;
 	stop = ft_alloc(sizeof(char *) * (size + 1));
 	while (str[i])
 	{
 		if (k < size && str[i] == '<' && str[i + 1] == '<')
 		{
-			i = save_the_next_word(&str, i + 2, &tmp, i);
-			stop[k] = ft_strjoin(tmp, "\n");
-			ft_free(tmp);
+			i = save_the_next_word(&str, i + 2, &stop[k], i);
 			k++;
 		}
 		else
@@ -123,7 +119,7 @@ char	**ft_here_doc(char **str_add, t_struct **sc, t_list **envp, int exit)
 	v->fds = ft_alloc(sizeof(int) * size);
 	if (v->file_names == NULL)
 		v->file_names = default_name_generator(size);
-	while (v->stop[++i])
+	while (!g_var->sig_flag && v->stop[++i])
 		v->fds[i] = write_to_file(v->stop[i], v->file_names[i], envp, exit);
 	ft_free(v->stop[i]);
 	set_last_infile_type(sc, v->file_names, v->loc, size);
