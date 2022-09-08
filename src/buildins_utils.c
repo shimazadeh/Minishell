@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 20:50:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/29 16:39:45 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/08 21:16:01 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,11 @@ int	contains_invalid_char(char *str, char *id, int j)
 	int	i;
 
 	i = 0;
-	while (id[i])
+	if (str[0] == '=')
+		return (1);
+	while (str[i] && (!j || str[i] != '='))
 	{
-		if (ft_strchr(str, id[i]) && !(j == 1 && i && ft_strchr(str, '=')))
+		if (ft_strchr(id, str[i]))
 			return (1);
 		i++;
 	}

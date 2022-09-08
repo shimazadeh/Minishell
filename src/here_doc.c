@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 16:54:40 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/17 16:54:42 by shabibol         ###   ########.fr       */
+/*   Updated: 2022/09/08 18:26:59 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ char	**ft_here_doc(char **str_add, t_struct **sc, t_list **envp, int exit)
 	v->fds = ft_alloc(sizeof(int) * size);
 	if (v->file_names == NULL)
 		v->file_names = default_name_generator(size);
-	while (!g_var->sig_flag && v->stop[++i])
+	while (g_var->sig_flag == 0 && v->stop[++i])
 		v->fds[i] = write_to_file(v->stop[i], v->file_names[i], envp, exit);
 	ft_free(v->stop[i]);
 	set_last_infile_type(sc, v->file_names, v->loc, size);

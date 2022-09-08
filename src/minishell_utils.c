@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 12:43:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/26 23:00:49 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/08 21:22:42 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,11 @@ int	even_par_nbr(char *str)
 	par = 0;
 	while (str[i])
 	{
-		if (str[i] == '(')
+		if (str[i] == '\'' || str[i] == '\"')
+			i += go_to_closing_char(&str[i]);
+		else if (str[i] == '(')
 			par++;
-		if (str[i] == ')')
+		else if (str[i] == ')')
 			par--;
 		i++;
 	}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/08 12:43:22 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/08 12:43:24 by shabibol         ###   ########.fr       */
+/*   Updated: 2022/09/08 20:49:17 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,10 @@ void	handle_signal(int signum)
 void	handle_signal_pipe(int signum)
 {
 	if (signum == SIGINT)
+	{
+		close (0);
 		g_var->sig_flag = 1;
+	}
 	else if (signum == SIGQUIT)
 		ft_dprintf(1, "\b\b  \b\b");
 	return ;

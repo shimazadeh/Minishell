@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 13:56:40 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:57:47 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/08 21:13:00 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	export_arg(int i, int ret, char **vars, t_list **envp_head)
 	old = NULL;
 	while (vars[i])
 	{
-		if (contains_invalid_char(vars[i], "@#$%^&*-+=_<>|\\", 1))
+		if (contains_invalid_char(vars[i], "@#$%^&*-+=<>|\\", 1))
 		{
 			ft_dprintf(2, "bash: export: `%s': not a valid identifier\n",
 				vars[i]);
