@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/08 18:54:17 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/08 21:56:41 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,9 @@ typedef struct s_minishell_vars
 	t_list			*envp_head;
 }				t_minishell_vars;
 
-void		minishell(char	**envp);
 void		minishell_init_vars(t_minishell_vars v[1]);
+void		minishell(char	**envp);
+void		minishell_loop(t_minishell_vars *v, char *tmp);
 
 // minishell_utils.c
 
