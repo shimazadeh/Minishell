@@ -531,6 +531,8 @@ void		ft_unlink(char **file_names);
 int			write_to_file(char *stop, char	*file_name, \
 t_list **envp_head, int last_exit_code);
 int			pass_the_next_word(char *str);
+char		*variable_expansion_hd(char **str_add, \
+t_list **envp_head, int last_ec);
 
 //signals
 void		handle_signal(int signum);

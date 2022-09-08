@@ -102,3 +102,25 @@ char	*variable_expansion(char **str_add, t_list **envp_head, int last_ec)
 	}
 	return (ft_free(str_add), str);
 }
+
+char	*variable_expansion_hd(char **str_add, t_list **envp_head, int last_ec)
+{
+	int		i;
+	char	*str;
+
+	i = 0;
+	str = *str_add;
+	while (str[i])
+	{
+		if (str[i] == '$' && (str[i + 1] == '\'' || str[i + 1] == '\"'))
+			i += go_to_closing_char(&str[i]) + 1;
+		else if (str[i] == '$' && !boolean_ending_char(str[i + 1], " \t"))
+		{
+			str = expand_variable(str, i, last_ec, envp_head);
+			i = 0;
+		}
+		else
+			i++;
+	}
+	return (ft_free(str_add), str);
+}

@@ -37,7 +37,7 @@ $(OBJECTS):	$(OBJDIR)/%.o :	$(SRCDIR)/%.c
 
 all: $(TARGET)
 
-bonus: all
+bonus: fclean all
 
 clean:
 	@$(rm) $(OBJECTS)

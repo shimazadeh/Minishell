@@ -88,7 +88,7 @@ int	write_to_file(char *stop, char	*file, t_list **envp, int last_exit_code)
 	while (!(g_var->sig_flag) && gnl
 		&& ft_strncmp(gnl, stop_new, ft_strlen(stop_new) + 1) != 0)
 	{
-		variable_expansion(&gnl, envp, last_exit_code);
+		gnl = variable_expansion_hd(&gnl, envp, last_exit_code);
 		if (write(fd1, gnl, ft_strlen(gnl)) < 0)
 			return (perror("write:"), -1);
 		ft_free(gnl);
