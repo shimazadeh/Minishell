@@ -41,7 +41,7 @@ int	set_last_infile_type(t_struct **elements, char **file, int *loc, int size)
 	return (ft_free(loc), 0);
 }
 
-char	**store_heredoc_stops(char **str_add, int size)
+char	**store_heredoc_stops(char **str_add, int *flag, int size)
 {
 	int		i;
 	int		k;
@@ -56,7 +56,11 @@ char	**store_heredoc_stops(char **str_add, int size)
 	{
 		if (k < size && str[i] == '<' && str[i + 1] == '<')
 		{
-			i = save_the_next_word(&str, i + 2, &stop[k], i);
+			if (quotes_presence(&str[i + 2]) == 1)
+				flag[k] = 1;
+			else
+				flag[k] = 0;
+			i = save_next_word(&str, i + 2, &stop[k], i - 1);
 			k++;
 		}
 		else
@@ -97,6 +101,7 @@ void	initialize_heredoc_var(t_ft_here_doc *v)
 {
 	v->file_names = NULL;
 	v->stop = NULL;
+	v->exp_flags = 0;
 	v->loc = 0;
 	v->str = NULL;
 	v->fds = 0;
@@ -115,13 +120,15 @@ char	**ft_here_doc(char **str_add, t_struct **sc, t_list **envp, int exit)
 	if (size == 0)
 		return (NULL);
 	v->loc = store_heredoc_loc(v->str, size);
-	v->stop = store_heredoc_stops(&v->str, size);
-	v->file_names = fancy_name_generator(size);
+	v->exp_flags = ft_alloc(sizeof(int) * size);
+	v->stop = store_heredoc_stops(&v->str, v->exp_flags, size);
 	v->fds = ft_alloc(sizeof(int) * size);
+	v->file_names = fancy_name_generator(size);
 	if (v->file_names == NULL)
 		v->file_names = default_name_generator(size);
 	while (g_var->sig_flag == 0 && v->stop[++i])
-		v->fds[i] = write_to_file(v->stop[i], v->file_names[i], envp, exit);
+		v->fds[i] = write_to_file(v, i, envp, exit);
+		// v->fds[i] = write_to_file(v->stop[i], v->file_names[i], v->exp_flags[i], envp, exit);
 	ft_free(v->stop[i]);
 	set_last_infile_type(sc, v->file_names, v->loc, size);
 	*str_add = v->str;

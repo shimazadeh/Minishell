@@ -116,7 +116,7 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 	exit_code = -1;
 	create_structure(&elements, str);
 	parsed_path = extract_env_paths("PATH", envp_head);
-	str = variable_expansion(&str, envp_head, last_exit_code);
+	str = variable_expansion(str, envp_head, last_exit_code);
 	signal(SIGINT, handle_signal_pipe);
 	signal(SIGQUIT, handle_signal_pipe);
 	herdoc_files = ft_here_doc(&str, &elements, envp_head, last_exit_code);

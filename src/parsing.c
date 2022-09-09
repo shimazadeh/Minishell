@@ -39,32 +39,33 @@ int	number_of_delim(char *str, char delim, int flag)
 	return (count);
 }
 
-int	save_the_next_word(char **str_add, int i, char **dest, int to_clean)
+int	save_next_word(char **str_add, int i, char **dest, int to_clean)
 {
 	int		start;
-	char	end;
 	char	*str;
+	int		k;
 
+	k = 0;
 	str = *str_add;
-	end = ' ';
-	to_clean--;
-	while (str[i] && str[i] == ' ')
+	while (str[i] && (str[i] == ' ' || str[i] == '\t'))
 		i++;
-	if (str[i] == '\'' || str[i] == '\"')
-	{
-		end = str[i];
-		i++;
-	}
 	start = i;
-	while (str[i] && str[i] != end && str[i] != '<' && str[i] != '>')
-		i++;
+	while (str[i] && !end_char(str[i], "> \t<"))
+	{
+		if (str[i] == '\'' || str[i] == '\"')
+		{
+			k = i + go_to_closing_char(&str[i]) - 1;
+			move_the_char_back(&str[i]);
+			move_the_char_back(&str[k]);
+			i = k;
+		}
+		else
+			i++;
+	}
 	*dest = ft_strdup_range(str, start, i);
-	if (str[i] == end)
-		str[i] = ' ';
 	while (++to_clean < i)
 		str[to_clean] = ' ';
-	*str_add = str;
-	return (i);
+	return (*str_add = str, i);
 }
 
 void	parse_infiles(char **str_add, t_struct *head)
@@ -82,7 +83,7 @@ void	parse_infiles(char **str_add, t_struct *head)
 			i = i + go_to_closing_char(&str[i]) + 1;
 		else if (str[i] && str[i + 1] && str[i] == '<' && str[i + 1] != '<')
 		{
-			i = save_the_next_word(&str, i + 1, &head->infiles[++k], i);
+			i = save_next_word(&str, i + 1, &head->infiles[++k], i - 1);
 			head->infile_modes[k] = 0;
 		}
 		else
@@ -107,12 +108,12 @@ void	parse_outfiles(char **str_add, t_struct *head)
 			i = i + go_to_closing_char(&str[i]);
 		else if (str[i] && str[i] == '>' && str[i + 1] && str[i + 1] != '>')
 		{
-			i = save_the_next_word(&str, i + 1, &head->outfiles[++k], i) - 1;
+			i = save_next_word(&str, i + 1, &head->outfiles[++k], i - 1) - 1;
 			head->outfile_modes[k] = 1;
 		}
 		else if (str[i] && str[i] == '>' && str[i + 1] && str[i + 1] == '>')
 		{
-			i = save_the_next_word(&str, i + 2, &head->outfiles[++k], i) - 1;
+			i = save_next_word(&str, i + 2, &head->outfiles[++k], i - 1) - 1;
 			head->outfile_modes[k] = 2;
 		}
 	}
@@ -148,3 +149,31 @@ void	set_infiles_outfiles_cmds(t_struct **elements)
 		copy = copy->next;
 	}
 }
+
+// int	save_next_word(char **str_add, int i, char **dest, int to_clean)
+// {
+// 	int		start;
+// 	char	end;
+// 	char	*str;
+
+// 	str = *str_add;
+// 	end = ' ';
+// 	to_clean--;
+// 	while (str[i] && str[i] == ' ')
+// 		i++;
+// 	if (str[i] == '\'' || str[i] == '\"')
+// 	{
+// 		end = str[i];
+// 		i++;
+// 	}
+// 	start = i;
+// 	while (str[i] && str[i] != end && str[i] != '<' && str[i] != '>')
+// 		i++;
+// 	*dest = ft_strdup_range(str, start, i);
+// 	if (str[i] == end)
+// 		str[i] = ' ';
+// 	while (++to_clean < i)
+// 		str[to_clean] = ' ';
+// 	*str_add = str;
+// 	return (i);
+// }

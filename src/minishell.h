@@ -460,6 +460,7 @@ void		print_list(t_list *list);
 void		print_tab(char **tab);
 
 ///**********shima's stuff***********///
+/* ************************************************************************** */
 
 int			ft_pipe(char *str, t_list **envp_head, int last_exit_code);
 
@@ -470,11 +471,10 @@ int			structure_size(t_struct *lst);
 
 //variable expansion
 
-char		*variable_expansion(char **str_ad, t_list **envp_head, int last_ec);
+char		*variable_expansion(char *str, t_list **envp_head, int last_ec);
 char		*expand_variable(char *str, int i, int last_ec, t_list **envp_head);
-int			boolean_ending_char(char c, char *end);
-char		*create_new_str(char *str, char *to_add, int to_break, \
-int to_continue);
+int			end_char(char c, char *end);
+char		*create_new_str(char *str, char *to_add, int to_break, int to_cont);
 
 //parsing
 void		initialize_sc(t_struct **tab, char *str);
@@ -484,9 +484,10 @@ void		parse_outfiles(char **str_add, t_struct *head);
 void		parse_infiles(char **str_add, t_struct *head);
 void		set_infiles_outfiles_cmds(t_struct **elements);
 int			find_last_infile_type(char *str);
-int			save_the_next_word(char **str_add, int i, \
+int			save_next_word(char **str_add, int i, \
 char **dest, int to_clean);
 int			number_of_delim(char *str, char delim, int flag);
+int			move_the_char_back(char *str);
 
 //execution
 int			execute(t_struct **elements, char **parsed_path, t_list **envp);
@@ -512,6 +513,7 @@ typedef struct s_ft_here_doc
 {
 	char	**file_names;
 	char	**stop;
+	int		*exp_flags;
 	int		*loc;
 	char	*str;
 	int		*fds;
@@ -528,7 +530,7 @@ typedef struct s_wtf_vars
 void		initialize_heredoc_var(t_ft_here_doc *v);
 char		**ft_here_doc(char **str, t_struct **elements, \
 t_list **envp, int exit);
-char		**store_heredoc_stops(char **str_add, int size);
+char		**store_heredoc_stops(char **str_add, int *flag, int size);
 int			*store_heredoc_loc(char *str, int size);
 char		**default_name_generator(int size);
 char		**fancy_name_generator(int size);
@@ -537,14 +539,15 @@ int			set_last_infile_type(t_struct **elements, char **files, \
 int *loc, int size);
 int			find_last_infile_type(char *str);
 void		ft_unlink(char **file_names);
-int			write_to_file(char *stop, char	*file_name, \
-t_list **envp_head, int last_exit_code);
+int			write_to_file(t_ft_here_doc *var, int i, \
+t_list **envp, int last_exit_code);
 int			write_to_file_2(t_wtf_vars v[1], char *stop);
 int			pass_the_next_word(char *str);
 char		*variable_expansion_hd(char **str_add, \
 t_list **envp_head, int last_ec);
 char		*ft_readline(void);
 void		init_wtf_vars(t_wtf_vars v[1], char *stop, char	*file);
+int			quotes_presence(char *str);
 
 //signals
 void		handle_signal(int signum);

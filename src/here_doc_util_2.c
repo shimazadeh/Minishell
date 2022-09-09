@@ -22,10 +22,13 @@ int	pass_the_next_word(char *str)
 	if (str[i] && (str[i] == '\'' || str[i] == '\"'))
 		return (i + go_to_closing_char(&str[i]) + 1);
 	while (str[i] && str[i] != ' ' && str[i] != '\t')
-		i++;
-	if (str[i])
-		return (i);
-	return (0);
+	{
+		if (str[i] == '\'' || str[i] == '\"')
+			i = i + go_to_closing_char(&str[i]) + 1;
+		else
+			i++;
+	}
+	return (i);
 }
 
 char	*ft_readline(void)
@@ -50,24 +53,26 @@ void	init_wtf_vars(t_wtf_vars v[1], char *stop, char	*file)
 	v->fd1 = open(file, O_CREAT | O_RDWR, 0777);
 }
 
-int	write_to_file(char *stop, char	*file, t_list **envp, int last_exit_code)
+// int	write_to_file(char *stop, char	*file, int flag, t_list **envp, int last_exit_code)
+int	write_to_file(t_ft_here_doc *var, int i, t_list **envp, int last_exit_code)
 {
 	t_wtf_vars	v[1];
 
-	init_wtf_vars(v, stop, file);
+	init_wtf_vars(v, var->stop[i], var->file_names[i]);
 	if (v->fd1 < 0)
 		return (ft_dprintf(2, "error creating here_doc\n"), -1);
 	v->gnl = ft_readline();
 	while (!(g_var->sig_flag) && v->gnl \
 		&& ft_strncmp(v->gnl, v->stop_new, ft_strlen(v->stop_new) + 1))
 	{
-		v->gnl = variable_expansion_hd(&(v->gnl), envp, last_exit_code);
+		if (var->exp_flags[i] == 0)
+			v->gnl = variable_expansion_hd(&(v->gnl), envp, last_exit_code);
 		if (write(v->fd1, v->gnl, ft_strlen(v->gnl)) < 0)
 			return (perror("write:"), -1);
 		ft_free(v->gnl);
 		v->gnl = ft_readline();
 	}
-	return (write_to_file_2(v, stop));
+	return (write_to_file_2(v, var->stop[i]));
 }
 
 int	write_to_file_2(t_wtf_vars v[1], char *stop)
