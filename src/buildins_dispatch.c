@@ -39,7 +39,7 @@ int	boolean_if_buildin(char **av)
 		return (-1);
 	if (!ft_strncmp(av[0], "echo", 5))
 		return (1);
-	if (!ft_strncmp(av[0], "cd", 3) && (!av[1] || (av[1] && !av[2])))
+	if (!ft_strncmp(av[0], "cd", 3))
 		return (1);
 	if (!ft_strncmp(av[0], "pwd", 4))
 		return (1);

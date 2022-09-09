@@ -128,7 +128,6 @@ char	**ft_here_doc(char **str_add, t_struct **sc, t_list **envp, int exit)
 		v->file_names = default_name_generator(size);
 	while (g_var->sig_flag == 0 && v->stop[++i])
 		v->fds[i] = write_to_file(v, i, envp, exit);
-		// v->fds[i] = write_to_file(v->stop[i], v->file_names[i], v->exp_flags[i], envp, exit);
 	ft_free(v->stop[i]);
 	set_last_infile_type(sc, v->file_names, v->loc, size);
 	*str_add = v->str;

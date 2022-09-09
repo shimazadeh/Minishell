@@ -53,7 +53,6 @@ void	init_wtf_vars(t_wtf_vars v[1], char *stop, char	*file)
 	v->fd1 = open(file, O_CREAT | O_RDWR, 0777);
 }
 
-// int	write_to_file(char *stop, char	*file, int flag, t_list **envp, int last_exit_code)
 int	write_to_file(t_ft_here_doc *var, int i, t_list **envp, int last_exit_code)
 {
 	t_wtf_vars	v[1];
