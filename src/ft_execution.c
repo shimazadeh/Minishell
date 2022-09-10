@@ -69,7 +69,10 @@ int	ft_waitpid(t_struct **elements)
 		waitpid(copy->child, &(copy->wstatus), 0);
 		copy = copy->next;
 	}
-	exit_code = (0xff00 & structure_last(*elements)->wstatus) >> 8;
+	if (g_var->sig_flag == 0)
+		exit_code = (0xff00 & structure_last(*elements)->wstatus) >> 8;
+	else
+		exit_code = 130;
 	return (exit_code);
 }
 

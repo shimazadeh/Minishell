@@ -30,6 +30,8 @@ int	algorithm(char *str, t_list **envp_head, int last_exit_code)
 
 	ret = 0;
 	algorithm_init_vars(v);
+	if (g_var->sig_flag == 1)
+		last_exit_code = 130;
 	split_submod_and_sep_1(&str, &(v->submod_head), &(v->sep_head));
 	if (!v->sep_head)
 		ret = algorithm_exit_condition_1(str, envp_head, last_exit_code, v);
