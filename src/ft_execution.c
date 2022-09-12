@@ -64,17 +64,15 @@ int	ft_waitpid(t_struct **elements)
 	t_struct	*copy;
 	int			exit_code;
 
-	exit_code = -1;
+	exit_code = 130;
 	copy = *elements;
 	while (copy)
 	{
 		waitpid(copy->child, &(copy->wstatus), 0);
+		if (!copy->wstatus)
+			exit_code = (0xff00 & copy->wstatus) >> 8;
 		copy = copy->next;
 	}
-	if (g_var->sig_flag == 0)
-		exit_code = (0xff00 & structure_last(*elements)->wstatus) >> 8;
-	else
-		exit_code = 130;
 	return (exit_code);
 }
 

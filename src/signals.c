@@ -32,6 +32,7 @@ void	handle_signal_pipe(int signum)
 	if (signum == SIGINT)
 	{
 		close (0);
+		write(1, "\n", 1);
 		g_var->sig_flag = 1;
 	}
 	else if (signum == SIGQUIT)

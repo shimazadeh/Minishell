@@ -71,20 +71,13 @@ int	write_to_file(t_ft_here_doc *var, int i, t_list **envp, int last_exit_code)
 		ft_free(v->gnl);
 		v->gnl = ft_readline();
 	}
-	return (write_to_file_2(v, var->stop[i]));
-}
-
-int	write_to_file_2(t_wtf_vars v[1], char *stop)
-{
-	if (!v->gnl && g_var->sig_flag)
-	{
-		write(1, "\n", 1);
-		dup2(v->stdin, 0);
-	}
-	else if (!v->gnl && !(g_var->sig_flag))
+	if (!v->gnl && !(g_var->sig_flag))
 		ft_dprintf(1, \
 			"warning: here-document delimited by end-of-file (wanted `%s')\n", \
-			stop);
-	return (close(v->fd1), ft_free(v->gnl), ft_free(stop), \
-		ft_free(v->stop_new), v->fd1);
+			var->stop[i]);
+	close(v->fd1);
+	ft_free(v->gnl);
+	ft_free(var->stop[i]);
+	ft_free(v->stop_new);
+	return (v->fd1);
 }
