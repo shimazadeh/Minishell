@@ -107,28 +107,21 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 	t_struct	*elements;
 	int			exit_code;
 	char		**herdoc_files;
-	int			stdin;
 
-	stdin = dup(0);
 	elements = NULL;
 	parsed_path = NULL;
 	herdoc_files = NULL;
-	exit_code = 130;
+	exit_code = -1;
 	create_structure(&elements, str);
 	parsed_path = extract_env_paths("PATH", envp_head);
 	str = variable_expansion(str, envp_head, last_exit_code);
-	signal(SIGINT, handle_signal_pipe);
-	signal(SIGQUIT, handle_signal_pipe);
 	herdoc_files = ft_here_doc(&str, &elements, envp_head, last_exit_code);
 	assign_str_to_struct(&elements, str);
-	if (g_var->sig_flag == 0)
-		exit_code = execute(&elements, parsed_path, envp_head);
+	exit_code = execute(&elements, parsed_path, envp_head);
 	if (g_var->sig_flag == 1)
 	{
-		dup2(stdin, 0);
 		g_var->sig_flag = 0;
 	}
 	ft_free_sc(elements);
-	// dprintf(2, "the exit code at the end of pipe is %d\n", exit_code);
 	return (ft_free_tab(parsed_path), ft_unlink(herdoc_files), exit_code);
 }

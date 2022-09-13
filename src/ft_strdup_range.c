@@ -18,6 +18,8 @@ char	*ft_strdup_range(char *str, int start, int end)
 	int		i;
 	int		k;
 
+	if (end == start)
+		return (NULL);
 	if (end < start)
 		return (str);
 	k = 0;

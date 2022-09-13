@@ -58,6 +58,7 @@ int	write_to_file(t_ft_here_doc *var, int i, t_list **envp, int last_exit_code)
 	t_wtf_vars	v[1];
 
 	init_wtf_vars(v, var->stop[i], var->file_names[i]);
+	catch_signals(2);
 	if (v->fd1 < 0)
 		return (ft_dprintf(2, "error creating here_doc\n"), -1);
 	v->gnl = ft_readline();
@@ -72,10 +73,9 @@ int	write_to_file(t_ft_here_doc *var, int i, t_list **envp, int last_exit_code)
 		v->gnl = ft_readline();
 	}
 	if (!v->gnl && !(g_var->sig_flag))
-		ft_dprintf(1, \
-			"warning: here-document delimited by end-of-file (wanted `%s')\n", \
-			var->stop[i]);
+		ft_dprintf(1, EOF_MSG, var->stop[i]);
 	close(v->fd1);
+	dup2(v->stdin, 0);
 	ft_free(v->gnl);
 	ft_free(var->stop[i]);
 	ft_free(v->stop_new);

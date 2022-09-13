@@ -36,7 +36,7 @@ t_struct	*structure_last(t_struct	*sc)
 	return (sc);
 }
 
-int	structure_size(t_struct *sc)
+int	struct_size(t_struct *sc)
 {
 	int	i;
 

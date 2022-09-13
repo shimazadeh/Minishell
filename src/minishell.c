@@ -36,8 +36,7 @@ void	minishell(char	**envp)
 
 void	minishell_loop(t_minishell_vars *v, char *tmp)
 {
-	signal(SIGINT, handle_signal);
-	signal(SIGQUIT, handle_signal);
+	catch_signals(1);
 	get_prompt(&(v->prompt), &(v->envp_head));
 	tmp = readline(v->prompt);
 	v->input = ft_strdup(tmp);

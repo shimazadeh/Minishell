@@ -12,33 +12,6 @@
 
 #include "minishell.h"
 
-int	number_of_delim(char *str, char delim, int flag)
-{
-	int	i;
-	int	count;
-
-	count = 0;
-	i = 0;
-	if (!str || !delim)
-		return (0);
-	while (str[i])
-	{
-		if (flag == 0 && str[i] == delim && str[i + 1] != delim)
-			count++;
-		else if (flag == 0 && str[i] == delim && str[i + 1] == delim)
-			i++;
-		else if (flag == 1 && str[i] == delim && str[i + 1] == delim)
-		{
-			count++;
-			i++;
-		}
-		else if (flag == 1 && str[i] == delim && str[i + 1] != delim)
-			count++;
-		i++;
-	}
-	return (count);
-}
-
 int	save_next_word(char **str_add, int i, char **dest, int to_clean)
 {
 	int		start;
@@ -50,7 +23,7 @@ int	save_next_word(char **str_add, int i, char **dest, int to_clean)
 	while (str[i] && (str[i] == ' ' || str[i] == '\t'))
 		i++;
 	start = i;
-	while (str[i] && !end_char(str[i], "> \t<"))
+	while (str[i] && !end_char(str[i], "> \t<\0"))
 	{
 		if (str[i] == '\'' || str[i] == '\"')
 		{
@@ -63,12 +36,13 @@ int	save_next_word(char **str_add, int i, char **dest, int to_clean)
 			i++;
 	}
 	*dest = ft_strdup_range(str, start, i);
-	while (++to_clean < i)
-		str[to_clean] = ' ';
-	return (*str_add = str, i);
+	*str_add = replace_with_space(str, ++to_clean, i);
+	if (!*dest)
+		return (ft_dprintf(1, "bash: syntax error\n"), -1);
+	return (i);
 }
 
-void	parse_infiles(char **str_add, t_struct *head)
+int	parse_infiles(char **str_add, t_struct *head)
 {
 	char		*str;
 	int			i;
@@ -77,11 +51,11 @@ void	parse_infiles(char **str_add, t_struct *head)
 	i = 0;
 	k = -1;
 	str = *str_add;
-	while (str[i])
+	while (i >= 0 && str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
 			i = i + go_to_closing_char(&str[i]) + 1;
-		else if (str[i] && str[i + 1] && str[i] == '<' && str[i + 1] != '<')
+		else if (str[i] && str[i] == '<' && str[i + 1] != '<')
 		{
 			i = save_next_word(&str, i + 1, &head->infiles[++k], i - 1);
 			head->infile_modes[k] = 0;
@@ -90,10 +64,10 @@ void	parse_infiles(char **str_add, t_struct *head)
 			i++;
 	}
 	head->infiles[++k] = '\0';
-	*str_add = str;
+	return (*str_add = str, i);
 }
 
-void	parse_outfiles(char **str_add, t_struct *head)
+int	parse_outfiles(char **str_add, t_struct *head)
 {
 	char		*str;
 	int			i;
@@ -102,78 +76,69 @@ void	parse_outfiles(char **str_add, t_struct *head)
 	i = -1;
 	k = -1;
 	str = *str_add;
-	while (str[++i])
+	while (str[++i] && i >= 0)
 	{
 		if (str[i] == '\"' || str[i] == '\'')
 			i = i + go_to_closing_char(&str[i]);
-		else if (str[i] && str[i] == '>' && str[i + 1] && str[i + 1] != '>')
+		else if (str[i] && str[i] == '>' && str[i + 1] != '>')
 		{
 			i = save_next_word(&str, i + 1, &head->outfiles[++k], i - 1) - 1;
 			head->outfile_modes[k] = 1;
 		}
-		else if (str[i] && str[i] == '>' && str[i + 1] && str[i + 1] == '>')
+		else if (str[i] && str[i] == '>' && str[i + 1] == '>')
 		{
 			i = save_next_word(&str, i + 2, &head->outfiles[++k], i - 1) - 1;
 			head->outfile_modes[k] = 2;
 		}
 	}
 	head->outfiles[++k] = '\0';
-	*str_add = str;
+	return (*str_add = str, i);
 }
 
-void	set_infiles_outfiles_cmds(t_struct **elements)
+int	set_files(t_struct *head, int flag)
+{
+	int	size;
+
+	size = 0;
+	if (flag == 1)
+	{
+		size = number_of_delim(head->str, '<', 0);
+		head->infiles = ft_alloc(sizeof(char *) * (size + 1));
+		head->infile_modes = ft_alloc(sizeof(int) * size);
+		if (parse_infiles(&head->str, head) < 0)
+			return (-1);
+	}
+	if (flag == 0)
+	{
+		size = number_of_delim(head->str, '>', 1);
+		head->outfiles = ft_alloc(sizeof(char *) * (size + 1));
+		head->outfile_modes = ft_alloc(sizeof(int) * size);
+		if (parse_outfiles(&head->str, head) < 0)
+			return (-1);
+	}
+	return (0);
+}
+
+int	set_infiles_outfiles_cmds(t_struct **elements)
 {
 	t_struct	*copy;
-	int			infile_size;
-	int			outfile_size;
 
 	copy = *elements;
 	while (copy)
 	{
-		infile_size = number_of_delim(copy->str, '<', 0);
-		if (infile_size)
+		if (number_of_delim(copy->str, '<', 0))
 		{
-			copy->infiles = ft_alloc(sizeof(char *) * (infile_size + 1));
-			copy->infile_modes = ft_alloc(sizeof(int) * infile_size);
-			parse_infiles(&copy->str, copy);
+			if (set_files(copy, 1) < 0)
+				return (-1);
 		}
-		outfile_size = number_of_delim(copy->str, '>', 1);
-		if (outfile_size)
+		if (number_of_delim(copy->str, '>', 1))
 		{
-			copy->outfiles = ft_alloc(sizeof(char *) * (outfile_size + 1));
-			copy->outfile_modes = ft_alloc(sizeof(int) * outfile_size);
-			parse_outfiles(&copy->str, copy);
+			if (set_files(copy, 0) < 0)
+				return (-1);
 		}
 		copy->cmd = ft_split_custom(copy->str, ' ', 1);
 		handle_wildcards(&copy->cmd);
 		copy = copy->next;
 	}
+	return (0);
 }
-
-// int	save_next_word(char **str_add, int i, char **dest, int to_clean)
-// {
-// 	int		start;
-// 	char	end;
-// 	char	*str;
-
-// 	str = *str_add;
-// 	end = ' ';
-// 	to_clean--;
-// 	while (str[i] && str[i] == ' ')
-// 		i++;
-// 	if (str[i] == '\'' || str[i] == '\"')
-// 	{
-// 		end = str[i];
-// 		i++;
-// 	}
-// 	start = i;
-// 	while (str[i] && str[i] != end && str[i] != '<' && str[i] != '>')
-// 		i++;
-// 	*dest = ft_strdup_range(str, start, i);
-// 	if (str[i] == end)
-// 		str[i] = ' ';
-// 	while (++to_clean < i)
-// 		str[to_clean] = ' ';
-// 	*str_add = str;
-// 	return (i);
-// }

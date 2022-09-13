@@ -20,7 +20,7 @@ void	ft_exit(int exit_code, char *fn_name, char *error_msg)
 	if (exit_code)
 		fd = 2;
 	if (fn_name)
-		dprintf(fd, "Exited in function: %s\n", fn_name);
+		ft_dprintf(fd, "Exited in function: %s\n", fn_name);
 	if (error_msg)
 		ft_dprintf(fd, "Exit due to: %s\n", error_msg);
 	rl_clear_history();

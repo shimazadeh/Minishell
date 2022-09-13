@@ -47,3 +47,42 @@ int	move_the_char_back(char *str)
 	}
 	return (0);
 }
+
+char	*replace_with_space(char *str, int start, int end)
+{
+	if (!str || start == end)
+		return (str);
+	while (str[start] && start < end)
+	{
+		str[start] = ' ';
+		start++;
+	}
+	return (str);
+}
+
+int	number_of_delim(char *str, char delim, int flag)
+{
+	int	i;
+	int	count;
+
+	count = 0;
+	i = 0;
+	if (!str || !delim)
+		return (0);
+	while (str[i])
+	{
+		if (flag == 0 && str[i] == delim && str[i + 1] != delim)
+			count++;
+		else if (flag == 0 && str[i] == delim && str[i + 1] == delim)
+			i++;
+		else if (flag == 1 && str[i] == delim && str[i + 1] == delim)
+		{
+			count++;
+			i++;
+		}
+		else if (flag == 1 && str[i] == delim && str[i + 1] != delim)
+			count++;
+		i++;
+	}
+	return (count);
+}

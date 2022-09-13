@@ -16,12 +16,12 @@ void	print_list(t_list *list)
 {
 	if (!list)
 	{
-		dprintf(2, "list is NULL\n");
+		ft_dprintf(2, "list is NULL\n");
 		return ;
 	}
 	while (list)
 	{
-		dprintf(2, "%s\n", (char *)list->content);
+		ft_dprintf(2, "%s\n", (char *)list->content);
 		list = list->next;
 	}
 }
@@ -33,12 +33,12 @@ void	print_tab(char **tab)
 	i = 0;
 	if (!tab)
 	{
-		dprintf(2, "tab is NULL\n");
+		ft_dprintf(2, "tab is NULL\n");
 		return ;
 	}
 	while (tab[i])
 	{
-		dprintf(2, "%s\n", tab[i]);
+		ft_dprintf(2, "%s\n", tab[i]);
 		i++;
 	}
 }

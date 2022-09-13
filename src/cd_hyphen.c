@@ -22,7 +22,7 @@ int	cd_hyphen(t_list **envp_head)
 	find_env_var("OLDPWD", envp_head, &oldpwd_exp);
 	if (!oldpwd_exp)
 	{
-		dprintf(2, "bash: cd: OLDPWD not set\n");
+		ft_dprintf(2, "bash: cd: OLDPWD not set\n");
 		return (EXIT_FAILURE);
 	}
 	ret = cd(oldpwd_exp, envp_head);

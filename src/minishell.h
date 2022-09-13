@@ -28,6 +28,9 @@
 # include <dirent.h>
 # include <stdarg.h>
 
+# define EOF_MSG "bash: warning: here-document delimited by end-of-file \
+(wanted `%s')\n"
+
 typedef struct s_list
 {
 	void			*content;
@@ -466,7 +469,7 @@ int			ft_pipe(char *str, t_list **envp_head, int last_exit_code);
 //libft modified functions
 void		structure_add_back(t_struct **lst, t_struct *new);
 t_struct	*structure_last(t_struct	*lst);
-int			structure_size(t_struct *lst);
+int			struct_size(t_struct *lst);
 
 //variable expansion
 
@@ -479,14 +482,16 @@ char		*create_new_str(char *str, char *to_add, int to_break, int to_cont);
 void		initialize_sc(t_struct **tab, char *str);
 void		assign_str_to_struct(t_struct **elements, char *str);
 int			parse(char *str, t_struct *node);
-void		parse_outfiles(char **str_add, t_struct *head);
-void		parse_infiles(char **str_add, t_struct *head);
-void		set_infiles_outfiles_cmds(t_struct **elements);
+int			parse_outfiles(char **str_add, t_struct *head);
+int			parse_infiles(char **str_add, t_struct *head);
+int			set_infiles_outfiles_cmds(t_struct **elements);
+int			set_files(t_struct *head, int flag);
 int			find_last_infile_type(char *str);
 int			save_next_word(char **str_add, int i, \
 char **dest, int to_clean);
 int			number_of_delim(char *str, char delim, int flag);
 int			move_the_char_back(char *str);
+char		*replace_with_space(char *str, int start, int end);
 
 //execution
 int			execute(t_struct **elements, char **parsed_path, t_list **envp);
@@ -518,6 +523,7 @@ typedef struct s_ft_here_doc
 	int		*loc;
 	char	*str;
 	int		*fds;
+	int		size;
 }				t_ft_here_doc;
 
 typedef struct s_wtf_vars
@@ -551,8 +557,10 @@ void		init_wtf_vars(t_wtf_vars v[1], char *stop, char	*file);
 int			quotes_presence(char *str);
 
 //signals
-void		handle_signal(int signum);
-void		handle_signal_pipe(int signum);
+void		sig_handler(int signum, siginfo_t *info, void *ptr);
+void		sig_handler_pipe(int signum, siginfo_t *info, void *ptr);
+void		sig_handler_heredoc(int signum, siginfo_t *info, void *ptr);
+void		catch_signals(int flag);
 
 //custom free functions
 void		ft_free_sc(t_struct *lst);

@@ -64,13 +64,23 @@ int	ft_waitpid(t_struct **elements)
 	t_struct	*copy;
 	int			exit_code;
 
-	exit_code = 130;
+	exit_code = -1;
 	copy = *elements;
 	while (copy)
 	{
-		waitpid(copy->child, &(copy->wstatus), 0);
-		if (!copy->wstatus)
-			exit_code = (0xff00 & copy->wstatus) >> 8;
+		if (waitpid(copy->child, &(copy->wstatus), 0) != -1 \
+		&& WIFEXITED(copy->wstatus))
+			exit_code = WEXITSTATUS(copy->wstatus);
+		else if (g_var->sig_flag == 1)
+		{
+			kill(copy->child, SIGQUIT);
+			exit_code = 130;
+		}
+		else if (WCOREDUMP(copy->wstatus))
+		{
+			dprintf(2, "segmentation fault (core dump)\n");
+			exit_code = 139;
+		}
 		copy = copy->next;
 	}
 	return (exit_code);
@@ -82,7 +92,6 @@ int	ft_fork(t_struct **elements, char **parsed_path, t_list **envp)
 	t_struct	*copy;
 	int			exit_code;
 
-	exit_code = -1;
 	copy = *elements;
 	while (copy)
 	{
@@ -94,6 +103,7 @@ int	ft_fork(t_struct **elements, char **parsed_path, t_list **envp)
 				copy->next->fds[0] = pipefds[0];
 		}
 		copy->child = fork();
+		catch_signals(0);
 		exit_code = execute_function(copy, parsed_path, envp, 1);
 		if (copy->fds[1] != 1)
 			close(copy->fds[1]);
@@ -111,11 +121,17 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 	int			exit_code;
 
 	exit_code = -1;
-	set_infiles_outfiles_cmds(elements);
+	if (set_infiles_outfiles_cmds(elements) < 0)
+		return (2);
 	copy = *elements;
-	if (structure_size(*elements) == 1 && boolean_if_buildin(copy->cmd) == 1)
-		exit_code = buildins_execution(elements, parsed_path, envp);
-	else
-		exit_code = ft_fork(elements, parsed_path, envp);
+	if (g_var->sig_flag == 0)
+	{
+		if (struct_size(*elements) == 1 && boolean_if_buildin(copy->cmd) == 1)
+			exit_code = buildins_execution(elements, parsed_path, envp);
+		else
+			exit_code = ft_fork(elements, parsed_path, envp);
+	}
+	else if (g_var->sig_flag == 1)
+		exit_code = 130;
 	return (exit_code);
 }
