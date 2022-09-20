@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/26 21:59:40 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/20 16:04:46 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ void	ft_execute_cmd(t_struct *head, int *ec, char **path, t_list **envp_head)
 	ft_lst_to_tab(&envp, envp_head);
 	if (boolean_if_buildin(head->cmd) == 1)
 		*ec = buildins_dispatch(head->cmd, envp_head);
-	else if (cmd_access_check(head->cmd, path, ec) == 0)
+	else if (head->cmd[0] && cmd_access_check(head->cmd, path, ec) == 0)
 	{
 		while (*path && head->cmd[0])
 		{

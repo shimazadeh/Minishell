@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/08 21:56:41 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/20 15:27:46 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,6 +87,11 @@ int			no_unclosed_quote(char *str);
 void		handle_ws(char **str_add);
 void		handle_ws_get_str_size(int *size_add, char *str);
 void		handle_ws_fill_str(char *str, char *new_str);
+
+// syntax_check.c
+
+int			syntax_check(char *str);
+
 // algorithm.c
 
 typedef struct s_aglorithm_vars
@@ -155,7 +160,8 @@ typedef struct s_cd_vars
 }				t_cd_vars;
 
 void		cd_init_vars(t_cd_vars v[1]);
-int			cd(char *dir, t_list **envp_head);
+int			cd(char **dir_tab, t_list **envp_head);
+int			cd_check(char **dir_tab, char **dir_add);
 void		cd_path_to_curpath(char *dir, t_cd_vars *v);
 int			cd_canon_and_exec(t_list **envp_head, t_cd_vars *v);
 

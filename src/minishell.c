@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 00:21:24 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/08 21:55:58 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/20 16:32:44 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ void	minishell_loop(t_minishell_vars *v, char *tmp)
 	{
 		if (!str_is_only_spaces(v->input))
 			add_history(v->input);
-		if (even_par_nbr(v->input) && no_unclosed_quote(v->input))
+		if (!syntax_check(v->input))
 		{
 			handle_ws(&(v->input));
 			v->last_exit_code = algorithm(ft_strdup(v->input),

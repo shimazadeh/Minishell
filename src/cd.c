@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:32:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/29 17:23:55 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/20 15:09:19 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,28 @@ void	cd_init_vars(t_cd_vars v[1])
 	v->tmp = NULL;
 }
 
-int	cd(char *dir, t_list **envp_head)
+int	cd_check(char **dir_tab, char **dir_add)
+{
+	if (dir_tab[0] && dir_tab[1])
+	{
+		dprintf(1, "bash: cd: too many arguments\n");
+		return (0);
+	}
+	*dir_add = dir_tab[0];
+	return (1);
+}
+
+int	cd(char **dir_tab, t_list **envp_head)
 {
 	t_cd_vars	v[1];
+	char		*dir;
 
+	dir = NULL;
 	cd_init_vars(v);
-	if (!envp_head)
+	if (!envp_head || !dir_tab)
 		ft_exit(EXIT_FAILURE, "cd", "argument check fail");
+	if (!cd_check(dir_tab, &dir))
+		return (1);
 	if (!dir)
 		cd_no_arg(&dir, envp_head);
 	else if (!ft_strncmp(dir, "-", 2))
@@ -67,6 +82,7 @@ int	cd_canon_and_exec(t_list **envp_head, t_cd_vars *v)
 	ft_free(v->mask);
 	if (chdir(v->curpath) == -1)
 	{
+		dprintf(1, "bash: cd: bonjour: No such file or directory\n");
 		ft_free(v->curpath);
 		ft_free(v->pwd_exp);
 		return (1);

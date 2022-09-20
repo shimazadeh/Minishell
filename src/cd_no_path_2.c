@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 19:30:58 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 19:34:33 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/20 15:10:35 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ t_list **envp_head)
 	ft_free(v->tmp);
 	ft_free_tab(v->cd_paths);
 	v->cd_no_path_ret[0] = 1;
-	v->cd_no_path_ret[1] = cd(v->curpath, envp_head);
+	v->cd_no_path_ret[1] = cd(&(v->curpath), envp_head);
 	if (!v->cd_no_path_ret[1])
 		v->cd_no_path_ret[1] = pwd();
 }

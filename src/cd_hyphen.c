@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 21:08:19 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 21:08:33 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/20 15:10:54 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	cd_hyphen(t_list **envp_head)
 		ft_dprintf(2, "bash: cd: OLDPWD not set\n");
 		return (EXIT_FAILURE);
 	}
-	ret = cd(oldpwd_exp, envp_head);
+	ret = cd(&oldpwd_exp, envp_head);
 	ft_free(oldpwd_exp);
 	if (!ret)
 		return (pwd());

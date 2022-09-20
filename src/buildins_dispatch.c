@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/08 16:25:55 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:54:39 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/20 15:00:49 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ int	buildins_dispatch(char **av, t_list **envp_head)
 		ft_exit(EXIT_FAILURE, "buildins_dispatch", "argument check fail");
 	else if (!ft_strncmp(av[0], "echo", 5))
 		return (echo(&av[1]));
-	else if (!ft_strncmp(av[0], "cd", 3) && (!av[1] || (av[1] && !av[2])))
-		return (cd(av[1], envp_head));
+	else if (!ft_strncmp(av[0], "cd", 3))
+		return (cd(&av[1], envp_head));
 	else if (!ft_strncmp(av[0], "pwd", 4))
 		return (pwd());
 	else if (!ft_strncmp(av[0], "export", 7))
