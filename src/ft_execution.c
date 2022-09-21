@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 21:17:18 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/25 01:57:28 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/21 16:59:10 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 	int			exit_code;
 
 	exit_code = -1;
-	if (set_infiles_outfiles_cmds(elements) < 0)
+	if (set_infiles_outfiles_cmds(elements, envp) < 0)
 		return (2);
 	copy = *elements;
 	if (g_var->sig_flag == 0)

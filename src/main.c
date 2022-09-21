@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 00:18:40 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:01:37 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/21 16:11:29 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,5 @@ int	main(int ac, char **av, char **envp)
 	if (ac != 1)
 		ft_exit(EXIT_FAILURE, "main", "invalid number of argument");
 	minishell(envp);
-	free(g_var);
 	return (0);
 }

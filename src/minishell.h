@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/20 15:27:46 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/21 17:07:03 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,13 @@ void		handle_ws_fill_str(char *str, char *new_str);
 
 // syntax_check.c
 
-int			syntax_check(char *str);
+int			syntax_check(char **str_add);
+void		handle_quotes(char **str_add, int *i_add);
+char		*handle_single_quote(char *str, int quote);
+int			is_special_char(char *str, int *ch_code_add);
+int			handle_special_char(char *str, int *i_add, int ch_code, \
+char *par_tab);
+int			print_syntax_error(int ch_code);
 
 // algorithm.c
 
@@ -118,7 +124,7 @@ t_aglorithm_vars v[1]);
 int			go_to_closing_char(char *str);
 void		rm_outer_par_1(char **str_add);
 void		rm_outer_par_2(int *i_add, int j, int flag, char *str);
-int			go_to_closing_par(char *str);
+int			go_to_closing_par(char *str, char *par_tab);
 int			str_is_only_spaces(char *str);
 
 // split_submod_and_sep.c
@@ -463,6 +469,10 @@ char		*ft_strstr(char *str, char *to_find);
 char		*ft_ull_itoa_base(unsigned long long nb, char *base);
 void		ft_tab_to_lst(char **tab, t_list **lst_head);
 
+// export_last_cmd.c
+
+void		export_last_cmd(char **cmd, t_list **envp);
+
 // print_tools.c
 
 void		print_list(t_list *list);
@@ -490,7 +500,7 @@ void		assign_str_to_struct(t_struct **elements, char *str);
 int			parse(char *str, t_struct *node);
 int			parse_outfiles(char **str_add, t_struct *head);
 int			parse_infiles(char **str_add, t_struct *head);
-int			set_infiles_outfiles_cmds(t_struct **elements);
+int			set_infiles_outfiles_cmds(t_struct **elements, t_list **envp);
 int			set_files(t_struct *head, int flag);
 int			find_last_infile_type(char *str);
 int			save_next_word(char **str_add, int i, \

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 12:33:23 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/22 20:08:16 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/21 17:08:57 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,7 +119,7 @@ int	set_files(t_struct *head, int flag)
 	return (0);
 }
 
-int	set_infiles_outfiles_cmds(t_struct **elements)
+int	set_infiles_outfiles_cmds(t_struct **elements, t_list **envp)
 {
 	t_struct	*copy;
 
@@ -138,7 +138,22 @@ int	set_infiles_outfiles_cmds(t_struct **elements)
 		}
 		copy->cmd = ft_split_custom(copy->str, ' ', 1);
 		handle_wildcards(&copy->cmd);
+		if (!((*elements)->next))
+			export_last_cmd(copy->cmd, envp);
 		copy = copy->next;
 	}
 	return (0);
+}
+
+void	export_last_cmd(char **cmd, t_list **envp)
+{
+	int		i;
+	char	*to_export;
+
+	i = 0;
+	while (cmd[i] && cmd[i + 1])
+		i++;
+	to_export = ft_strjoin("_=", cmd[i]);
+	export(&to_export, envp);
+	ft_free(to_export);
 }

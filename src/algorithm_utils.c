@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:02:30 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/26 22:55:50 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/21 14:47:36 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ void	rm_outer_par_2(int *i_add, int j, int flag, char *str)
 			i++;
 		else if (str[i] == '(')
 		{
-			j = i + go_to_closing_par(&str[i]);
+			j = i + go_to_closing_par(&str[i], NULL);
 			if (j && str_is_only_spaces(&str[j + 1]))
 			{
 				i++;
@@ -75,26 +75,29 @@ void	rm_outer_par_2(int *i_add, int j, int flag, char *str)
 	*i_add = i;
 }
 
-int	go_to_closing_par(char *str)
+int	go_to_closing_par(char *str, char *par_tab)
 {
 	int		count;
 	int		i;
 
-	count = 0;
-	i = 0;
 	if (!str)
-		ft_exit(EXIT_FAILURE, "go_to_closing_char", "argument check fail");
+		ft_exit(EXIT_FAILURE, "go_to_closing_par", "argument check fail");
 	count = 1;
-	i = 1;
-	while (str[i])
+	if (par_tab)
+		par_tab[0] = 1;
+	i = 0;
+	while (str[++i])
 	{
 		if (str[i] == ')')
 			count--;
 		if (str[i] == '(')
 			count++;
-		if (!count && str[i] == ')')
+		if (!count && str[i] == ')' && (!par_tab || !par_tab[i]))
+		{
+			if (par_tab)
+				par_tab[i] = 1;
 			return (i);
-		i++;
+		}
 	}
 	return (0);
 }
