@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/20 15:15:20 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/21 16:00:57 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 13:57:07 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ char	*handle_single_quote(char *str, int quote)
 
 	i = 0;
 	j = 0;
-	size = ft_strlen(str) + 3;
+	size = sizeof(char) * (ft_strlen(str) + 3);
 	new_str = ft_alloc(sizeof(char) * size);
 	ft_bzero(new_str, size);
 	while (str[i])

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 00:21:24 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/21 15:49:44 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 17:43:04 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void	minishell(char	**envp)
 	minishell_init_vars(v);
 	tmp = NULL;
 	ft_tab_to_lst(envp, &(v->envp_head));
+	adjust_env(&(v->envp_head));
 	while (1)
 	{
 		minishell_loop(v, tmp);

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/21 17:07:03 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 19:10:36 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@
 
 # define EOF_MSG "bash: warning: here-document delimited by end-of-file \
 (wanted `%s')\n"
+
+# define SHLVL_ERR "bash: warning: shell level (%s) too high, resetting to 1\n"
 
 typedef struct s_list
 {
@@ -440,8 +442,15 @@ void		ft_get_wl(char *str, int *i_add, int *wl_add, int flag);
 void		ft_get_tab(t_split_custom_vars v[1], \
 t_ft_fill_tab_custom_vars w[1]);
 
+// adjust_env.c
+
+void		adjust_env(t_list **envp_head);
+int			contains_non_digit(char *str);
+int			shlvl_too_high(char *shlvl);
+
 // libft
 
+int			ft_atoi(const char *str);
 void		ft_bzero(void *s, size_t n);
 void		ft_free_list(t_list *list);
 void		ft_free_list_regular(t_list *list);
@@ -472,6 +481,7 @@ void		ft_tab_to_lst(char **tab, t_list **lst_head);
 // export_last_cmd.c
 
 void		export_last_cmd(char **cmd, t_list **envp);
+void		export_next_cmd(char *cmd, t_list **envp);
 
 // print_tools.c
 
@@ -522,9 +532,8 @@ char **parsed_path, t_list **envp_head);
 // char		*file_access_check(char **files, int flag);
 int			file_access_check(char **file, int *file_modes);
 int			boolean_if_buildin(char **av);
-int			cmd_access_check(char **cmd, char **parsed_path, \
+char		*cmd_access_check(char **cmd, char **parsed_path, \
 int *last_exit_code);
-
 int			ft_waitpid(t_struct **elements);
 
 //finding paths
