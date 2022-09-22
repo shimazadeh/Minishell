@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:32:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/20 15:09:19 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 20:35:07 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,20 +59,19 @@ int	cd(char **dir_tab, t_list **envp_head)
 		}
 	}
 	cd_path_to_curpath(dir, v);
-	return (cd_canon_and_exec(envp_head, v));
+	return (cd_canon_and_exec(envp_head, v, dir));
 }
 
 void	cd_path_to_curpath(char *dir, t_cd_vars *v)
 {
 	if (!v->curpath)
 		v->curpath = ft_strdup(dir);
-	ft_free(dir);
 	v->pwd_exp = ft_getcwd();
 	if (v->curpath[0] != '/')
 		cd_curpath_no_abs_path(&(v->curpath), v->pwd_exp);
 }
 
-int	cd_canon_and_exec(t_list **envp_head, t_cd_vars *v)
+int	cd_canon_and_exec(t_list **envp_head, t_cd_vars *v, char *dir)
 {
 	if (!cd_get_canon_curpath_mask(&(v->mask), v->curpath))
 		return (EXIT_FAILURE);
@@ -82,10 +81,11 @@ int	cd_canon_and_exec(t_list **envp_head, t_cd_vars *v)
 	ft_free(v->mask);
 	if (chdir(v->curpath) == -1)
 	{
-		dprintf(1, "bash: cd: bonjour: No such file or directory\n");
+		dprintf(1, "bash: cd: %s: No such file or directory\n", dir);
 		ft_free(v->curpath);
 		ft_free(v->pwd_exp);
 		return (1);
 	}
+	ft_free(dir);
 	return (cd_to_export_1(v->curpath, v->pwd_exp, envp_head));
 }

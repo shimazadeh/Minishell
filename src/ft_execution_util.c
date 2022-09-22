@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/22 19:34:11 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 21:17:47 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,29 +26,23 @@ char	*cmd_access_check(char **cmd, char **parsed_path, int *last_exit_code)
 		path_iteri = ft_strjoin(parsed_path[i], cmd[0]);
 		if (ft_strncmp(parsed_path[i], cmd[0], ft_strlen(parsed_path[i])) == 0 \
 			&& access(cmd[0], F_OK) == 0 && access(cmd[0], X_OK) == 0)
-			{
-				// dprintf(2, "im on the first if\n");
-				return (parsed_path[i]);
-			}
+			return (ft_free(path_iteri), parsed_path[i]);
 		else if (access(path_iteri, F_OK) == 0 && access(path_iteri, X_OK) == 0)
 		{
 			stream = opendir(path_iteri);
 			if (!stream && errno == ENOTDIR)
-			{
-				// dprintf(2, "im on the second if\n");
 				return (path_iteri);
-			}
 			else if (stream)
 				closedir(stream);
 		}
 		else if (access(cmd[0], F_OK) == 0 && access(cmd[0], X_OK) == 0)
-		{
-			// dprintf(2, "im on the third if\n");
-			return (cmd[0]);
-		}
+			return (ft_free(path_iteri), cmd[0]);
 		ft_free(path_iteri);
 	}
-	ft_dprintf(2, "%s: command not found\n", cmd[0]);
+	if (access(cmd[0], F_OK))
+		ft_dprintf(2, "bash: %s: command not found\n", cmd[0]);
+	else if (access(cmd[0], X_OK))
+		ft_dprintf(2, "bash: %s: Permission denied\n", cmd[0]);
 	return (*last_exit_code = 127, NULL);
 }
 
@@ -61,7 +55,8 @@ int	file_access_check(char **file, int *file_modes)
 	i = -1;
 	while (file[++i])
 	{
-		close(fd);
+		if (fd > 0)
+			close(fd);
 		if (file_modes[i] == 0)
 			fd = open(file[i], O_RDONLY);
 		else if (file_modes[i] == 1)
@@ -69,12 +64,12 @@ int	file_access_check(char **file, int *file_modes)
 		else if (file_modes[i] == 2)
 			fd = open(file[i], O_CREAT | O_RDWR | O_APPEND, 0644);
 		if (fd < 0 && access(file[i], F_OK) == -1)
-			return (perror(file[i]), close(fd), 0);
+			return (perror(file[i]), 0);
 		else if (fd < 0 && (access(file[i], R_OK) == -1
 				|| access(file[i], W_OK) == -1))
-			return (perror(file[i]), close(fd), 0);
+			return (perror(file[i]), 0);
 		else if (fd < 0)
-			return (perror(file[i]), close(fd), 0);
+			return (perror(file[i]), 0);
 	}
 	return (fd);
 }
@@ -127,9 +122,7 @@ void	ft_execute_cmd(t_struct *head, int *ec, char **path, t_list **envp_head)
 {
 	char	**envp;
 	char	*path_iteri;
-	// int		size;
 
-	// size = 0;
 	envp = NULL;
 	path_iteri = NULL;
 	if (boolean_if_buildin(head->cmd) == 1)

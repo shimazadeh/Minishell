@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/20 15:15:20 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 13:57:07 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 20:04:23 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,14 @@ char	*handle_single_quote(char *str, int quote)
 	int		j;
 	int		size;
 	char	*new_str;
+	char	c;
 
 	i = 0;
 	j = 0;
+	if (str[quote] == '\"')
+		c = '\'';
+	else
+		c = '\"';
 	size = sizeof(char) * (ft_strlen(str) + 3);
 	new_str = ft_alloc(sizeof(char) * size);
 	ft_bzero(new_str, size);
@@ -76,9 +81,9 @@ char	*handle_single_quote(char *str, int quote)
 	{
 		if (i == quote)
 		{
-			new_str[j++] = '\'';
+			new_str[j++] = c;
 			new_str[j++] = str[i++];
-			new_str[j++] = '\'';
+			new_str[j++] = c;
 		}
 		else
 			new_str[j++] = str[i++];

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 16:54:40 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/08 18:26:59 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 19:48:51 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ int	set_last_infile_type(t_struct **elements, char **file, int *loc, int size)
 	copy = *elements;
 	while (copy)
 	{
+		dprintf(2, "inside\n");
 		if (loc[j] == i && find_last_infile_type(copy->str) == 1)
 		{
 			tmp = j;
@@ -80,6 +81,7 @@ int	*store_heredoc_loc(char *str, int size)
 	k = 0;
 	loc_pipe = 0;
 	loc = ft_alloc(sizeof(int) * (size));
+	ft_bzero(loc, sizeof(int) * size);
 	while (str[i])
 	{
 		if (str[i] == '|')
@@ -119,7 +121,7 @@ char	**ft_here_doc(char **str_add, t_struct **sc, t_list **envp, int exit)
 	if (v->size == 0)
 		return (NULL);
 	v->exp_flags = ft_alloc(sizeof(int) * v->size);
-	ft_bzero(v->exp_flags, v->size + 1);
+	ft_bzero(v->exp_flags, sizeof(int) * v->size);
 	v->stop = store_heredoc_stops(&v->str, v->exp_flags, v->size);
 	if (v->stop)
 	{

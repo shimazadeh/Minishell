@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 19:12:22 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 21:46:29 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 20:53:08 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,7 @@ int	cd_curpath_is_dot(char *curpath, char *mask, int *j_add)
 {
 	int							i;
 	t_cd_curpath_is_dot_vars	v[1];
+	DIR							*op;
 
 	i = 0;
 	cd_curpath_is_dot_init_vars(v, j_add, &i);
@@ -88,10 +89,12 @@ int	cd_curpath_is_dot(char *curpath, char *mask, int *j_add)
 		prev_compo_2dot_or_root(curpath, mask, i - 2, v);
 		if (v->prev_compo && ft_strncmp(v->prev_compo, "..", 3))
 		{
-			if (opendir(v->prev_compo_path) || errno != ENOTDIR)
+			op = opendir(v->prev_compo_path);
+			if (op || errno != ENOTDIR)
 				mask_prev_compo(mask, curpath, -2 + i++);
 			else
-				return (0);
+				return (free(op), 0);
+			free(op);
 		}
 		ft_free(v->prev_compo);
 		ft_free(v->prev_compo_path);

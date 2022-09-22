@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:14:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 19:34:28 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 21:12:06 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	adjust_env(t_list **envp_head)
 	char	*pwd;
 	char	*shlvl;
 	char	*new_shlvl;
-	//char	*underscore;
+	char	*underscore;
 
 	shlvl = NULL;
 	pwd = ft_getcwd();

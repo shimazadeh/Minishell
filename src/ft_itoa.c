@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_itoa.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/02/28 04:09:26 by shabibol          #+#    #+#             */
-/*   Updated: 2022/03/03 14:31:52 by shabibol         ###   ########.fr       */
+/*   Updated: 2022/09/22 19:57:26 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ char	*ft_itoa(int n)
 		num *= -1;
 		digit++;
 	}
-	result = (char *)malloc(sizeof(char) * (digit + 1));
+	result = ft_alloc(sizeof(char) * (digit + 1));
 	if (!result)
 		return (NULL);
 	result[digit] = '\0';

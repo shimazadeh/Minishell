@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:15:44 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/08 20:45:08 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 19:45:01 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,7 @@ int	find_last_infile_type(char *str)
 	int	flag;
 
 	i = 0;
+	flag = 0;
 	while (str[i])
 	{
 		if (str[i] == '<' && str[i + 1] == '<')
