@@ -86,3 +86,16 @@ int	number_of_delim(char *str, char delim, int flag)
 	}
 	return (count);
 }
+
+int	supress_the_quotes(char **str_add, int i)
+{
+	int		k;
+	char	*str;
+
+	str = *str_add;
+	k = i + go_to_closing_char(&str[i]) - 1;
+	move_the_char_back(&str[i]);
+	move_the_char_back(&str[k]);
+	*str_add = str;
+	return (k);
+}
