@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 20:34:10 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 21:33:48 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -445,6 +445,8 @@ t_ft_fill_tab_custom_vars w[1]);
 // adjust_env.c
 
 void		adjust_env(t_list **envp_head);
+void		adjust_env_underscore(char *to_export[2], char *pwd, \
+t_list **envp_head);
 int			contains_non_digit(char *str);
 int			shlvl_too_high(char *shlvl);
 

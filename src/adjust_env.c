@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:14:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 21:12:06 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 21:33:17 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,14 +18,12 @@ void	adjust_env(t_list **envp_head)
 	char	*pwd;
 	char	*shlvl;
 	char	*new_shlvl;
-	char	*underscore;
 
 	shlvl = NULL;
 	pwd = ft_getcwd();
 	to_export[1] = NULL;
 	to_export[0] = ft_strjoin("PWD=", pwd);
 	export(to_export, envp_head);
-	ft_free(pwd);
 	ft_free(to_export[0]);
 	find_env_var("SHLVL", envp_head, &shlvl);
 	if (!shlvl || contains_non_digit(shlvl) || shlvl_too_high(shlvl))
@@ -39,6 +37,24 @@ void	adjust_env(t_list **envp_head)
 	export(to_export, envp_head);
 	ft_free(shlvl);
 	ft_free(to_export[0]);
+	adjust_env_underscore(to_export, pwd, envp_head);
+}
+
+void	adjust_env_underscore(char *to_export[2], char *pwd, t_list **envp_head)
+{
+	char	*underscore;
+
+	underscore = NULL;
+	find_env_var("_", envp_head, &underscore);
+	if (!underscore)
+	{
+		underscore = ft_strjoin(pwd, "/minishell");
+		to_export[0] = ft_strjoin("_=", underscore);
+		export(to_export, envp_head);
+		ft_free(underscore);
+		ft_free(to_export[0]);
+	}
+	ft_free(pwd);
 }
 
 int	contains_non_digit(char *str)

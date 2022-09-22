@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 23:45:50 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:53:32 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 21:38:37 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,15 +52,20 @@ t_list **new_path_lst_add)
 
 void	fill_new_path_list(int i, int j, t_get_new_path_list_vars v[1])
 {
+	char	*tmp;
+
+	tmp = NULL;
 	v->path_start = ft_strndup(v->path, i);
 	v->path_end = ft_strdup(&(v->path)[j]);
 	v->wc_str = ft_strndup(&(v->path)[i], j - i);
 	while (v->file_lst)
 	{
 		if (compatible_name((char *)v->file_lst->content, v->wc_str))
+		{
+			tmp = ft_strjoin(v->path_start, (char *)v->file_lst->content);
 			ft_lstadd_back(&v->new_path_lst, \
-			ft_lstnew(ft_strjoin(ft_strjoin(v->path_start, \
-			(char *)v->file_lst->content), v->path_end)));
+			ft_lstnew(ft_strjoin(tmp, v->path_end)));
+		}
 		v->file_lst = v->file_lst->next;
 	}
 	ft_free(v->path_start);
