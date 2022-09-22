@@ -52,24 +52,24 @@ char	**fancy_name_generator(int size)
 	char	*tmp;
 	char	**file_names;
 
-	if (size == 0)
-		return (NULL);
-	i = 0;
+	i = -1;
 	file_names = ft_alloc(sizeof(char *) * (size + 1));
 	fd = open("/dev/urandom", O_RDONLY);
 	if (fd < 0)
-		return (NULL);
-	while (i < size)
+		file_names = default_name_generator(size);
+	else
 	{
-		buf = get_next_line(fd);
-		tmp = ft_strdup_range(buf, 0, 8);
-		file_names[i] = ft_strjoin(".", tmp);
-		ft_free(tmp);
-		ft_free(buf);
-		i++;
+		while (++i < size)
+		{
+			buf = get_next_line(fd);
+			tmp = ft_strdup_range(buf, 0, 8);
+			file_names[i] = ft_strjoin(".", tmp);
+			ft_free(tmp);
+			ft_free(buf);
+		}
+		file_names[size] = NULL;
+		close(fd);
 	}
-	file_names[size] = NULL;
-	close(fd);
 	return (file_names);
 }
 
