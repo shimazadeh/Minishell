@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 21:33:48 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 21:53:01 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,11 +94,17 @@ void		handle_ws_fill_str(char *str, char *new_str);
 
 int			syntax_check(char **str_add);
 void		handle_quotes(char **str_add, int *i_add);
-char		*handle_single_quote(char *str, int quote);
+char		*handle_single_quote(int i, int j, char *str, int quote);
 int			is_special_char(char *str, int *ch_code_add);
+int			print_syntax_error(int ch_code);
+
+// handle_special_char.c
+
 int			handle_special_char(char *str, int *i_add, int ch_code, \
 char *par_tab);
-int			print_syntax_error(int ch_code);
+int			handle_special_char_loop(int i, int ch_code, char *str);
+int			handle_special_char_loop_check_prev(int i, \
+int ch_code, char *str);
 
 // algorithm.c
 

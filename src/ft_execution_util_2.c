@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_execution_util_2.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 21:34:38 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/22 21:34:39 by shabibol         ###   ########.fr       */
+/*   Updated: 2022/09/22 22:11:08 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 
 void	print_error(char *cmd)
 {
-	if (access(cmd[0], F_OK))
-		ft_dprintf(2, "bash: %s: command not found\n", cmd[0]);
-	else if (access(cmd[0], X_OK))
-		ft_dprintf(2, "bash: %s: Permission denied\n", cmd[0]);
+	if (access(&cmd[0], F_OK))
+		ft_dprintf(2, "bash: %s: command not found\n", &cmd[0]);
+	else if (access(&cmd[0], X_OK))
+		ft_dprintf(2, "bash: %s: Permission denied\n", &cmd[0]);
 }
 
 char	*cmd_access_check(char **cmd, char **parsed_path, int *last_exit_code)

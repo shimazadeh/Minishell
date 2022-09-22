@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/22 21:17:47 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/22 22:09:38 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ void	ft_execute_cmd(t_struct *head, int *ec, char **path, t_list **envp_head)
 		*ec = buildins_dispatch(head->cmd, envp_head);
 	else if (head->cmd[0])
 	{
-		if (access(cmd[0], F_OK) == 0 && access(cmd[0], X_OK) == 0)
-			path_iteri = ft_strdup(cmd[0]);
+		if (access(head->cmd[0], F_OK) == 0 && access(head->cmd[0], X_OK) == 0)
+			path_iteri = ft_strdup(head->cmd[0]);
 		else
 			path_iteri = cmd_access_check(head->cmd, path, ec);
 		if (path_iteri)
