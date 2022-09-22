@@ -518,6 +518,7 @@ char **dest, int to_clean);
 int			number_of_delim(char *str, char delim, int flag);
 int			move_the_char_back(char *str);
 char		*replace_with_space(char *str, int start, int end);
+int			supress_the_quotes(char **str_add, int i);
 
 //execution
 int			execute(t_struct **elements, char **parsed_path, t_list **envp);
@@ -534,6 +535,7 @@ int			file_access_check(char **file, int *file_modes);
 int			boolean_if_buildin(char **av);
 char		*cmd_access_check(char **cmd, char **parsed_path, \
 int *last_exit_code);
+void		print_error(char *cmd);
 int			ft_waitpid(t_struct **elements);
 
 //finding paths

@@ -12,26 +12,11 @@
 
 #include "minishell.h"
 
-int	supress_the_quotes(char **str_add, int i)
-{
-	int		k;
-	char	*str;
-
-	str = *str_add;
-	k = i + go_to_closing_char(&str[i]) - 1;
-	move_the_char_back(&str[i]);
-	move_the_char_back(&str[k]);
-	*str_add = str;
-	return (k);
-}
-
 int	save_next_word(char **str_add, int i, char **dest, int to_clean)
 {
 	int		start;
 	char	*str;
-	// int		k;
 
-	// k = 0;
 	str = *str_add;
 	while (str[i] && (str[i] == ' ' || str[i] == '\t'))
 		i++;
@@ -39,12 +24,7 @@ int	save_next_word(char **str_add, int i, char **dest, int to_clean)
 	while (str[i] && !end_char(str[i], "> \t<\0"))
 	{
 		if (str[i] == '\'' || str[i] == '\"')
-		// {
-		// 	k = i + go_to_closing_char(&str[i]) - 1;
-		// 	move_the_char_back(&str[i]);
-		// 	move_the_char_back(&str[k]);
 			i = supress_the_quotes(&str, i);
-		// }
 		else
 			i++;
 	}
