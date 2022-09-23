@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 20:29:14 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/22 23:21:09 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 16:16:53 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	write_to_file(t_ft_here_doc *var, int i, t_list **envp, int last_exit_code)
 	init_wtf_vars(v, var->stop[i], var->file_names[i]);
 	catch_signals(2);
 	if (v->fd1 < 0)
-		return (ft_dprintf(2, "error creating here_doc\n"), -1);
+		return (ft_dprintf(2, "Error: here_doc creation failure!\n"), -1);
 	v->gnl = ft_readline();
 	while (!(g_var->sig_flag) && v->gnl \
 		&& ft_strncmp(v->gnl, v->stop_new, ft_strlen(v->stop_new) + 1))

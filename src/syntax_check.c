@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/20 15:15:20 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 21:52:22 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 16:35:37 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,7 +114,7 @@ int	print_syntax_error(int ch_code)
 
 	token_str = ft_strdup("&& || | ) (");
 	token_tab = ft_split(token_str, ' ');
-	dprintf(1, "bash: syntax error near unexpected token `%s'\n", \
+	ft_dprintf(1, "bash: syntax error near unexpected token `%s'\n", \
 		token_tab[ch_code - 1]);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 12:33:23 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/23 14:57:53 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 16:42:48 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	save_next_word(char **str_add, int i, char **dest, int to_clean)
 	*dest = ft_strdup_range(str, start, i);
 	*str_add = replace_with_space(str, ++to_clean, i);
 	if (!*dest)
-		return (ft_dprintf(1, "bash: syntax error\n"), -1);
+		return (ft_dprintf(1, "bash: syntax error near unexpected token\n"), -1);
 	return (i);
 }
 

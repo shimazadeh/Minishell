@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 16:54:40 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/23 15:11:59 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 17:39:10 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@ int	set_last_infile_type(t_struct **elements, char **file, int *loc, int size)
 	copy = *elements;
 	while (copy)
 	{
-		dprintf(2, "inside\n");
 		if (loc[j] == i && find_last_infile_type(copy->str) == 1)
 		{
 			tmp = j;
@@ -122,11 +121,11 @@ char	**ft_here_doc(char **str_add, t_struct **sc, t_list **envp, int exit)
 		return (NULL);
 	v->exp_flags = ft_alloc(sizeof(int) * v->size);
 	ft_bzero(v->exp_flags, sizeof(int) * v->size);
+	v->loc = store_heredoc_loc(v->str, v->size);
 	v->stop = store_heredoc_stops(&v->str, v->exp_flags, v->size);
 	if (v->stop)
 	{
 		v->fds = ft_alloc(sizeof(int) * v->size);
-		v->loc = store_heredoc_loc(v->str, v->size);
 		v->file_names = fancy_name_generator(v->size);
 		while (g_var->sig_flag == 0 && v->stop[++i])
 			v->fds[i] = write_to_file(v, i, envp, exit);

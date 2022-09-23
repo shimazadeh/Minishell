@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:32:29 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 20:35:07 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 17:58:19 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	cd_check(char **dir_tab, char **dir_add)
 {
 	if (dir_tab[0] && dir_tab[1])
 	{
-		dprintf(1, "bash: cd: too many arguments\n");
+		ft_dprintf(1, "bash: cd: too many arguments\n");
 		return (0);
 	}
 	*dir_add = dir_tab[0];
@@ -81,7 +81,8 @@ int	cd_canon_and_exec(t_list **envp_head, t_cd_vars *v, char *dir)
 	ft_free(v->mask);
 	if (chdir(v->curpath) == -1)
 	{
-		dprintf(1, "bash: cd: %s: No such file or directory\n", dir);
+		ft_dprintf(1, "bash: cd: %s: ", dir);
+		perror(NULL);
 		ft_free(v->curpath);
 		ft_free(v->pwd_exp);
 		return (1);

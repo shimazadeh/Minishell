@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 21:34:38 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/23 14:28:02 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 17:06:37 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,6 @@ char	*cmd_access_check(char **cmd, char **parsed_path, int *last_exit_code)
 		else if (access(path_iteri, F_OK) == 0 && access(path_iteri, X_OK) == 0)
 		{
 			stream = opendir(path_iteri);
-			dprintf(2, "path_iteri is %s, errno is %d\n", path_iteri, errno);
 			if (!stream && errno == ENOTDIR)
 				return (path_iteri);
 			else if (stream)
@@ -56,4 +55,22 @@ char	*cmd_access_check(char **cmd, char **parsed_path, int *last_exit_code)
 	}
 	print_error(cmd[0]);
 	return (*last_exit_code = 127, NULL);
+}
+
+char	*cmd_check(char **path, int *ec, t_struct *head)
+{
+	DIR		*stream;
+	char	*result;
+
+	stream = opendir(head->cmd[0]);
+	result = NULL;
+	if (access(head->cmd[0], F_OK) == 0 && access(head->cmd[0], X_OK) == 0 \
+	&& !stream)
+		result = ft_strdup(head->cmd[0]);
+	else
+	{
+		closedir(stream);
+		result = cmd_access_check(head->cmd, path, ec);
+	}
+	return (result);
 }

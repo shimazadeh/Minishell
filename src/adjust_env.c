@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 15:14:28 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 21:33:17 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 17:39:52 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,14 +82,14 @@ int	shlvl_too_high(char *shlvl)
 		return (0);
 	if (ft_strlen(shlvl) >= 10 && ft_strncmp(shlvl, "2147483647", 10) >= 0)
 	{
-		dprintf(1, SHLVL_ERR, "above INT MAX");
+		ft_dprintf(1, SHLVL_ERR, "above INT MAX");
 		return (1);
 	}
 	new_shlvl = ft_atoi(shlvl) + 1;
 	if (new_shlvl > 999)
 	{
 		new_shlvl_str = ft_itoa(new_shlvl);
-		dprintf(1, SHLVL_ERR, new_shlvl_str);
+		ft_dprintf(1, SHLVL_ERR, new_shlvl_str);
 		ft_free(new_shlvl_str);
 		return (1);
 	}

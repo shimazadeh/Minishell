@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/23 15:11:38 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 17:01:39 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -543,6 +543,7 @@ int			file_access_check(char **file, int *file_modes);
 int			boolean_if_buildin(char **av);
 char		*cmd_access_check(char **cmd, char **parsed_path, \
 int *last_exit_code);
+char		*cmd_check(char **path, int *ec, t_struct *head);
 void		print_error(char *cmd);
 int			ft_waitpid(t_struct **elements);
 

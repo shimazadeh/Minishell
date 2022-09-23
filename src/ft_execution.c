@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 21:17:18 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/23 14:57:37 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 17:40:32 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ int	ft_waitpid(t_struct **elements)
 		}
 		else if (WCOREDUMP(copy->wstatus))
 		{
-			dprintf(2, "segmentation fault (core dump)\n");
+			ft_dprintf(2, "segmentation fault (core dump)\n");
 			exit_code = 139;
 		}
 		copy = copy->next;
@@ -132,6 +132,9 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 			exit_code = ft_fork(elements, parsed_path, envp);
 	}
 	else if (g_var->sig_flag == 1)
+	{
 		exit_code = 130;
+		g_var->sig_flag = 0;
+	}
 	return (exit_code);
 }

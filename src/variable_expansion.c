@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 17:21:24 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/26 21:37:28 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 16:30:21 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ char	*variable_expansion(char *str, t_list **envp_head, int last_ec)
 			flag = i + go_to_closing_char(&str[i]);
 			i++;
 		}
-		else if (str[i] == '$' && !end_char(str[i + 1], " \t") && i + 1 != flag)
+		else if (str[i] == '$' && !end_char(str[i + 1], " $\t") && i + 1 != flag)
 		{
 			str = expand_variable(str, i, last_ec, envp_head);
 			i = 0;
