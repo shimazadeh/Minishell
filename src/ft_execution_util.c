@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/05 19:14:09 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/22 22:09:38 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 14:19:22 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,7 @@ void	ft_execute_cmd(t_struct *head, int *ec, char **path, t_list **envp_head)
 {
 	char	**envp;
 	char	*path_iteri;
+	DIR		*stream;
 
 	envp = NULL;
 	path_iteri = NULL;
@@ -95,10 +96,16 @@ void	ft_execute_cmd(t_struct *head, int *ec, char **path, t_list **envp_head)
 		*ec = buildins_dispatch(head->cmd, envp_head);
 	else if (head->cmd[0])
 	{
-		if (access(head->cmd[0], F_OK) == 0 && access(head->cmd[0], X_OK) == 0)
+		stream = opendir(head->cmd[0]);
+		if (access(head->cmd[0], F_OK) == 0 && access(head->cmd[0], X_OK) == 0 && !stream && errno != ENOTDIR)
+		{	
 			path_iteri = ft_strdup(head->cmd[0]);
-		else
+		}
+		else		
+		{
+			closedir(stream);	
 			path_iteri = cmd_access_check(head->cmd, path, ec);
+		}
 		if (path_iteri)
 		{
 			export_next_cmd(path_iteri, envp_head);

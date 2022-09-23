@@ -6,18 +6,26 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/22 21:34:38 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/22 22:11:08 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 14:28:02 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 void	print_error(char *cmd)
-{
+{	
+	DIR		*stream;
+
+	stream = opendir(&cmd[0]);
 	if (access(&cmd[0], F_OK))
 		ft_dprintf(2, "bash: %s: command not found\n", &cmd[0]);
 	else if (access(&cmd[0], X_OK))
 		ft_dprintf(2, "bash: %s: Permission denied\n", &cmd[0]);
+	else if (stream && errno != ENOTDIR)
+	{
+		ft_dprintf(2, "bash: %s: command not found\n", &cmd[0]);
+		closedir(stream);
+	}
 }
 
 char	*cmd_access_check(char **cmd, char **parsed_path, int *last_exit_code)
@@ -38,6 +46,7 @@ char	*cmd_access_check(char **cmd, char **parsed_path, int *last_exit_code)
 		else if (access(path_iteri, F_OK) == 0 && access(path_iteri, X_OK) == 0)
 		{
 			stream = opendir(path_iteri);
+			dprintf(2, "path_iteri is %s, errno is %d\n", path_iteri, errno);
 			if (!stream && errno == ENOTDIR)
 				return (path_iteri);
 			else if (stream)

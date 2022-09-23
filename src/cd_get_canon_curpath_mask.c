@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 19:12:22 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 20:53:08 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 14:06:28 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ int	cd_curpath_is_dot(char *curpath, char *mask, int *j_add)
 				mask_prev_compo(mask, curpath, -2 + i++);
 			else
 				return (free(op), 0);
-			free(op);
+			closedir(op);
 		}
 		ft_free(v->prev_compo);
 		ft_free(v->prev_compo_path);

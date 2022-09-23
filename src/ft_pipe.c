@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:38:31 by shabibol          #+#    #+#             */
-/*   Updated: 2022/08/26 21:57:54 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/23 15:17:07 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,20 +107,27 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 	t_struct	*elements;
 	int			exit_code;
 	char		**herdoc_files;
-
+	int			here_doc_flag;
+	
 	elements = NULL;
 	parsed_path = NULL;
 	herdoc_files = NULL;
 	exit_code = -1;
+	here_doc_flag = 0;
+	
 	create_structure(&elements, str);
 	parsed_path = extract_env_paths("PATH", envp_head);
 	str = variable_expansion(str, envp_head, last_exit_code);
+	here_doc_flag = number_of_here_doc(str); 
 	herdoc_files = ft_here_doc(&str, &elements, envp_head, last_exit_code);
-	assign_str_to_struct(&elements, str);
-	exit_code = execute(&elements, parsed_path, envp_head);
-	if (g_var->sig_flag == 1)
+	if (!herdoc_files && here_doc_flag > 0)
+		exit_code = 2;
+	else
 	{
-		g_var->sig_flag = 0;
+		assign_str_to_struct(&elements, str);
+		exit_code = execute(&elements, parsed_path, envp_head);
+		if (g_var->sig_flag == 1)
+			g_var->sig_flag = 0;
 	}
 	ft_free_sc(elements);
 	return (ft_free_tab(parsed_path), ft_unlink(herdoc_files), exit_code);
