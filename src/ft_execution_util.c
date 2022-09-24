@@ -92,7 +92,10 @@ void	ft_execute_cmd(t_struct *head, int *ec, char **path, t_list **envp_head)
 	envp = NULL;
 	path_iteri = NULL;
 	if (boolean_if_buildin(head->cmd) == 1)
+	{
+		export_next_cmd(head->cmd[0], envp_head);
 		*ec = buildins_dispatch(head->cmd, envp_head);
+	}
 	else if (head->cmd[0])
 	{
 		path_iteri = cmd_check(path, ec, head);

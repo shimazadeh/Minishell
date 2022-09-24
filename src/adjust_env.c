@@ -26,7 +26,9 @@ void	adjust_env(t_list **envp_head)
 	export(to_export, envp_head);
 	ft_free(to_export[0]);
 	find_env_var("SHLVL", envp_head, &shlvl);
-	if (!shlvl || contains_non_digit(shlvl) || shlvl_too_high(shlvl))
+	if (!shlvl || contains_non_digit(shlvl))
+		to_export[0] = ft_strdup("SHLVL=0");
+	else if (shlvl_too_high(shlvl))
 		to_export[0] = ft_strdup("SHLVL=1");
 	else
 	{
@@ -36,7 +38,6 @@ void	adjust_env(t_list **envp_head)
 	}
 	export(to_export, envp_head);
 	ft_free(shlvl);
-	ft_free(to_export[0]);
 	adjust_env_underscore(to_export, pwd, envp_head);
 }
 
@@ -45,6 +46,7 @@ void	adjust_env_underscore(char *to_export[2], char *pwd, t_list **envp_head)
 	char	*underscore;
 
 	underscore = NULL;
+	ft_free(to_export[0]);
 	find_env_var("_", envp_head, &underscore);
 	if (!underscore)
 	{

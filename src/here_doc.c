@@ -25,7 +25,7 @@ int	set_last_infile_type(t_struct **elements, char **file, int *loc, int size)
 	copy = *elements;
 	while (copy)
 	{
-		if (loc[j] == i && find_last_infile_type(copy->str) == 1)
+		if (j < size && loc[j] == i && find_last_infile_type(copy->str) == 1)
 		{
 			tmp = j;
 			while (++j < size - 1 && loc[j] == i)

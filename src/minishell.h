@@ -266,6 +266,7 @@ int			export_arg(int i, int ret, char **vars, t_list **envp_head);
 void		print_sorted_list(t_list **envp_head);
 int			print_lowest_ascii(int i, int lowest_ascii_mask, \
 t_list *node, char *tab);
+void		print_export_var(char *lowest_ascii);
 t_list		*old_var(char *var, t_list **envp_head);
 
 // pwd.c

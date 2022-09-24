@@ -39,7 +39,8 @@ char	*ft_readline(void)
 	gnl = readline("> ");
 	if (gnl)
 	{
-		tmp = gnl;
+		tmp = ft_strdup(gnl);
+		free(gnl);
 		gnl = ft_strjoin(tmp, "\n");
 		ft_free(tmp);
 	}

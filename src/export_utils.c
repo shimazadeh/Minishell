@@ -61,9 +61,32 @@ int	print_lowest_ascii(int i, int lowest_ascii_mask, t_list *node, char *tab)
 		node = node->next;
 	}
 	tab[lowest_ascii_mask] = '1';
-	if (ft_strncmp(lowest_ascii, "_=", 2))
-		ft_dprintf(1, "export %s\n", lowest_ascii);
+	print_export_var(lowest_ascii);
 	return (1);
+}
+
+void	print_export_var(char *lowest_ascii)
+{
+	char	*eq_add;
+	int		i;
+	char	*tmp;
+
+	i = 0;
+	if (ft_strncmp(lowest_ascii, "_=", 2))
+	{
+		eq_add = ft_strchr(lowest_ascii, '=');
+		if (eq_add)
+		{
+			while (lowest_ascii[i] && lowest_ascii[i] != '=')
+				i++;
+			tmp = ft_strndup(lowest_ascii, i + 1);
+			ft_dprintf(1, "export %s", tmp);
+			ft_free(tmp);
+			ft_dprintf(1, "\"%s\"\n", ++eq_add);
+		}
+		else
+			ft_dprintf(1, "export %s\n", lowest_ascii);
+	}
 }
 
 t_list	*old_var(char *var, t_list **envp_head)

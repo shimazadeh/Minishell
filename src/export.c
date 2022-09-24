@@ -43,12 +43,12 @@ int	export_arg(int i, int ret, char **vars, t_list **envp_head)
 		else
 		{
 			old = old_var(vars[i], envp_head);
-			if (old)
+			if (old && ft_strchr(vars[i], '='))
 			{
 				ft_free(old->content);
 				old->content = ft_strdup(vars[i]);
 			}
-			else
+			else if (!old)
 				ft_lstadd_back(envp_head, ft_lstnew(ft_strdup(vars[i])));
 		}
 		i++;
