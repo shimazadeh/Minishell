@@ -71,7 +71,9 @@ int	number_of_delim(char *str, char delim, int flag)
 		return (0);
 	while (str[i])
 	{
-		if (flag == 0 && str[i] == delim && str[i + 1] != delim)
+		if (str[i] == '\"' || str[i] == '\'')
+			i = i + go_to_closing_char(&str[i]);
+		else if (flag == 0 && str[i] == delim && str[i + 1] != delim)
 			count++;
 		else if (flag == 0 && str[i] == delim && str[i + 1] == delim)
 			i++;

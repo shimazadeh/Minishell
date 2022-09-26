@@ -63,7 +63,7 @@ char	*expand_variable(char *str, int i, int last_ec, t_list **envp_head)
 	}
 	else if (str[end] != '\'' && str[end] != '\"')
 	{
-		while (str[end] && !end_char (str[end], " $'\"\n"))
+		while (str[end] && !end_char (str[end], " $'\"\n^%#:+@-"))
 			end++;
 		var_name = ft_strdup_range(str, i + 1, end);
 		find_env_var(var_name, envp_head, &var_exp);
@@ -78,27 +78,25 @@ char	*variable_expansion(char *str, t_list **envp_head, int last_ec)
 {
 	int		flag;
 	int		i;
+	char	*delim;
 
 	flag = -1;
 	i = 0;
+	delim = " $\t^%#:+@-";
 	while (str[i])
 	{
 		if (str[i] == '<' && str[i + 1] == '<')
-			i = i + 2 + pass_the_next_word(&str[i + 2]);
+			i = i + 1 + pass_the_next_word(&str[i + 2]);
 		else if (str[i] == '\'' && i > flag)
-			i += go_to_closing_char(&str[i]) + 1;
+			i += go_to_closing_char(&str[i]);
 		else if (str[i] == '\"' && i > flag)
-		{
 			flag = i + go_to_closing_char(&str[i]);
-			i++;
-		}
-		else if (str[i] == '$' && !end_char(str[i + 1], " $\t") && i + 1 != flag)
+		else if (str[i] == '$' && !end_char(str[i + 1], delim) && i + 1 != flag)
 		{
 			str = expand_variable(str, i, last_ec, envp_head);
-			i = 0;
+			i = -1;
 		}
-		else
-			i++;
+		i++;
 	}
 	return (str);
 }

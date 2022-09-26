@@ -50,21 +50,21 @@ void	ft_dup2_infiles(t_struct *head, int *exit_code)
 		else
 		{
 			if (dup2(head->fds[0], STDIN_FILENO) < 0)
-				perror("dup2 stdin inside:");
+				perror("dup2 stdin:");
 			close(head->fds[0]);
 		}
 	}
 	else if (head->fds[0] != STDIN_FILENO)
 	{
 		if (dup2(head->fds[0], STDIN_FILENO) < 0)
-			perror("dup2 stdin inside:");
+			perror("dup2 stdin:");
 		close(head->fds[0]);
 	}
 }
 
 void	ft_dup2_outfiles(t_struct *head, int *exit_code)
 {
-	if (*exit_code != 1 && head->outfiles)
+	if (head->outfiles && *exit_code != 1)
 	{
 		head->fds[1] = file_access_check(head->outfiles, head->outfile_modes);
 		if (!head->fds[1])
@@ -72,7 +72,7 @@ void	ft_dup2_outfiles(t_struct *head, int *exit_code)
 		else
 		{
 			if (dup2(head->fds[1], STDOUT_FILENO) < 0)
-				perror("dup2 stdout inside:");
+				perror("dup2 stdout:");
 			close(head->fds[1]);
 		}
 	}
