@@ -64,9 +64,14 @@ char	*cmd_check(char **path, int *ec, t_struct *head)
 
 	stream = opendir(head->cmd[0]);
 	result = NULL;
-	if (head->cmd[0][0] == '/' && access(head->cmd[0], F_OK) == 0 \
-	&& access(head->cmd[0], X_OK) == 0 && !stream)
-		result = ft_strdup(head->cmd[0]);
+	if (ft_strchr(head->cmd[0], '/'))
+	{
+		if (access(head->cmd[0], F_OK) == 0 && access(head->cmd[0], X_OK) == 0 \
+		&& !stream)
+			result = ft_strdup(head->cmd[0]);
+		else
+			ft_dprintf(2, "bash: %s: no such file or directory\n", head->cmd[0]);
+	}
 	else
 	{
 		closedir(stream);

@@ -104,7 +104,6 @@ int	set_files(t_struct *head, int flag)
 	if (flag == 0)
 	{
 		size = number_of_delim(head->str, '>', 1);
-		dprintf(2, "allocating memory with size %d\n", size);
 		head->outfiles = ft_alloc(sizeof(char *) * (size + 1));
 		head->outfile_modes = ft_alloc(sizeof(int) * size);
 		if (parse_outfiles(&head->str, head) < 0)

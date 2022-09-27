@@ -509,9 +509,11 @@ int			struct_size(t_struct *lst);
 //variable expansion
 
 char		*variable_expansion(char *str, t_list **envp_head, int last_ec);
-char		*expand_variable(char *str, int i, int last_ec, t_list **envp_head);
+char		*expand_variable(char *str, int *i, int last_ec, \
+t_list **envp_head);
 int			end_char(char c, char *end);
-char		*create_new_str(char *str, char *to_add, int to_break, int to_cont);
+char		*create_new_str(char *str, char *to_add, int *to_break, \
+int to_continue);
 
 //parsing
 void		initialize_sc(t_struct **tab, char *str);
