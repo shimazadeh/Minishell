@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 23:45:50 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 21:38:37 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/27 16:50:39 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,11 +50,12 @@ t_list **new_path_lst_add)
 	*new_path_lst_add = v->new_path_lst;
 }
 
-void	fill_new_path_list(int i, int j, t_get_new_path_list_vars v[1])
+int	fill_new_path_list(int i, int j, t_get_new_path_list_vars v[1])
 {
 	char	*tmp;
+	char	*tmp2;
+	DIR		*stream;
 
-	tmp = NULL;
 	v->path_start = ft_strndup(v->path, i);
 	v->path_end = ft_strdup(&(v->path)[j]);
 	v->wc_str = ft_strndup(&(v->path)[i], j - i);
@@ -63,12 +64,17 @@ void	fill_new_path_list(int i, int j, t_get_new_path_list_vars v[1])
 		if (compatible_name((char *)v->file_lst->content, v->wc_str))
 		{
 			tmp = ft_strjoin(v->path_start, (char *)v->file_lst->content);
-			ft_lstadd_back(&v->new_path_lst, \
-			ft_lstnew(ft_strjoin(tmp, v->path_end)));
+			tmp2 = ft_strjoin(tmp, v->path_end);
+			ft_free(tmp);
+			stream = opendir(tmp2);
+			if (ft_strncmp(v->path_end, "/", 1) \
+				|| (stream || (errno != 20 && errno != 2)))
+				ft_lstadd_back(&v->new_path_lst, ft_lstnew(tmp2));
+			if (stream)
+				closedir(stream);
 		}
 		v->file_lst = v->file_lst->next;
 	}
-	ft_free(v->path_start);
-	ft_free(v->path_end);
-	ft_free(v->wc_str);
+	return (ft_free(v->path_start), ft_free(v->path_end), \
+		ft_free(v->wc_str), 1);
 }

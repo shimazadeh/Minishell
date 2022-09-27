@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 19:02:30 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/21 14:47:36 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/27 15:23:34 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	rm_outer_par_1(char **str_add)
 	str = *str_add;
 	rm_outer_par_2(&i, 0, 1, str);
 	tmp = str;
-	tmp = ft_strdup(&tmp[i]);
+	str = ft_strdup(&tmp[i]);
 	ft_free(tmp);
 	*str_add = str;
 }

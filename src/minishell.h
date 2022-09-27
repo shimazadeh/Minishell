@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/23 17:01:39 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/27 16:23:06 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,7 +365,7 @@ void		get_new_path_list_init_vars(char *path, t_list *file_lst, \
 t_get_new_path_list_vars v[1]);
 void		get_new_path_list(char *path, t_list *file_lst, \
 t_list **new_path_lst_add);
-void		fill_new_path_list(int i, int j, t_get_new_path_list_vars v[1]);
+int			fill_new_path_list(int i, int j, t_get_new_path_list_vars v[1]);
 
 // get_new_path_list_utils.c
 

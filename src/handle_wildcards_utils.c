@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/25 00:20:00 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/26 22:16:17 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/27 15:47:12 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,8 @@ void	get_opendir_path(char *path, char **opendir_path_add)
 		i++;
 	while (i > 0 && path[i] != '/')
 		i--;
+	if (i == 0 && path[i] == '/')
+		i = 1;
 	if (ft_strncmp(path, "./", 2) && ft_strncmp(path, "../", 3) \
 		&& ft_strncmp(path, "/", 1))
 		opendir_path = ft_strnjoin("./", path, i + 2);
