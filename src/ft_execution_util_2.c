@@ -70,7 +70,10 @@ char	*cmd_check(char **path, int *ec, t_struct *head)
 		&& !stream)
 			result = ft_strdup(head->cmd[0]);
 		else
+		{
 			ft_dprintf(2, "bash: %s: no such file or directory\n", head->cmd[0]);
+			*ec = 127;
+		}
 	}
 	else
 	{
