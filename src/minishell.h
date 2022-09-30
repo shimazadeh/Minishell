@@ -599,8 +599,8 @@ int			quotes_presence(char *str);
 
 //signals
 void		sig_handler(int signum, siginfo_t *info, void *ptr);
-void		sig_handler_pipe(int signum, siginfo_t *info, void *ptr);
 void		sig_handler_heredoc(int signum, siginfo_t *info, void *ptr);
+void		sig_ignore(int signum);
 void		catch_signals(int flag);
 
 //custom free functions

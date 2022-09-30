@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 00:21:24 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/30 17:07:12 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/30 17:11:15 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void	minishell_loop(t_minishell_vars *v, char *tmp)
 		}
 	}
 	else if (!v->input && write(1, "exit\n", 5))
-		ft_exit(0, NULL, NULL);
+		ft_exit(v->last_exit_code, NULL, NULL);
 	ft_free(v->input);
 	ft_free(v->prompt);
 }
