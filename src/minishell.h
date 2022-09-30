@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/27 16:23:06 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/30 17:01:15 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ typedef struct s_minishell_vars
 {
 	int				last_exit_code;
 	char			*input;
+	char			*prev_input;
 	char			*prompt;
 	t_list			*envp_head;
 }				t_minishell_vars;
@@ -246,6 +247,7 @@ char		*mask_result_str(char *mask, char *path);
 // echo.c
 
 int			echo(char **av);
+int			is_echo_option(char *str);
 
 // echo_utils.c
 

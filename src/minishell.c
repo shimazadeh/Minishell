@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 00:21:24 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/22 17:43:04 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/30 17:07:12 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ void	minishell_init_vars(t_minishell_vars *v)
 {
 	v->last_exit_code = 0;
 	v->input = NULL;
+	v->prev_input = NULL;
 	v->prompt = NULL;
 	v->envp_head = NULL;
 }
@@ -42,22 +43,22 @@ void	minishell_loop(t_minishell_vars *v, char *tmp)
 	tmp = readline(v->prompt);
 	v->input = ft_strdup(tmp);
 	free(tmp);
-	if (v->input && *(v->input))
+	if (v->input && *(v->input) && !str_is_only_spaces(v->input))
 	{
-		if (!str_is_only_spaces(v->input))
+		if (!v->prev_input || \
+			ft_strncmp(v->input, v->prev_input, ft_strlen(v->input) + 1))
 			add_history(v->input);
+		ft_free(v->prev_input);
+		v->prev_input = ft_strdup(v->input);
 		if (syntax_check(&(v->input)))
 		{
 			handle_ws(&(v->input));
-			v->last_exit_code = algorithm(ft_strdup(v->input),
+			v->last_exit_code = algorithm(ft_strdup(v->input), \
 					&(v->envp_head), v->last_exit_code);
 		}
 	}
-	else if (!v->input)
-	{
-		write(1, "exit\n", 5);
+	else if (!v->input && write(1, "exit\n", 5))
 		ft_exit(0, NULL, NULL);
-	}
 	ft_free(v->input);
 	ft_free(v->prompt);
 }

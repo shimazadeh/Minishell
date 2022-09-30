@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/24 12:12:12 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/11 18:29:51 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/30 17:06:01 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ int	ft_strncmp(const char *s1, const char *s2, int n)
 	int	i;
 
 	i = 0;
-	if (!s1)
+	if (!s1 || !s2)
 		return (0);
 	if (n == 0)
 		return (0);
