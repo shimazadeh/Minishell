@@ -73,12 +73,10 @@ void	cd_path_to_curpath(char *dir, t_cd_vars *v)
 
 int	cd_canon_and_exec(t_list **envp_head, t_cd_vars *v, char *dir)
 {
-	printf("str = %s\n", v->curpath);
 	if (!cd_get_canon_curpath_mask(&(v->mask), v->curpath))
 		return (EXIT_FAILURE);
 	v->tmp = v->curpath;
 	v->curpath = mask_result_str(v->mask, v->tmp);
-	printf("str = %s\n", v->curpath);
 	ft_free(v->tmp);
 	ft_free(v->mask);
 	if (chdir(v->curpath) == -1)
