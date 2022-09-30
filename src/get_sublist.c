@@ -33,7 +33,7 @@ void	get_sublist(t_list **sublist, char *path, char *opendir_path)
 	t_get_sublist_vars	v[1];
 
 	if (!sublist || !opendir_path || !*opendir_path || !path || !*path)
-		ft_exit(EXIT_FAILURE, "get_sublist", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "get_sublist", "argument check fail");
 	get_sublist_init_vars(sublist, path, opendir_path, v);
 	v->wc = ft_strchr(v->path, '*');
 	if (!v->wc)

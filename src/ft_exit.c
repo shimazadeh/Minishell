@@ -12,10 +12,11 @@
 
 #include "minishell.h"
 
-void	ft_exit(int exit_code, char *fn_name, char *error_msg)
+void	ft_exit(char **av, int exit_code, char *fn_name, char *error_msg)
 {
 	int	fd;
 
+	exit_code = exit_check_args(av, exit_code);
 	fd = 1;
 	if (exit_code)
 		fd = 2;
@@ -28,4 +29,33 @@ void	ft_exit(int exit_code, char *fn_name, char *error_msg)
 		ft_free_list_regular(g_var->g_alloc_lst);
 	free(g_var);
 	exit(exit_code);
+}
+
+int	exit_check_args(char **av, int exit_code)
+{
+	int	i;
+	int	ret;
+
+	ret = 0;
+	i = -1;
+	if (!av || !av[0])
+		ret = exit_code % 255;
+	else if (av[0])
+	{
+		if (!av[0][0])
+			ret = 2;
+		while (av[0][++i])
+			if (av[0][i] < '0' || av[0][i] > '9')
+				ret = 2;
+		if (ret == 2)
+			ft_dprintf(1, "bash: exit: : numeric argument required\n");
+		if (!ret)
+			ret = ft_atoi(av[0]) % 256;
+	}
+	if (ret != 2 && av && av[0] && av[1])
+	{
+		ret = 1;
+		ft_dprintf(1, "bash: exit: too many arguments\n");
+	}
+	return (ret);
 }

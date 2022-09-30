@@ -20,7 +20,7 @@ void	ft_lst_to_tab(char ***tab_add, t_list **lst_head)
 	t_list	*node;
 
 	if (!lst_head || !tab_add)
-		ft_exit(EXIT_FAILURE, "lst_to_tab", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "lst_to_tab", "argument check fail");
 	node = *lst_head;
 	size = ft_lstsize(node);
 	tab = ft_alloc(sizeof(char *) * (size + 1));

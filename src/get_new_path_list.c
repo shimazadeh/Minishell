@@ -35,7 +35,7 @@ t_list **new_path_lst_add)
 	i = 0;
 	j = 0;
 	if (!new_path_lst_add)
-		ft_exit(EXIT_FAILURE, "get_new_path_list", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "get_new_path_list", "argument check fail");
 	get_new_path_list_init_vars(path, file_lst, v);
 	if (!v->path || !v->file_lst)
 		return ;

@@ -18,7 +18,7 @@ int	echo(char **av)
 
 	i = 1;
 	if (!av)
-		ft_exit(EXIT_FAILURE, "echo", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "echo", "argument check fail");
 	else if (is_echo_option(av[0]))
 	{
 		while (is_echo_option(av[i]))

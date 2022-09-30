@@ -20,7 +20,7 @@ void	ft_tab_to_lst(char **tab, t_list **lst_head)
 
 	i = 0;
 	if (!lst_head)
-		ft_exit(EXIT_FAILURE, "tab_to_lst", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "tab_to_lst", "argument check fail");
 	if (!tab || !tab[0])
 		return ;
 	while (tab[i])

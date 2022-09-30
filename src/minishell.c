@@ -58,7 +58,7 @@ void	minishell_loop(t_minishell_vars *v, char *tmp)
 		}
 	}
 	else if (!v->input && write(1, "exit\n", 5))
-		ft_exit(v->last_exit_code, NULL, NULL);
+		ft_exit(NULL, v->last_exit_code, NULL, NULL);
 	ft_free(v->input);
 	ft_free(v->prompt);
 }

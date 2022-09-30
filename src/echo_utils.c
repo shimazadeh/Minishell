@@ -18,7 +18,7 @@ void	print_tab_nl(char **tab, int nl)
 
 	i = 0;
 	if (!tab)
-		ft_exit(EXIT_FAILURE, "print_tab_nl", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "print_tab_nl", "argument check fail");
 	while (tab[i])
 	{
 		ft_dprintf(1, "%s", tab[i]);

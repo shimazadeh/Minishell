@@ -42,7 +42,7 @@ int	find_env_var(char *var_name, t_list **envp_head, char **var_exp_add)
 	var_exp = NULL;
 	node = NULL;
 	if (!var_name || !envp_head || !var_exp_add)
-		ft_exit(EXIT_FAILURE, "find_env_var", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "find_env_var", "argument check fail");
 	node = *envp_head;
 	s = ft_strlen(var_name);
 	while (node)
@@ -69,7 +69,7 @@ char	*ft_getcwd(void)
 	pwd = NULL;
 	tmp = getcwd(NULL, 0);
 	if (!tmp)
-		ft_exit(errno, "ft_getpwd", "getcwd fail");
+		ft_exit(NULL, errno, "ft_getpwd", "getcwd fail");
 	pwd = ft_strdup(tmp);
 	free(tmp);
 	return (pwd);

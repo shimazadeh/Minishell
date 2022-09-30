@@ -21,7 +21,7 @@ int	main(int ac, char **av, char **envp)
 	g_var->sig_flag = 0;
 	g_var->g_alloc_lst = NULL;
 	if (ac != 1)
-		ft_exit(EXIT_FAILURE, "main", "invalid number of argument");
+		ft_exit(NULL, EXIT_FAILURE, "main", "invalid number of argument");
 	minishell(envp);
 	return (0);
 }

@@ -15,7 +15,7 @@
 int	export(char **vars, t_list **envp_head)
 {
 	if (!envp_head || !vars)
-		ft_exit(EXIT_FAILURE, "export", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "export", "argument check fail");
 	if (!vars[0])
 		return (export_no_arg(envp_head));
 	return (export_arg(0, 0, vars, envp_head));

@@ -304,7 +304,8 @@ char		*ft_getcwd(void);
 
 // ft_exit.c
 
-void		ft_exit(int exit_code, char *fn_name, char *error_msg);
+void		ft_exit(char **av, int exit_code, char *fn_name, char *error_msg);
+int			exit_check_args(char **av, int exit_code);
 
 // prompt.c
 

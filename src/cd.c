@@ -41,7 +41,7 @@ int	cd(char **dir_tab, t_list **envp_head)
 	dir = NULL;
 	cd_init_vars(v);
 	if (!envp_head || !dir_tab)
-		ft_exit(EXIT_FAILURE, "cd", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "cd", "argument check fail");
 	if (!cd_check(dir_tab, &dir))
 		return (1);
 	if (!dir)

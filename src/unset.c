@@ -27,7 +27,7 @@ int	unset(char **vars, t_list **envp_head)
 	i = 0;
 	unset_init_vars(v);
 	if (!envp_head || !vars)
-		ft_exit(EXIT_FAILURE, "unset", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "unset", "argument check fail");
 	if (!vars[0] || !*envp_head)
 		return (v->ret);
 	i = 0;

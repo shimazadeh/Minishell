@@ -27,7 +27,7 @@ t_list **sep_head)
 
 	split_submod_and_sep_init_vars(v);
 	if (!str_add || !*str_add || !submod_head || !sep_head)
-		ft_exit(EXIT_FAILURE, "split_submod_and_sep", "argument check fail");
+		ft_exit(NULL, 1, "split_submod_and_sep", "argument check fail");
 	rm_outer_par_1(str_add);
 	v->str = *str_add;
 	split_submod_and_sep_2(submod_head, sep_head, v);

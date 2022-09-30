@@ -23,7 +23,7 @@ t_cd_curpath_is_dot_vars	v[1])
 	prev_compo = NULL;
 	prev_compo_path = NULL;
 	if (!path || *path != '/' || !mask || !*mask || !v)
-		ft_exit(EXIT_FAILURE, "prev_compo_2dot_or_root", "argument check fail");
+		ft_exit(NULL, 1, "prev_compo_2dot_or_root", "argument check fail");
 	while (!mask[i] || path[i] != '/')
 		i--;
 	if (!i)

@@ -19,10 +19,10 @@ void	*ft_alloc(int size)
 
 	alloc = malloc(size);
 	if (!alloc)
-		ft_exit(errno, "ft_alloc", "malloc fail");
+		ft_exit(NULL, errno, "ft_alloc", "malloc fail");
 	new = ft_lstnew_regular(alloc);
 	if (!new)
-		ft_exit(errno, "ft_alloc", "malloc fail");
+		ft_exit(NULL, errno, "ft_alloc", "malloc fail");
 	ft_lstadd_back(&g_var->g_alloc_lst, new);
 	return (alloc);
 }

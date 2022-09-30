@@ -15,7 +15,7 @@
 int	buildins_dispatch(char **av, t_list **envp_head)
 {
 	if (!av || !av[0])
-		ft_exit(EXIT_FAILURE, "buildins_dispatch", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "buildins_dispatch", "argument check fail");
 	else if (!ft_strncmp(av[0], "echo", 5))
 		return (echo(&av[1]));
 	else if (!ft_strncmp(av[0], "cd", 3))
@@ -29,7 +29,7 @@ int	buildins_dispatch(char **av, t_list **envp_head)
 	else if (!ft_strncmp(av[0], "env", 4) && !av[1])
 		return (env(envp_head));
 	else if (!ft_strncmp(av[0], "exit", 5))
-		ft_exit(EXIT_SUCCESS, NULL, NULL);
+		ft_exit(&av[1], EXIT_SUCCESS, NULL, NULL);
 	return (127);
 }
 

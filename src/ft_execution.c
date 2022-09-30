@@ -32,7 +32,7 @@ int	execute_function(t_struct *head, char **path, t_list **envp_head, int flag)
 			ft_free_list(*envp_head);
 			ft_free_tab(path);
 			ft_free_sc(head);
-			ft_exit(exit_code, NULL, NULL);
+			ft_exit(NULL, exit_code, NULL, NULL);
 		}
 	}
 	return (exit_code);

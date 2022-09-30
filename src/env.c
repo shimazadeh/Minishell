@@ -17,7 +17,7 @@ int	env(t_list **envp_head)
 	t_list	*node;
 
 	if (!envp_head)
-		ft_exit(EXIT_FAILURE, "env", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "env", "argument check fail");
 	if (!*envp_head)
 		return (0);
 	node = *envp_head;

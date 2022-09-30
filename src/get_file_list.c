@@ -17,7 +17,7 @@ int	read_dir_content(struct dirent **dir_content_add, DIR *stream)
 	struct dirent	*dir_content;
 
 	if (!dir_content_add)
-		ft_exit(EXIT_FAILURE, "read_dir_content", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "read_dir_content", "argument check fail");
 	if (!stream)
 		return (0);
 	dir_content = NULL;
@@ -39,7 +39,7 @@ void	get_file_list(char *opendir_path, t_list **file_lst_add)
 	dir_content = NULL;
 	file_lst = NULL;
 	if (!opendir_path || !*opendir_path || !file_lst_add)
-		ft_exit(EXIT_FAILURE, "get_file_tab", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "get_file_tab", "argument check fail");
 	stream = opendir(opendir_path);
 	if (!stream)
 		return ;

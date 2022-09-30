@@ -20,7 +20,7 @@ int	go_to_closing_char(char *str)
 	c = 0;
 	i = 0;
 	if (!str)
-		ft_exit(EXIT_FAILURE, "go_to_closing_char", "argument check fail");
+		ft_exit(NULL, 1, "go_to_closing_char", "argument check fail");
 	c = *str;
 	i = 1;
 	while (str[i] && str[i] != c)
@@ -40,7 +40,7 @@ void	rm_outer_par_1(char **str_add)
 	str = NULL;
 	tmp = NULL;
 	if (!str_add || !*str_add)
-		ft_exit(EXIT_FAILURE, "rm_outer_par", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "rm_outer_par", "argument check fail");
 	str = *str_add;
 	rm_outer_par_2(&i, 0, 1, str);
 	tmp = str;
@@ -81,7 +81,7 @@ int	go_to_closing_par(char *str, char *par_tab)
 	int		i;
 
 	if (!str)
-		ft_exit(EXIT_FAILURE, "go_to_closing_par", "argument check fail");
+		ft_exit(NULL, EXIT_FAILURE, "go_to_closing_par", "argument check fail");
 	count = 1;
 	if (par_tab)
 		par_tab[0] = 1;
@@ -108,7 +108,7 @@ int	str_is_only_spaces(char *str)
 
 	i = 0;
 	if (!str)
-		ft_exit(EXIT_FAILURE, "str_is_only_spaces", "argument check fail");
+		ft_exit(NULL, 1, "str_is_only_spaces", "argument check fail");
 	while (str[i])
 	{
 		if (str[i] != ' ' && str[i] != '\t')
