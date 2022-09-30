@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 14:33:09 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/08 21:13:13 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/30 17:57:20 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int	unset(char **vars, t_list **envp_head)
 	i = 0;
 	while (vars[i])
 	{
-		if (contains_invalid_char(vars[i], "@#$%^&*-+=<>|\\", 0))
+		if (contains_invalid_char(vars[i], 0))
 		{
 			ft_dprintf(2, "bash: unset: `%s': not a valid identifier\n", \
 				vars[i]);

@@ -6,22 +6,26 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 20:50:57 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/08 21:16:01 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/30 18:03:09 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	contains_invalid_char(char *str, char *id, int j)
+int	contains_invalid_char(char *str, int j)
 {
 	int	i;
 
 	i = 0;
 	if (str[0] == '=')
 		return (1);
+	if (str[0] >= '0' && str[0] <= '9')
+		return (1);
 	while (str[i] && (!j || str[i] != '='))
 	{
-		if (ft_strchr(id, str[i]))
+		if ((str[i] > 'z' || (str[i] < 'a' && str[i] > 'Z') || str[i] < 'A') \
+			&& (str[i] < '0' && str[i] > '9')
+			&& str[i] != '_')
 			return (1);
 		i++;
 	}

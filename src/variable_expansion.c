@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 17:21:24 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/23 16:30:21 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/30 17:47:31 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ char	*expand_variable(char *str, int *i, int last_ec, t_list **envp_head)
 		end++;
 	else if (str[end] != '\'' && str[end] != '\"')
 	{
-		while (str[end] && !end_char(str[end], " ~!$'\"\n^%#:+@-="))
+		while (str[end] && !end_char(str[end], " ./~!$'\"\n^%#:+@-="))
 			end++;
 		var_name = ft_strdup_range(str, *i + 1, end);
 		find_env_var(var_name, envp_head, &var_exp);
@@ -84,7 +84,7 @@ char	*variable_expansion(char *str, t_list **envp_head, int last_ec)
 
 	flag = -1;
 	i = 0;
-	delim = "~!$ \t^%#:+@-=";
+	delim = "./~!$ \t^%#:+@-=";
 	while (str[i])
 	{
 		if (str[i] == '<' && str[i + 1] == '<')

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 21:38:31 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/25 01:50:40 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/30 17:25:20 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,6 @@ void	mask_prev_compo(char *mask, char *path, int i)
 		mask[i] = 0;
 		i--;
 	}
-	mask[i] = 0;
 }
 
 char	*mask_result_str(char *mask, char *path)

@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 19:12:22 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/23 14:06:28 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/09/30 17:53:44 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	cd_get_canon_curpath_mask(char **mask_add, char *curpath)
 			while (curpath[i] == '/')
 				i++;
 		}
-		else if (curpath[i] == '.')
+		else if (cd_comp(curpath, i))
 		{
 			if (!cd_curpath_is_dot(curpath, mask, &i))
 				return (0);
@@ -103,4 +103,14 @@ int	cd_curpath_is_dot(char *curpath, char *mask, int *j_add)
 		i++;
 	*j_add = i;
 	return (1);
+}
+
+int	cd_comp(char *curpath, int i)
+{
+	if (!ft_strncmp(&curpath[i], ".", 2) \
+		|| !ft_strncmp(&curpath[i], "./", 2) \
+		|| !ft_strncmp(&curpath[i], "..", 3) \
+		|| !ft_strncmp(&curpath[i], "../", 3))
+		return (1);
+	return (0);
 }
