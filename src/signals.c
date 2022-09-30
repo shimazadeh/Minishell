@@ -15,25 +15,39 @@
 void	catch_signals(int flag)
 {
 	static struct sigaction	_sigact;
-	static struct sigaction	_sigact_pipe;
 	static struct sigaction	_sigact_heredoc;
 
 	memset(&_sigact, 0, sizeof(_sigact));
 	_sigact.sa_sigaction = sig_handler;
 	_sigact.sa_flags = SA_SIGINFO;
-	memset(&_sigact_pipe, 0, sizeof(_sigact_pipe));
-	_sigact_pipe.sa_sigaction = sig_handler_pipe;
-	_sigact_pipe.sa_flags = SA_SIGINFO;
-	memset(&_sigact_heredoc, 0, sizeof(_sigact));
+	memset(&_sigact_heredoc, 0, sizeof(_sigact_heredoc));
 	_sigact_heredoc.sa_sigaction = sig_handler_heredoc;
 	_sigact_heredoc.sa_flags = SA_SIGINFO;
-	sigaction(SIGQUIT, &_sigact, NULL);
 	if (flag == 0)
-		sigaction(SIGINT, &_sigact_pipe, NULL);
+	{
+		signal(SIGINT, sig_ignore);
+		signal(SIGQUIT, sig_ignore);
+	}
 	else if (flag == 1)
+	{
 		sigaction(SIGINT, &_sigact, NULL);
+		sigaction(SIGQUIT, &_sigact, NULL);
+	}
 	else if (flag == 2)
+	{
 		sigaction(SIGINT, &_sigact_heredoc, NULL);
+		sigaction(SIGQUIT, &_sigact_heredoc, NULL);
+	}
+}
+
+void	sig_ignore(int signum)
+{
+	(void)signum;
+	if (signum == SIGINT)
+		g_var->sig_flag = 1;
+	if (signum == SIGQUIT)
+		g_var->sig_flag = 2;
+	return ;
 }
 
 void	sig_handler(int signum, siginfo_t *info, void *ptr)
@@ -52,17 +66,6 @@ void	sig_handler(int signum, siginfo_t *info, void *ptr)
 		write(1, "\b\b  \b\b", 6);
 }
 
-void	sig_handler_pipe(int signum, siginfo_t *info, void *ptr)
-{
-	(void)ptr;
-	(void)info;
-	if (signum == SIGINT)
-	{
-		write(1, "\n", 1);
-		g_var->sig_flag = 1;
-	}
-}
-
 void	sig_handler_heredoc(int signum, siginfo_t *info, void *ptr)
 {
 	(void)ptr;
@@ -73,4 +76,6 @@ void	sig_handler_heredoc(int signum, siginfo_t *info, void *ptr)
 		write(1, "\n", 1);
 		g_var->sig_flag = 1;
 	}
+	else if (signum == SIGQUIT)
+		write(1, "\b\b  \b\b", 6);
 }

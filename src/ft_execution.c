@@ -71,15 +71,15 @@ int	ft_waitpid(t_struct **elements)
 		if (waitpid(copy->child, &(copy->wstatus), 0) != -1 \
 		&& WIFEXITED(copy->wstatus))
 			exit_code = WEXITSTATUS(copy->wstatus);
-		else if (g_var->sig_flag == 1)
-		{
-			kill(copy->child, SIGQUIT);
+		else if (WIFSTOPPED(copy->wstatus) && g_var->sig_flag == 1)
 			exit_code = 130;
-		}
-		else if (WCOREDUMP(copy->wstatus))
+		else if (WIFSIGNALED(copy->wstatus) && WCOREDUMP(copy->wstatus))
 		{
 			ft_dprintf(2, "segmentation fault (core dump)\n");
-			exit_code = 139;
+			if (g_var->sig_flag == 2)
+				exit_code = 131;
+			else
+				exit_code = 139;
 		}
 		copy = copy->next;
 	}
@@ -138,3 +138,8 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 	}
 	return (exit_code);
 }
+		// else if (g_var->sig_flag == 1)
+		// {
+		// 	kill(copy->child, SIGQUIT);
+		// 	exit_code = 130;
+		// }

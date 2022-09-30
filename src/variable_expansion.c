@@ -62,17 +62,18 @@ char	*expand_variable(char *str, int *i, int last_ec, t_list **envp_head)
 		var_exp = ft_itoa(last_ec);
 		end++;
 	}
+	else if (str[end] >= '0' && str[end] <= '9')
+		end++;
 	else if (str[end] != '\'' && str[end] != '\"')
 	{
-		while (str[end] && !end_char(str[end], " $'\"\n^%#:+@-"))
+		while (str[end] && !end_char(str[end], " ~!$'\"\n^%#:+@-="))
 			end++;
 		var_name = ft_strdup_range(str, *i + 1, end);
 		find_env_var(var_name, envp_head, &var_exp);
 		ft_free(var_name);
 	}
 	new_str = create_new_str(str, var_exp, i, end);
-	ft_free(str);
-	return (new_str);
+	return (ft_free(str), new_str);
 }
 
 char	*variable_expansion(char *str, t_list **envp_head, int last_ec)
@@ -83,7 +84,7 @@ char	*variable_expansion(char *str, t_list **envp_head, int last_ec)
 
 	flag = -1;
 	i = 0;
-	delim = "$ \t^%#:+@-";
+	delim = "~!$ \t^%#:+@-=";
 	while (str[i])
 	{
 		if (str[i] == '<' && str[i + 1] == '<')
@@ -114,7 +115,7 @@ char	*variable_expansion_hd(char **str_add, t_list **envp_head, int last_ec)
 	{
 		if (str[i] == '$' && (str[i + 1] == '\'' || str[i + 1] == '\"'))
 			i += go_to_closing_char(&str[i]) + 1;
-		else if (str[i] == '$' && !end_char(str[i + 1], "$ \t^%#:+@-\n"))
+		else if (str[i] == '$' && !end_char(str[i + 1], "!$ \t^%#:+@-\n"))
 			str = expand_variable(str, &i, last_ec, envp_head);
 		else
 			i++;
