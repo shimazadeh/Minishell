@@ -93,7 +93,7 @@ void		handle_ws_fill_str(char *str, char *new_str);
 
 // syntax_check.c
 
-int			syntax_check(char **str_add);
+int			syntax_check(char **str_add, int *last_exit_code);
 void		handle_quotes(char **str_add, int *i_add);
 char		*handle_single_quote(int i, int j, char *str, int quote);
 int			is_special_char(char *str, int *ch_code_add);
@@ -512,12 +512,18 @@ int			struct_size(t_struct *lst);
 
 //variable expansion
 
-char		*variable_expansion(char *str, t_list **envp_head, int last_ec);
-char		*expand_variable(char *str, int *i, int last_ec, \
-t_list **envp_head);
+char		*variable_expansion(char *str, t_list **envp_head, int last_ec, \
+int flag);
 int			end_char(char c, char *end);
 char		*create_new_str(char *str, char *to_add, int *to_break, \
 int to_continue);
+
+char		*ft_jointab(char **tab);
+char		**split_variable_expansion(char *str);
+void		fill_var_expand_tab(char ***tab_add, char *str);
+int			var_expand_size(char *str);
+char		*expand_variable(char *str, int *i, int last_ec, \
+t_list **envp_head);
 
 //parsing
 void		initialize_sc(t_struct **tab, char *str);

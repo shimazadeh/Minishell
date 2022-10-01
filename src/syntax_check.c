@@ -12,7 +12,7 @@
 
 #include "minishell.h"
 
-int	syntax_check(char **str_add)
+int	syntax_check(char **str_add, int *last_exit_code)
 {
 	int		i;
 	int		ch_code;
@@ -32,7 +32,7 @@ int	syntax_check(char **str_add)
 			handle_quotes(&str, &i);
 		else if (is_special_char(&str[i], &ch_code) && \
 			!handle_special_char(str, &i, ch_code, par_tab))
-			return (0);
+			return (*last_exit_code = 2, 0);
 		else
 			i++;
 	}

@@ -46,9 +46,12 @@ int	buildins_execution(t_struct **elements, char **parsed_path, t_list **envp)
 	int			tmp_stdout;
 
 	exit_code = -1;
-	tmp_stdin = dup(STDIN_FILENO);
-	tmp_stdout = dup(STDOUT_FILENO);
 	copy = *elements;
+	if (ft_strncmp(copy->cmd[0], "exit", 5))
+	{
+		tmp_stdin = dup(STDIN_FILENO);
+		tmp_stdout = dup(STDOUT_FILENO);
+	}
 	exit_code = execute_function(copy, parsed_path, envp, 0);
 	if (dup2(tmp_stdin, STDIN_FILENO) < 0)
 		perror("tmp_stdin:");
@@ -75,7 +78,7 @@ int	ft_waitpid(t_struct **elements)
 			exit_code = 130;
 		else if (WIFSIGNALED(copy->wstatus) && WCOREDUMP(copy->wstatus))
 		{
-			ft_dprintf(2, "segmentation fault (core dump)\n");
+			ft_dprintf(2, "Quit (core dump)\n");
 			if (g_var->sig_flag == 2)
 				exit_code = 131;
 			else
@@ -138,8 +141,3 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 	}
 	return (exit_code);
 }
-		// else if (g_var->sig_flag == 1)
-		// {
-		// 	kill(copy->child, SIGQUIT);
-		// 	exit_code = 130;
-		// }

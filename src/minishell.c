@@ -50,7 +50,7 @@ void	minishell_loop(t_minishell_vars *v, char *tmp)
 			add_history(v->input);
 		ft_free(v->prev_input);
 		v->prev_input = ft_strdup(v->input);
-		if (syntax_check(&(v->input)))
+		if (syntax_check(&(v->input), &(v->last_exit_code)))
 		{
 			handle_ws(&(v->input));
 			v->last_exit_code = algorithm(ft_strdup(v->input), \

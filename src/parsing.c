@@ -69,7 +69,7 @@ int	parse_outfiles(char **str_add, t_struct *head)
 	i = -1;
 	k = -1;
 	str = *str_add;
-	while (str[++i] && i >= 0)
+	while (++i >= 0 && str[i])
 	{
 		if (str[i] == '\"' || str[i] == '\'')
 			i = i + go_to_closing_char(&str[i]);

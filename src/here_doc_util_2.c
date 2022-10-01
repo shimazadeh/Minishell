@@ -67,7 +67,7 @@ int	write_to_file(t_ft_here_doc *var, int i, t_list **envp, int last_exit_code)
 		&& ft_strncmp(v->gnl, v->stop_new, ft_strlen(v->stop_new) + 1))
 	{
 		if (var->exp_flags[i] == 0)
-			v->gnl = variable_expansion_hd(&(v->gnl), envp, last_exit_code);
+			v->gnl = variable_expansion((v->gnl), envp, last_exit_code, 1);
 		if (write(v->fd1, v->gnl, ft_strlen(v->gnl)) < 0)
 			return (perror("write:"), -1);
 		ft_free(v->gnl);
