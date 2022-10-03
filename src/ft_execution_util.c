@@ -82,6 +82,8 @@ void	ft_dup2_outfiles(t_struct *head, int *exit_code)
 			perror("dup2 stdout:");
 		close(head->fds[1]);
 	}
+	else if (*exit_code == 1)
+		close(head->fds[1]);
 }
 
 void	ft_execute_cmd(t_struct *head, int *ec, char **path, t_list **envp_head)

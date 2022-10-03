@@ -21,10 +21,10 @@ int	execute_function(t_struct *head, char **path, t_list **envp_head, int flag)
 		perror("Fork:");
 	else if (!head->child)
 	{
-		ft_dup2_infiles(head, &exit_code);
-		ft_dup2_outfiles(head, &exit_code);
 		if (head->next && head->next->fds[0])
 			close(head->next->fds[0]);
+		ft_dup2_infiles(head, &exit_code);
+		ft_dup2_outfiles(head, &exit_code);
 		if (exit_code != 1 && head->cmd)
 			ft_execute_cmd(head, &exit_code, path, envp_head);
 		if (flag == 1)

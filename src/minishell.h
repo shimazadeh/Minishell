@@ -522,8 +522,13 @@ char		*ft_jointab(char **tab);
 char		**split_variable_expansion(char *str);
 void		fill_var_expand_tab(char ***tab_add, char *str);
 int			var_expand_size(char *str);
-char		*expand_variable(char *str, int *i, int last_ec, \
-t_list **envp_head);
+char		*expand_variable(char *str, int *i, t_list **envp_head, int flag);
+char		*expand_last_ec(char *str, int *i, int last_ec);
+char		*create_expansion(t_list **envp_head, int end, \
+int i, char *str);
+int			add_double_quotes(char	**str_add);
+int			ft_strcpy_wquotes(char *dest, char *str, \
+int limit, int i);
 
 //parsing
 void		initialize_sc(t_struct **tab, char *str);
@@ -599,8 +604,6 @@ int			write_to_file(t_ft_here_doc *var, int i, \
 t_list **envp, int last_exit_code);
 int			write_to_file_2(t_wtf_vars v[1], char *stop);
 int			pass_the_next_word(char *str);
-char		*variable_expansion_hd(char **str_add, \
-t_list **envp_head, int last_ec);
 char		*ft_readline(void);
 void		init_wtf_vars(t_wtf_vars v[1], char *stop, char	*file);
 int			quotes_presence(char *str);

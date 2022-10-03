@@ -47,7 +47,7 @@ char	*create_new_str(char *str, char *to_add, int *to_break, int to_continue)
 	return (new_str);
 }
 
-char	*expand_variable(char *str, int *i, int last_ec, t_list **envp_head)
+char	*expand_variable(char *str, int *i, t_list **envp_head, int flag)
 {
 	char	*var_exp;
 	char	*var_name;
@@ -55,13 +55,10 @@ char	*expand_variable(char *str, int *i, int last_ec, t_list **envp_head)
 	char	*new_str;
 
 	end = *i + 1;
-	var_name = NULL;
 	var_exp = NULL;
-	if (str[end] == '?')
-	{
-		var_exp = ft_itoa(last_ec);
-		end++;
-	}
+	var_name = NULL;
+	if (end_char(str[end], " +=/.,~:%^$"))
+		return ((*i)++, str);
 	else if (str[end] >= '0' && str[end] <= '9')
 		end++;
 	else if (!end_char(str[end], " ./~@!$\n^%#:+-="))
@@ -71,7 +68,58 @@ char	*expand_variable(char *str, int *i, int last_ec, t_list **envp_head)
 		var_name = ft_strdup_range(str, *i + 1, end);
 		find_env_var(var_name, envp_head, &var_exp);
 		ft_free(var_name);
+		if (flag == 0)
+			add_double_quotes(&var_exp);
 	}
 	new_str = create_new_str(str, var_exp, i, end);
-	return (*i = 0, ft_free(str), new_str);
+	ft_free(str);
+	return (new_str);
+}
+
+int	add_double_quotes(char	**str_add)
+{
+	int			i;
+	char		**result;
+	char		**tab;
+	char		*str;
+
+	if (!str_add || !*str_add)
+		return (0);
+	str = *str_add;
+	tab = ft_split(str, ' ');
+	result = ft_alloc(sizeof(char *) * (ft_strlen_tab(tab) + 1));
+	i = 0;
+	while (tab[i])
+	{
+		result[i] = ft_alloc(sizeof(char) * (ft_strlen(tab[i]) + 3 + 1));
+		ft_strcpy_wquotes(result[i], tab[i], ft_strlen_tab(tab) - 1, i);
+		i++;
+	}
+	result[i] = '\0';
+	ft_free_tab(tab);
+	ft_free(str);
+	*str_add = ft_jointab(result);
+	ft_free(result);
+	return (0);
+}
+
+int	ft_strcpy_wquotes(char *dest, char *str, int limit, int i)
+{
+	size_t	k;
+	int		j;
+
+	k = 0;
+	j = 0;
+	dest[j++] = '\"';
+	while (k < ft_strlen(str))
+	{
+		dest[j] = str[k];
+		j++;
+		k++;
+	}
+	dest[j++] = '\"';
+	if (i < limit)
+		dest[j++] = ' ';
+	dest[j] = '\0';
+	return (0);
 }

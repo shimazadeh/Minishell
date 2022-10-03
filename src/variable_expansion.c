@@ -82,7 +82,6 @@ char	*variable_expansion(char *str, t_list **envp, int last_ec, int flag)
 	int		index;
 
 	tab = split_variable_expansion(str);
-	ft_free(str);
 	i = -1;
 	while (tab[++i])
 	{
@@ -91,15 +90,17 @@ char	*variable_expansion(char *str, t_list **envp, int last_ec, int flag)
 			index = 0;
 			while (tab[i][index])
 			{
-				if (tab[i][index] == '$')
-					tab[i] = expand_variable(tab[i], &index, last_ec, envp);
+				if (tab[i][index] == '$' && tab[i][index + 1] == '?')
+					tab[i] = expand_last_ec(tab[i], &index, last_ec);
+				else if (tab[i][index] == '$')
+					tab[i] = expand_variable(tab[i], &index, envp, flag);
 				else
 					index++;
 			}
 		}
 	}
 	new_str = ft_jointab(tab);
-	return (ft_free_tab(tab), new_str);
+	return (ft_free(str), ft_free_tab(tab), new_str);
 }
 
 char	*ft_jointab(char **tab)
