@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   variable_expansion_2.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: shabibol <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/10/01 18:55:21 by shabibol          #+#    #+#             */
-/*   Updated: 2022/10/01 18:55:23 by shabibol         ###   ########.fr       */
+/*   Updated: 2022/10/04 14:08:24 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ char	*expand_variable(char *str, int *i, t_list **envp_head, int flag)
 	end = *i + 1;
 	var_exp = NULL;
 	var_name = NULL;
-	if (end_char(str[end], " +=/.,~:%^$"))
+	if (!str[end] || end_char(str[end], " +=/.,~:%^$\n"))
 		return ((*i)++, str);
 	else if (str[end] >= '0' && str[end] <= '9')
 		end++;
@@ -98,7 +98,7 @@ int	add_double_quotes(char	**str_add)
 	result[i] = '\0';
 	ft_free_tab(tab);
 	ft_free(str);
-	*str_add = ft_jointab(result);
+	*str_add = ft_jointab_2(result);
 	ft_free(result);
 	return (0);
 }

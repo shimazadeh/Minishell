@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/30 17:57:29 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/10/04 14:20:17 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -306,6 +306,7 @@ char		*ft_getcwd(void);
 
 void		ft_exit(char **av, int exit_code, char *fn_name, char *error_msg);
 int			exit_check_args(char **av, int exit_code);
+void		exit_checks_args_2(char **av, int *ret, int i);
 
 // prompt.c
 
@@ -518,7 +519,8 @@ int			end_char(char c, char *end);
 char		*create_new_str(char *str, char *to_add, int *to_break, \
 int to_continue);
 
-char		*ft_jointab(char **tab);
+char		*ft_jointab_1(char **tab);
+char		*ft_jointab_2(char **tab);
 char		**split_variable_expansion(char *str);
 void		fill_var_expand_tab(char ***tab_add, char *str);
 int			var_expand_size(char *str);

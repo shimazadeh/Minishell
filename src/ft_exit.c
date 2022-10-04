@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/10 18:56:33 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/21 16:11:46 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/10/04 14:20:42 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,21 +41,26 @@ int	exit_check_args(char **av, int exit_code)
 	if (!av || !av[0])
 		ret = exit_code % 255;
 	else if (av[0])
-	{
-		if (!av[0][0])
-			ret = 2;
-		while (av[0][++i])
-			if (av[0][i] < '0' || av[0][i] > '9')
-				ret = 2;
-		if (ret == 2)
-			ft_dprintf(1, "bash: exit: : numeric argument required\n");
-		if (!ret)
-			ret = ft_atoi(av[0]) % 256;
-	}
+		exit_checks_args_2(av, &ret, i);
 	if (ret != 2 && av && av[0] && av[1])
 	{
 		ret = 1;
 		ft_dprintf(1, "bash: exit: too many arguments\n");
 	}
 	return (ret);
+}
+
+void	exit_checks_args_2(char **av, int *ret, int i)
+{
+	if (!av[0][0])
+		*ret = 2;
+	if (av[0][0] == '-' && av[0][1])
+		i++;
+	while (av[0][++i])
+		if (av[0][i] < '0' || av[0][i] > '9')
+			*ret = 2;
+	if (*ret == 2)
+		ft_dprintf(1, "bash: exit: : numeric argument required\n");
+	if (!(*ret))
+		*ret = ft_atoi(av[0]) % 256;
 }

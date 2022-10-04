@@ -6,35 +6,11 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/17 17:21:24 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/30 17:47:31 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/10/04 14:10:50 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int	var_expand_size(char *str)
-{
-	int	i;
-	int	size;
-
-	i = 0;
-	size = 0;
-	while (str[i])
-	{
-		if (str[i] == '\'' || str[i] == '\"')
-		{
-			i += go_to_closing_char(&str[i]) + 1;
-			size++;
-		}
-		else
-		{
-			size++;
-			while (str[i] && str[i] != '\'' && str[i] != '\"')
-				i++;
-		}
-	}
-	return (size);
-}
 
 void	fill_var_expand_tab(char ***tab_add, char *str)
 {
@@ -99,11 +75,26 @@ char	*variable_expansion(char *str, t_list **envp, int last_ec, int flag)
 			}
 		}
 	}
-	new_str = ft_jointab(tab);
+	new_str = ft_jointab_1(tab);
 	return (ft_free(str), ft_free_tab(tab), new_str);
 }
 
-char	*ft_jointab(char **tab)
+char	*ft_jointab_1(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i])
+	{
+		if (tab[i][ft_strlen(tab[i]) - 1] == '$' && tab[i + 1] \
+			&& (tab[i + 1][0] == '\"' || tab[i + 1][0] == '\''))
+			tab[i][ft_strlen(tab[i]) - 1] = '\0';
+		i++;
+	}
+	return (ft_jointab_2(tab));
+}
+
+char	*ft_jointab_2(char **tab)
 {
 	int		size;
 	int		i;
