@@ -74,7 +74,7 @@ int	ft_waitpid(t_struct **elements)
 		if (waitpid(copy->child, &(copy->wstatus), 0) != -1 \
 		&& WIFEXITED(copy->wstatus))
 			exit_code = WEXITSTATUS(copy->wstatus);
-		else if (WIFSTOPPED(copy->wstatus) && g_var->sig_flag == 1)
+		else if (g_var->sig_flag == 1)
 			exit_code = 130;
 		else if (WIFSIGNALED(copy->wstatus) && WCOREDUMP(copy->wstatus))
 		{
@@ -115,7 +115,7 @@ int	ft_fork(t_struct **elements, char **parsed_path, t_list **envp)
 		copy = copy->next;
 	}
 	exit_code = ft_waitpid(elements);
-	return (exit_code);
+	return (g_var->sig_flag = 0, exit_code);
 }
 
 int	execute(t_struct **elements, char **parsed_path, t_list **envp)
