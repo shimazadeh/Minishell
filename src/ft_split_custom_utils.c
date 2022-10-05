@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 23:19:22 by aguillar          #+#    #+#             */
-/*   Updated: 2022/08/24 23:22:25 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:11:09 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ int	ft_wc_custom(char *str, char c)
 			{
 				if (str[i] && (str[i] == '\"' || str[i] == '\''))
 					i += go_to_closing_char((char *)&str[i]) + 1;
+				else if (str[i] && str[i] == '(')
+					i += go_to_closing_par((char *)&str[i], NULL) + 1;
 				else
 					i++;
 			}
@@ -68,6 +70,12 @@ void	ft_get_wl(char *str, int *i_add, int *wl_add, int flag)
 		wl += gtcc + 1;
 		if (flag)
 			wl -= 2;
+	}
+	else if (str[i] && str[i] == '(')
+	{
+		gtcc = go_to_closing_par((char *)&str[i], NULL);
+		i += gtcc + 1;
+		wl += gtcc + 1;
 	}
 	else
 	{

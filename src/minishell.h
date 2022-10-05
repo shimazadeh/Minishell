@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/15 14:32:02 by aguillar          #+#    #+#             */
-/*   Updated: 2022/10/04 14:20:17 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:51:55 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,8 @@ void		handle_quotes(char **str_add, int *i_add);
 char		*handle_single_quote(int i, int j, char *str, int quote);
 int			is_special_char(char *str, int *ch_code_add);
 int			print_syntax_error(int ch_code);
+int			handle_reg_char(char *str, int *i_add);
+int			get_token_end(char *str, int i);
 
 // handle_special_char.c
 
@@ -121,9 +123,7 @@ typedef struct s_aglorithm_vars
 }				t_aglorithm_vars;
 
 int			algorithm(char *str, t_list **envp_head, int last_exit_code);
-int			algorithm_exit_condition_1(char *str, t_list **envp_head, \
-int last_exit_code, t_aglorithm_vars v[1]);
-int			algorithm_exit_condition_2(char *str, t_list **envp_head, \
+int			algorithm_exit_condition(char *str, t_list **envp_head, \
 int last_exit_code, t_aglorithm_vars v[1]);
 int			algorithm_recursive(t_list **envp_head, int last_exit_code, \
 t_aglorithm_vars v[1]);
@@ -549,10 +549,10 @@ char		*replace_with_space(char *str, int start, int end);
 int			supress_the_quotes(char **str_add, int i);
 
 //execution
-int			execute(t_struct **elements, char **parsed_path, t_list **envp);
+int			execute(t_struct **elements, char **parsed_path, t_list **envp, int ec);
 int			execute_function(t_struct *head, char **parsed_path, \
-t_list **envp_head, int sc_size);
-int			ft_fork(t_struct **elements, char **parsed_path, t_list **envp);
+t_list **envp_head, int sc_size, int ec);
+int			ft_fork(t_struct **elements, char **parsed_path, t_list **envp, int ec);
 void		ft_dup2_infiles(t_struct *head, int *exit_code);
 void		ft_dup2_outfiles(t_struct *head, int *exit_code);
 void		ft_execute_cmd(t_struct *head, int *exit_code, \

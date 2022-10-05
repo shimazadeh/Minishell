@@ -6,13 +6,13 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/08/24 21:17:18 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/23 17:40:32 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:00:48 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	execute_function(t_struct *head, char **path, t_list **envp_head, int flag)
+int	execute_function(t_struct *head, char **path, t_list **envp_head, int flag, int ec)
 {
 	int		exit_code;
 
@@ -25,7 +25,9 @@ int	execute_function(t_struct *head, char **path, t_list **envp_head, int flag)
 			close(head->next->fds[0]);
 		ft_dup2_infiles(head, &exit_code);
 		ft_dup2_outfiles(head, &exit_code);
-		if (exit_code != 1 && head->cmd)
+		if (exit_code != 1 && head->cmd && head->cmd[0][0] == '(')
+			exit_code = algorithm(head->str, envp_head, ec);
+		else if (exit_code != 1 && head->cmd)
 			ft_execute_cmd(head, &exit_code, path, envp_head);
 		if (flag == 1)
 		{
@@ -38,7 +40,7 @@ int	execute_function(t_struct *head, char **path, t_list **envp_head, int flag)
 	return (exit_code);
 }
 
-int	buildins_execution(t_struct **elements, char **parsed_path, t_list **envp)
+int	buildins_execution(t_struct **elements, char **parsed_path, t_list **envp, int ec)
 {
 	t_struct	*copy;
 	int			exit_code;
@@ -52,7 +54,7 @@ int	buildins_execution(t_struct **elements, char **parsed_path, t_list **envp)
 		tmp_stdin = dup(STDIN_FILENO);
 		tmp_stdout = dup(STDOUT_FILENO);
 	}
-	exit_code = execute_function(copy, parsed_path, envp, 0);
+	exit_code = execute_function(copy, parsed_path, envp, 0, ec);
 	if (dup2(tmp_stdin, STDIN_FILENO) < 0)
 		perror("tmp_stdin:");
 	close(tmp_stdin);
@@ -89,7 +91,7 @@ int	ft_waitpid(t_struct **elements)
 	return (exit_code);
 }
 
-int	ft_fork(t_struct **elements, char **parsed_path, t_list **envp)
+int	ft_fork(t_struct **elements, char **parsed_path, t_list **envp, int ec)
 {
 	int			pipefds[2];
 	t_struct	*copy;
@@ -107,7 +109,7 @@ int	ft_fork(t_struct **elements, char **parsed_path, t_list **envp)
 		}
 		copy->child = fork();
 		catch_signals(0);
-		exit_code = execute_function(copy, parsed_path, envp, 1);
+		exit_code = execute_function(copy, parsed_path, envp, 1, ec);
 		if (copy->fds[1] != 1)
 			close(copy->fds[1]);
 		if (copy->fds[0] != 0)
@@ -118,7 +120,7 @@ int	ft_fork(t_struct **elements, char **parsed_path, t_list **envp)
 	return (g_var->sig_flag = 0, exit_code);
 }
 
-int	execute(t_struct **elements, char **parsed_path, t_list **envp)
+int	execute(t_struct **elements, char **parsed_path, t_list **envp, int ec)
 {
 	t_struct	*copy;
 	int			exit_code;
@@ -130,9 +132,9 @@ int	execute(t_struct **elements, char **parsed_path, t_list **envp)
 	if (g_var->sig_flag == 0)
 	{
 		if (struct_size(*elements) == 1 && boolean_if_buildin(copy->cmd) == 1)
-			exit_code = buildins_execution(elements, parsed_path, envp);
+			exit_code = buildins_execution(elements, parsed_path, envp, ec);
 		else
-			exit_code = ft_fork(elements, parsed_path, envp);
+			exit_code = ft_fork(elements, parsed_path, envp, ec);
 	}
 	else if (g_var->sig_flag == 1)
 	{

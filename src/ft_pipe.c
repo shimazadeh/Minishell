@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/06/07 17:38:31 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/23 16:52:42 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/10/05 15:11:14 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ int	ft_pipe(char *str, t_list **envp_head, int last_exit_code)
 	else
 	{
 		assign_str_to_struct(&elements, str);
-		exit_code = execute(&elements, parsed_path, envp_head);
+		exit_code = execute(&elements, parsed_path, envp_head, last_exit_code);
 	}
 	ft_free_sc(elements);
 	return (ft_free_tab(parsed_path), ft_unlink(herdoc_files), exit_code);

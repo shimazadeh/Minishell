@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/09/20 15:15:20 by aguillar          #+#    #+#             */
-/*   Updated: 2022/09/23 16:35:37 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:57:32 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,54 @@ int	syntax_check(char **str_add, int *last_exit_code)
 		else if (is_special_char(&str[i], &ch_code) && \
 			!handle_special_char(str, &i, ch_code, par_tab))
 			return (*last_exit_code = 2, 0);
+		else if (str[i] != ' ' && str[i] != '\t' && \
+			!handle_reg_char(str, &i))
+			return (*last_exit_code = 2, 0);
 		else
 			i++;
 	}
 	*str_add = str;
 	return (1);
+}
+
+int	handle_reg_char(char *str, int *i_add)
+{
+	char	*token;
+	int		i;
+	int		end;
+
+	i = *i_add;
+	end = get_token_end(str, i);
+	printf("LOL\n");
+	i--;
+	printf("%c\n", str[i]);
+	while (i > 0 && (str[i] == ' ' || str[i] == '\t'))
+		i--;
+	printf("%c\n", str[i]);
+	if (i > 0 && str[i] == ')')
+	{
+		token = ft_strdup_range(str, *i_add, end);
+		ft_dprintf(1, "bash: syntax error near unexpected token `%s'\n", \
+		token);
+		ft_free(token);
+		return (0);
+	}
+	else
+		*i_add += end;
+	return (1);
+}
+
+int	get_token_end(char *str, int i)
+{
+	while (str[i])
+	{
+		if (str[i] == '\"' || str[i] == '\'')
+			i += go_to_closing_char(&str[i]);
+		else if (ft_strchr("()|& \t", str[i]))
+			return (i + 1);
+		i++;
+	}
+	return (i);
 }
 
 void	handle_quotes(char **str_add, int *i_add)

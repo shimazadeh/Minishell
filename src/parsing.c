@@ -6,7 +6,7 @@
 /*   By: aguillar <aguillar@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/28 12:33:23 by shabibol          #+#    #+#             */
-/*   Updated: 2022/09/23 16:42:48 by aguillar         ###   ########.fr       */
+/*   Updated: 2022/10/05 16:05:31 by aguillar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,8 @@ int	parse_infiles(char **str_add, t_struct *head)
 	{
 		if (str[i] == '\"' || str[i] == '\'')
 			i = i + go_to_closing_char(&str[i]) + 1;
+		else if (str[i] == '(')
+			i = i + go_to_closing_par(&str[i], NULL) + 1;
 		else if (str[i] && str[i] == '<' && str[i + 1] != '<')
 		{
 			i = save_next_word(&str, i + 1, &head->infiles[++k], i - 1);
@@ -73,6 +75,8 @@ int	parse_outfiles(char **str_add, t_struct *head)
 	{
 		if (str[i] == '\"' || str[i] == '\'')
 			i = i + go_to_closing_char(&str[i]);
+		else if (str[i] == '(')
+			i = i + go_to_closing_par(&str[i], NULL) + 1;
 		else if (str[i] && str[i] == '>' && str[i + 1] != '>')
 		{
 			i = save_next_word(&str, i + 1, &head->outfiles[++k], i - 1) - 1;
