@@ -27,7 +27,9 @@ Our Minishell implementation involves several key components:
 
 ### Parser
 - The parser stores the tokenized and expanded string in a linked list of commands.
-- It creates a data structure that holds information about each command, including the command name, parameters, full path to the executable, input and output file descriptors, environment variables, and process ID.
+- It creates a chain list data structure that holds information about each command, including the command name, parameters, full path to the executable, input and output file descriptors, environment variables, and process ID:
+- <img width="408" alt="Screen Shot 2023-09-01 at 2 10 18 PM" src="https://github.com/shimazadeh/Minishell/assets/67879533/73182432-1555-4976-9b27-66eb6c1115bb">
+
 
 ### Executor
 - The executor uses the data provided by the parser to execute commands.
@@ -46,12 +48,12 @@ Ensure you have the following packages installed:
 **Note for MacOS:** To install a recent version of readline, use Homebrew: `brew install readline`
 
 ### Cloning the Repository
-git clone https://github.com/shimazadeh/minishell.git
-cd minishell
-make
+- git clone https://github.com/shimazadeh/minishell.git minishell
+- cd minishell
+- make
 
 ## Basic Usage
-The project compiles an executable called `minishell`.
+The project compiles an executable called `minishell` saved inside a bin/ folder), and it is compiled using the .c files inside the src/ folder
 
 ## Demos
 Here are some demos of the project's progress:
