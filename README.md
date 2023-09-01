@@ -1,12 +1,25 @@
 # Minishell | 42Paris | As beautiful as a shell 🐚
-Minishell is a project that involves creating your very own shell, taking inspiration from the Bash (Bourne Again SHell) reference, from ground up with no pre-existing library, including key functionalities such as command execution, input/output redirection, and process management.
+Minishell is a project that involves creating your very own shell, taking inspiration from the Bash reference, from ground up with no pre-existing library, including key functionalities such as command execution, input/output redirection, and process management.
 
 ## Introduction
 A shell, in the context of operating systems, is like a command interpreter that communicates with the operating system kernel. It allows users to execute commands, create or delete files and directories, read and write file contents, and perform various other tasks from a command line interface.
 
-### Our Implementation of Minishell
-Our Minishell implementation involves several key components:
+### Limitations
+- No built-in library is allowed in this project. all functions must be written from scratch.
+- Only one global variable is allowed. 
 
+### Our Implementation of Minishell
+The table displays the commands and the extensions were in scope of this project: 
+| Builtin | Description                                            | Options | Parameters | Helpful Functions |
+| ------- | ------------------------------------------------------ | ------- | ---------- | ----------------- |
+| echo    | Prints arguments separated with a space followed by a new line | -n      | ✔️         | write             |
+| cd      | Changes current working directory, updating PWD and OLDPWD | ❌      | ✔️         | chdir             |
+| pwd     | Prints current working directory                      | ❌      | ❌         | getcwd            |
+| env     | Prints environment                                     | ❌      | ❌         | write             |
+| export  | Adds/replaces variable in environment                  | ❌      | ✔️         | ❌                |
+| unset   | Removes variable from environment                      | ❌      | ✔️         | ❌                |
+
+Our Minishell implementation involves several key components:
 ### Lexer and Expander
 - The lexer and expander handle tasks like expanding environment variables (e.g., $USER), expanding '~' to the user's home directory, and tokenizing the input string.
 - We split the input string into tokens, taking spaces and quotes into account, and then apply expansion functions to each substring.
