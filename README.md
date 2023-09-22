@@ -39,27 +39,24 @@ Our Minishell implementation involves several key components:
 ## Installation
 
 ### Prerequisites
-Ensure you have the following packages installed:
+This project was designed and tested on Linux, if used by mac updates may be needed. Ensure you have the following packages installed:
 - gcc
 - make
 - python-norminette
-- readline (valgrind on Linux)
+- readline
 
-**Note for MacOS:** To install a recent version of readline, use Homebrew: `brew install readline`
-
-### Cloning the Repository
+### Usage
+The project compiles an executable called `minishell` saved inside a bin/ folder), and it is compiled using the .c files inside the src/ folder. once you run the executable ./minishell a new prompt is opened where you can execute commands and see results. 
 - git clone https://github.com/shimazadeh/minishell.git minishell
 - cd minishell
 - make
+- run ./minishell
 
-## Basic Usage
-The project compiles an executable called `minishell` saved inside a bin/ folder), and it is compiled using the .c files inside the src/ folder
+## Basic Demo
+This is a basic demo, go ahead and explore more!! HAVE FUN!! 
 
-## Demos
-Here are some demos of the project's progress:
-- [Version 1.0](link-to-demo-v1.0)
-- [Version 2.0](link-to-demo-v2.0)
-- [Version 3.0](link-to-demo-v3.0)
+https://github.com/shimazadeh/Minishell/assets/67879533/fee5d276-41d3-4ca7-817e-12171e9754ec
+
 
 ## References
 - [Minishell - 42 Docs](link-to-42-docs)
